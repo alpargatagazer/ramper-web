@@ -11,9 +11,12 @@ services:
       - "4321:4321"
     volumes:
       - .:/app
-      # Avoid overlay container's node_modules with host's node_modules
-      - /app/node_modules
+      # Named volume for node_modules to allow surgical resets
+      - node_modules:/app/node_modules
     environment:
       - NODE_ENV=development
     # Enables colored terminal output in container logs
     tty: true
+
+volumes:
+  node_modules:

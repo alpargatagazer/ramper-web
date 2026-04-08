@@ -10,6 +10,7 @@ import react from '@astrojs/react';
 import markdoc from '@astrojs/markdoc';
 import keystatic from '@keystatic/astro';
 import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
 
@@ -43,4 +44,7 @@ export default defineConfig({
     host: true,
   },
 
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });

@@ -3,21 +3,22 @@
 # Usage: make <target>
 #
 # --- COMMANDS ---
-# dev         → Build and start dev server in foreground
-# dev-bg      → Build and start dev server in background
-# dev-down    → Stop development environment
-# dev-logs    → Follow logs from the Astro container
-# dev-shell   → Open interactive shell inside the container
-# dev-rebuild → Force clean rebuild of the dev image
-# clean       → Stop everything and remove ALL volumes/images
-# test        → (TBD) Run Playwright tests
-# build-prod  → (TBD) Build production container
+# dev            → Build and start dev server in foreground
+# dev-bg         → Build and start dev server in background
+# dev-down       → Stop development environment
+# dev-logs       → Follow logs from the Astro container
+# dev-shell      → Open interactive shell inside the container
+# dev-rebuild    → Force clean rebuild of the dev image
+# dev-reset-deps → SURGICAL: Delete only node_modules volume and rebuild
+# clean          → NUCLEAR: Stop everything and remove ALL volumes/images
+# test           → (TBD) Run Playwright tests
+# build-prod     → (TBD) Build production container
 
 # Project Configuration
 PROJECT_NAME = ramper-web
 COMPOSE_DEV = docker compose -p $(PROJECT_NAME) -f docker-compose.yml
 
-.PHONY: dev dev-bg dev-down dev-logs dev-shell dev-rebuild clean test build-prod
+.PHONY: dev dev-bg dev-down dev-logs dev-shell dev-rebuild dev-reset-deps clean test build-prod
 
 # --- DEVELOPMENT ---
 
@@ -39,6 +40,12 @@ dev-shell:
 dev-rebuild:
 	$(COMPOSE_DEV) build --no-cache
 	$(COMPOSE_DEV) up -d
+
+# Surgical dependency reset
+dev-reset-deps:
+	$(COMPOSE_DEV) down
+	docker volume rm $(PROJECT_NAME)_node_modules || true
+	$(COMPOSE_DEV) up --build -d
 
 # --- UTILS ---
 

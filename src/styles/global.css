@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-accent: var(--color-red-500);
+}
+
+@layer base {
+  body {
+    @apply bg-zinc-950 text-zinc-200 antialiased tracking-tight;
+  }
+}
