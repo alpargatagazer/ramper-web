@@ -1,0 +1,27 @@
+{
+  "name": "ramper-web",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Website for Ramper, the Spanish slowcore / post-rock band",
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "@astrojs/markdoc": "^0.14.0",
+    "@astrojs/react": "^4.0.0",
+    "@astrojs/rss": "^4.0.0",
+    "@astrojs/sitemap": "^3.0.0",
+    "@keystatic/astro": "^5.0.0",
+    "@keystatic/core": "^0.5.36",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "*",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,98 @@
+---
+// src/pages/index.astro
+//
+// Refactored to use the new BaseLayout.
+// We keep it extremely minimal, letting the typography and negative space
+// do the heavy lifting for the aesthetic.
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Solo Postres</h1>
+    <p class="subtitle">Second full-length album out now.</p>
+    <div class="cta-buttons">
+      <a href="/music/solo-postres" class="button">Listen</a>
+      <a href="https://humointernacional.com/tienda/artista-ramper/" class="button button-outline" target="_blank" rel="noopener noreferrer">Order Physical</a>
+    </div>
+  </section>
+
+  <!-- Latest News Highlight -->
+  <section class="news-preview">
+    <h2>Transmission</h2>
+    <p>Read our latest updates and announcements.</p>
+    <a href="/news" class="link-arrow">View All News →</a>
+  </section>
+</BaseLayout>
+
+<style>
+  /* 
+    Astro components have SCOPED CSS by default.
+    These styles only apply to THIS file. They won't leak! 
+  */
+  
+  .hero {
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xl);
+    padding: var(--space-xl) 0;
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 8vw, 6rem); /* Responsive huge text */
+    margin-bottom: var(--space-sm);
+    letter-spacing: -0.05em;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-lg);
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: var(--space-md);
+  }
+
+  /* Basic button styling to fit the design system */
+  .button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-text);
+    color: var(--color-bg);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    border: 1px solid var(--color-text);
+  }
+
+  .button:hover {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    border-color: var(--color-accent);
+  }
+
+  .button-outline {
+    background-color: transparent;
+    color: var(--color-text);
+  }
+
+  .button-outline:hover {
+    color: var(--color-text);
+  }
+
+  .news-preview {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .link-arrow {
+    display: inline-block;
+    margin-top: var(--space-sm);
+    font-weight: 500;
+  }
+</style>
