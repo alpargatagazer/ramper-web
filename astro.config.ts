@@ -5,17 +5,17 @@
 // to use, how to render pages, and where the site will live.
 
 import { defineConfig } from 'astro/config';
+
 import react from '@astrojs/react';
 import markdoc from '@astrojs/markdoc';
 import keystatic from '@keystatic/astro';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  // In Astro 5+, 'static' is the default and dynamically supports server
-  // generated routes (like Keystatic's admin UI) without needing 'hybrid'.
+
   output: 'static',
 
-  // The canonical URL of your site. Used by:
+  // Used by:
   // - @astrojs/sitemap to generate absolute URLs in sitemap.xml
   // - @astrojs/rss to generate absolute URLs in the RSS feed
   // - SEO meta tags (canonical links, og:url, etc.)
@@ -39,9 +39,8 @@ export default defineConfig({
 
   // Dev server configuration
   server: {
-    // Listen on all interfaces so Docker can forward the port.
-    // Without this, Astro only listens on 127.0.0.1 (localhost),
-    // which is unreachable from outside the container.
+    // Listen on all interfaces so Docker can forward the port
     host: true,
   },
+
 });
