@@ -1,0 +1,15 @@
+FROM node:24-alpine
+
+WORKDIR /app
+
+# Copy only package files first for Docker layering optimization
+COPY package.json package-lock.json* ./
+
+# Install dependencies. Fallback to npm install if lock does not exist
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+# Astro default port
+EXPOSE 4321
+
+# Run Astro
+CMD ["npm", "run", "dev"]

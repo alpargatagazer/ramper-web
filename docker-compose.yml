@@ -1,0 +1,19 @@
+name: ramper-web
+
+services:
+  astro-dev:
+    # Service for development
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      # We use same port for host and container
+      - "4321:4321"
+    volumes:
+      - .:/app
+      # Avoid overlay container's node_modules with host's node_modules
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    # Enables colored terminal output in container logs
+    tty: true
