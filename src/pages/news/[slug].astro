@@ -1,0 +1,40 @@
+---
+// src/pages/news/[slug].astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<BaseLayout title={`${post.data.title} | Ramper`}>
+  <article class="max-w-3xl mx-auto">
+    
+    <header class="mb-12 border-b border-zinc-800 pb-12 text-center">
+      <time datetime={post.data.date} class="text-sm font-mono text-zinc-500 mb-4 block tracking-widest uppercase">
+        {new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </time>
+      <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">{post.data.title}</h1>
+      <p class="text-xl text-zinc-400 font-medium">{post.data.summary}</p>
+    </header>
+
+    <div class="prose prose-invert prose-zinc max-w-none prose-p:text-zinc-400 prose-headings:text-zinc-200 prose-a:text-red-500 hover:prose-a:text-red-400 prose-img:border prose-img:border-zinc-800">
+      <Content />
+    </div>
+
+    <footer class="mt-16 pt-8 border-t border-zinc-800">
+      <a href="/news" class="text-sm uppercase tracking-widest font-bold text-zinc-500 hover:text-red-500 transition-colors">
+        ← Back to all news
+      </a>
+    </footer>
+
+  </article>
+</BaseLayout>

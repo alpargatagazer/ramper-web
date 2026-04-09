@@ -1,0 +1,42 @@
+---
+// src/pages/shows.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const linksData = await getCollection("links");
+const linksEntry = linksData.length > 0 ? linksData[0] : null;
+
+// 1. Env Var (Config), 2. CMS (Content)
+const songkickId =
+  import.meta.env.PUBLIC_SONGKICK_ARTIST_ID ||
+  linksEntry?.data?.songkickArtistId;
+---
+
+<BaseLayout title="Shows | Ramper">
+  <div class="mb-16">
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">
+      Live Shows
+    </h1>
+  </div>
+
+  <div
+    class="border border-zinc-800 bg-zinc-900/30 p-8 min-h-[400px] flex items-center justify-center"
+  >
+    <div class="text-center max-w-lg">
+      <h2 class="text-xl font-bold mb-4">Songkick Integration Placeholder</h2>
+      <p class="text-zinc-400 mb-6 text-sm">
+        When ready for production, the Songkick widget will be embedded here
+        using the artist ID:
+        <strong class="text-zinc-200">{songkickId}</strong>.
+      </p>
+      <a
+        href={`https://www.songkick.com/artists/${songkickId}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block border border-zinc-600 px-6 py-3 text-sm font-medium uppercase tracking-wider hover:bg-zinc-800 hover:text-white transition-colors"
+      >
+        View on Songkick
+      </a>
+    </div>
+  </div>
+</BaseLayout>

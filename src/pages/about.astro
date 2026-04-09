@@ -1,0 +1,21 @@
+---
+// src/pages/about.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const aboutData = await getCollection('about');
+const aboutEntry = aboutData.length > 0 ? aboutData[0] : null;
+
+// Render Markdoc to HTML
+const { Content } = aboutEntry ? await aboutEntry.render() : { Content: null };
+---
+
+<BaseLayout title="About | Ramper">
+  <div class="mb-16">
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">About</h1>
+  </div>
+
+  <div class="prose prose-invert prose-zinc max-w-3xl prose-p:text-zinc-400 prose-headings:text-zinc-200 prose-a:text-red-500 hover:prose-a:text-red-400">
+    {Content ? <Content /> : <p>Biography content is missing. Please add it via Keystatic.</p>}
+  </div>
+</BaseLayout>

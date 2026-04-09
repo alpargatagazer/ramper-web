@@ -1,0 +1,37 @@
+---
+// src/pages/music/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const releases = await getCollection('releases');
+releases.sort((a, b) => new Date(b.data.releaseDate).valueOf() - new Date(a.data.releaseDate).valueOf());
+---
+
+<BaseLayout title="Music | Ramper">
+  <div class="mb-16">
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">Discography</h1>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    {releases.length === 0 ? (
+      <p class="text-zinc-500 italic col-span-full">No releases tracked yet. Visit /keystatic to add "Solo Postres".</p>
+    ) : (
+      releases.map((release) => (
+        <a href={`/music/${release.id}`} class="block bg-zinc-900 border border-zinc-800 hover:border-zinc-500 transition-all hover:-translate-y-1">
+          <div class="aspect-square bg-zinc-800 border-b border-zinc-800 flex justify-center items-center text-zinc-600 text-xs tracking-widest uppercase">
+            Cover
+          </div>
+          <div class="p-4">
+            <h2 class="text-lg font-bold mb-2">{release.data.title}</h2>
+            <p class="text-sm text-zinc-400 capitalize flex items-center gap-2">
+              <span class="font-bold border border-zinc-700 px-1.5 py-0.5 text-[0.65rem]">{release.data.type}</span> 
+              <time datetime={release.data.releaseDate}>
+                {new Date(release.data.releaseDate).getFullYear()}
+              </time>
+            </p>
+          </div>
+        </a>
+      ))
+    )}
+  </div>
+</BaseLayout>

@@ -1,0 +1,56 @@
+---
+// src/pages/music/[slug].astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const releases = await getCollection('releases');
+  return releases.map((release) => ({
+    params: { slug: release.id },
+    props: { release },
+  }));
+}
+
+const { release } = Astro.props;
+const { Content } = await release.render();
+---
+
+<BaseLayout title={`${release.data.title} | Ramper`}>
+  <article class="max-w-4xl">
+    
+    <header class="grid grid-cols-1 sm:grid-cols-[300px_1fr] md:grid-cols-[350px_1fr] gap-8 mb-16">
+      <div class="aspect-square bg-zinc-900 border border-zinc-800 flex justify-center items-center text-zinc-600 text-sm tracking-widest uppercase">
+        Cover Array
+      </div>
+      
+      <div class="flex flex-col justify-center">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{release.data.title}</h1>
+        
+        <p class="flex items-center gap-4 text-zinc-400 mb-8 border-b border-zinc-800 pb-8">
+          <span class="uppercase text-xs font-bold border border-zinc-700 px-2 py-1 tracking-wider">{release.data.type}</span>
+          <time datetime={release.data.releaseDate}>
+            {new Date(release.data.releaseDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </time>
+        </p>
+
+        <div class="flex gap-4 flex-wrap">
+          {release.data.bandcampUrl && (
+            <a href={release.data.bandcampUrl} target="_blank" rel="noopener noreferrer" class="bg-zinc-200 text-zinc-950 px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-red-500 hover:text-white transition-colors">
+              Bandcamp
+            </a>
+          )}
+          {release.data.spotifyUrl && (
+            <a href={release.data.spotifyUrl} target="_blank" rel="noopener noreferrer" class="border border-zinc-600 px-6 py-3 text-sm font-bold uppercase tracking-wider hover:border-zinc-400 hover:text-white transition-colors">
+              Spotify
+            </a>
+          )}
+        </div>
+      </div>
+    </header>
+
+    <div class="prose prose-invert prose-zinc max-w-none prose-p:text-zinc-400 prose-headings:text-zinc-200 prose-a:text-red-500 hover:prose-a:text-red-400">
+      <Content />
+    </div>
+
+  </article>
+</BaseLayout>
