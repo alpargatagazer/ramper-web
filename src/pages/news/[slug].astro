@@ -18,20 +18,20 @@ const { Content } = await render(post);
 <BaseLayout title={`${post.data.title} | Ramper`}>
   <article class="max-w-3xl mx-auto">
     
-    <header class="mb-12 border-b border-zinc-200 dark:border-zinc-800 pb-12 text-center">
-      <time datetime={post.data.date} class="text-sm font-mono text-zinc-600 dark:text-zinc-500 mb-4 block tracking-widest uppercase">
+    <header class="mb-12 border-b border-ramper-blue-mid/20 dark:border-ramper-white/10 pb-12 text-center">
+      <time datetime={post.data.date} class="text-sm font-mono text-ramper-blue-mid/80 dark:text-ramper-blue-light/80 mb-4 block tracking-widest uppercase">
         {new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
       </time>
       <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">{post.data.title}</h1>
-      <p class="text-xl text-zinc-600 dark:text-zinc-400 font-medium">{post.data.summary}</p>
+      <p class="text-xl text-ramper-blue-mid dark:text-ramper-blue-light font-medium">{post.data.summary}</p>
     </header>
 
-    <div class="prose dark:prose-invert prose-zinc max-w-none prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-headings:text-zinc-900 dark:prose-headings:text-zinc-200 prose-a:text-red-600 dark:prose-a:text-red-500 hover:prose-a:text-red-700 dark:hover:prose-a:text-red-400 prose-img:border prose-img:border-zinc-200 dark:prose-img:border-zinc-800 shadow-sm dark:shadow-none">
+    <div class="prose dark:prose-invert max-w-none prose-p:text-ramper-blue-deep dark:prose-p:text-ramper-white/80 prose-headings:text-ramper-black dark:prose-headings:text-ramper-white prose-a:text-ramper-blue-mid dark:prose-a:text-ramper-blue-light hover:prose-a:text-ramper-blue-deep dark:hover:prose-a:text-ramper-white prose-img:border prose-img:border-ramper-blue-mid/20 dark:prose-img:border-ramper-white/10 shadow-sm dark:shadow-none transition-colors">
       <Content />
     </div>
 
-    <footer class="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
-      <a href="/news" class="text-sm uppercase tracking-widest font-bold text-zinc-600 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-500 transition-colors">
+    <footer class="mt-16 pt-8 border-t border-ramper-blue-mid/20 dark:border-ramper-white/10">
+      <a href="/news" class="text-sm uppercase tracking-widest font-bold text-ramper-blue-mid dark:text-ramper-blue-light hover:text-ramper-blue-deep dark:hover:text-ramper-white transition-colors">
         ← Back to all news
       </a>
     </footer>

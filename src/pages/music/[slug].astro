@@ -19,15 +19,15 @@ const { Content } = await render(release);
   <article class="max-w-4xl">
     
     <header class="grid grid-cols-1 sm:grid-cols-[300px_1fr] md:grid-cols-[350px_1fr] gap-8 mb-16">
-      <div class="aspect-square bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex justify-center items-center text-zinc-400 dark:text-zinc-600 text-sm tracking-widest uppercase">
+      <div class="aspect-square bg-ramper-blue-mid/10 dark:bg-ramper-blue-mid/20 border border-ramper-blue-mid/20 dark:border-ramper-white/10 flex justify-center items-center text-ramper-blue-mid/40 dark:text-ramper-white/20 text-sm tracking-widest uppercase">
         Cover Art
       </div>
       
       <div class="flex flex-col justify-center">
         <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{release.data.title}</h1>
         
-        <p class="flex items-center gap-4 text-zinc-500 dark:text-zinc-400 mb-8 border-b border-zinc-200 dark:border-zinc-800 pb-8">
-          <span class="uppercase text-xs font-bold border border-zinc-300 dark:border-zinc-700 px-2 py-1 tracking-wider">{release.data.type}</span>
+        <p class="flex items-center gap-4 text-ramper-blue-mid/80 dark:text-ramper-blue-light/80 mb-8 border-b border-ramper-blue-mid/20 dark:border-ramper-white/10 pb-8">
+          <span class="uppercase text-xs font-bold border border-ramper-blue-mid/30 dark:border-ramper-white/20 px-2 py-1 tracking-wider">{release.data.type}</span>
           <time datetime={release.data.releaseDate}>
             {new Date(release.data.releaseDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
           </time>
@@ -35,12 +35,12 @@ const { Content } = await render(release);
 
         <div class="flex gap-4 flex-wrap">
           {release.data.bandcampUrl && (
-            <a href={release.data.bandcampUrl} target="_blank" rel="noopener noreferrer" class="bg-zinc-900 dark:bg-zinc-200 text-white dark:text-zinc-950 px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-red-600 dark:hover:bg-red-500 transition-colors">
+            <a href={release.data.bandcampUrl} target="_blank" rel="noopener noreferrer" class="bg-ramper-black dark:bg-ramper-white text-ramper-white dark:text-ramper-black px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-ramper-blue-mid dark:hover:bg-ramper-blue-light transition-colors">
               Bandcamp
             </a>
           )}
           {release.data.spotifyUrl && (
-            <a href={release.data.spotifyUrl} target="_blank" rel="noopener noreferrer" class="border border-zinc-300 dark:border-zinc-600 px-6 py-3 text-sm font-bold uppercase tracking-wider hover:border-zinc-900 dark:hover:border-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
+            <a href={release.data.spotifyUrl} target="_blank" rel="noopener noreferrer" class="border border-ramper-blue-mid/40 dark:border-ramper-white/40 px-6 py-3 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep dark:hover:border-ramper-blue-light hover:text-ramper-blue-deep dark:hover:text-ramper-black transition-colors">
               Spotify
             </a>
           )}
@@ -48,7 +48,7 @@ const { Content } = await render(release);
       </div>
     </header>
 
-    <div class="prose dark:prose-invert prose-zinc max-w-none prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-headings:text-zinc-900 dark:prose-headings:text-zinc-200 prose-a:text-red-600 dark:prose-a:text-red-500 hover:prose-a:text-red-700 dark:hover:prose-a:text-red-400">
+    <div class="prose dark:prose-invert max-w-none prose-p:text-ramper-blue-deep dark:prose-p:text-ramper-white/80 prose-headings:text-ramper-black dark:prose-headings:text-ramper-white prose-a:text-ramper-blue-mid dark:prose-a:text-ramper-blue-light hover:prose-a:text-ramper-blue-deep dark:hover:prose-a:text-ramper-white transition-colors">
       <Content />
     </div>
 

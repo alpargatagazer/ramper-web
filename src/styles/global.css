@@ -3,7 +3,16 @@
 
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --color-accent: var(--color-red-500);
+
+  /* Ramper Palette */
+  --color-ramper-black: #262425;
+  --color-ramper-blue-deep: #1F438C;
+  --color-ramper-blue-mid: #204F8C;
+  --color-ramper-blue-light: #35648C;
+  --color-ramper-white: #BFB8AA;
+
+  /* Default Accent */
+  --color-accent: var(--color-ramper-blue-mid);
 }
 
 /* Allow toggling dark mode manually via .dark class or system preference */
@@ -11,7 +20,7 @@
 
 @layer base {
   body {
-    /* Off-white background for light mode, near-black for dark mode */
-    @apply bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-200 antialiased tracking-tight transition-colors duration-300;
+    /* Adaptive background and text using the Ramper palette */
+    @apply bg-ramper-white text-ramper-black dark:bg-ramper-black dark:text-ramper-white antialiased tracking-tight transition-colors duration-300;
   }
 }

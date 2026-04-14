@@ -15,7 +15,7 @@ const { Content } = aboutEntry ? await render(aboutEntry) : { Content: null };
     <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">About</h1>
   </div>
 
-  <div class="prose dark:prose-invert prose-zinc max-w-3xl prose-p:text-zinc-600 dark:prose-p:text-zinc-400 prose-headings:text-zinc-900 dark:prose-headings:text-zinc-200 prose-a:text-red-600 dark:prose-a:text-red-500 hover:prose-a:text-red-700 dark:hover:prose-a:text-red-400">
+  <div class="prose dark:prose-invert max-w-3xl prose-p:text-ramper-blue-deep dark:prose-p:text-ramper-white/80 prose-headings:text-ramper-black dark:prose-headings:text-ramper-white prose-a:text-ramper-blue-mid dark:prose-a:text-ramper-blue-light hover:prose-a:text-ramper-blue-deep dark:hover:prose-a:text-ramper-white transition-colors">
     {Content ? <Content /> : <p>Biography content is missing. Please add it via Keystatic.</p>}
   </div>
 </BaseLayout>

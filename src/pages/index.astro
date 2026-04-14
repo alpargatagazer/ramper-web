@@ -12,23 +12,23 @@ const latestPost = posts.sort((a, b) => new Date(b.data.date).valueOf() - new Da
       <h1 class="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-none mb-8">
         Ramper
       </h1>
-      <p class="text-xl md:text-2xl text-zinc-500 dark:text-zinc-400 font-medium tracking-tight mb-8">
+      <p class="text-xl md:text-2xl text-ramper-blue-mid dark:text-ramper-blue-light font-medium tracking-tight mb-8">
         Spanish slowcore & post-rock.
       </p>
       
       {latestPost && (
-        <div class="mt-8 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 p-6 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors shadow-sm dark:shadow-none">
-          <p class="text-xs uppercase tracking-widest text-red-500 font-bold mb-2">Latest News</p>
+        <div class="mt-8 border border-ramper-blue-mid/20 dark:border-ramper-white/10 bg-ramper-blue-mid/5 dark:bg-ramper-blue-mid/10 p-6 hover:border-ramper-blue-mid/40 dark:hover:border-ramper-white/30 transition-colors shadow-sm dark:shadow-none">
+          <p class="text-xs uppercase tracking-widest text-ramper-blue-deep dark:text-ramper-blue-light font-bold mb-2">Latest News</p>
           <a href={`/news/${latestPost.id}`} class="block">
-            <h2 class="text-xl font-bold mb-2 hover:text-red-500 transition-colors">{latestPost.data.title}</h2>
-            <p class="text-zinc-500 dark:text-zinc-400 text-sm line-clamp-2">{latestPost.data.summary}</p>
+            <h2 class="text-xl font-bold mb-2 hover:text-ramper-blue-mid transition-colors">{latestPost.data.title}</h2>
+            <p class="text-ramper-blue-mid/80 dark:text-ramper-blue-light/80 text-sm line-clamp-2">{latestPost.data.summary}</p>
           </a>
         </div>
       )}
     </div>
     
     <div class="flex-1 flex items-center justify-center">
-      <div class="w-full aspect-square bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500 text-sm tracking-widest uppercase">
+      <div class="w-full aspect-square bg-ramper-blue-mid/5 dark:bg-ramper-blue-mid/10 border border-ramper-blue-mid/20 dark:border-ramper-white/10 flex items-center justify-center text-ramper-blue-mid/40 dark:text-ramper-white/20 text-sm tracking-widest uppercase">
         Band Image Placeholder
       </div>
     </div>

@@ -29,9 +29,9 @@ const songkickId =
           data-track-button="on" 
           data-detect-style="off" 
           data-background-color="transparent" 
-          data-font-color="rgb(255,255,255,1)" 
-          data-button-bg-color="rgb(255,255,255,1)" 
-          data-button-text-color="rgb(0,0,0,1)" 
+          data-font-color="rgb(191,184,170)" 
+          data-button-bg-color="rgb(191,184,170)" 
+          data-button-text-color="rgb(38,36,37)" 
           data-locale="en" 
           data-other-artists="on" 
           data-share-button="on" 
@@ -46,8 +46,8 @@ const songkickId =
         <script is:inline src={`//widget-app.songkick.com/injector/${songkickId}`}></script>
       </>
     ) : (
-      <div class="border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/30 p-8 text-center">
-        <p class="text-zinc-500 italic">No Songkick Artist ID configured. Please add it to your .env or CMS.</p>
+      <div class="border border-ramper-blue-mid/20 dark:border-ramper-white/10 bg-ramper-blue-mid/5 dark:bg-ramper-blue-mid/10 p-8 text-center">
+        <p class="text-ramper-blue-mid/60 dark:text-ramper-blue-light/60 italic">No Songkick Artist ID configured. Please add it to your .env or CMS.</p>
       </div>
     )}
   </div>
