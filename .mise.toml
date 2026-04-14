@@ -1,0 +1,6 @@
+# Mise configuration for local isolation
+# Usage: mise install && mise use
+
+[tools]
+node = "24"
+npm = "latest"

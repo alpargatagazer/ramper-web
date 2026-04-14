@@ -24,7 +24,10 @@
     "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
-    "@astrojs/check": "*",
-    "typescript": "^5.0.0"
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.7.3"
+  },
+  "overrides": {
+    "yaml": "^2.3.0"
   }
 }

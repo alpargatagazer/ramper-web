@@ -14,17 +14,17 @@ releases.sort((a, b) => new Date(b.data.releaseDate).valueOf() - new Date(a.data
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
     {releases.length === 0 ? (
-      <p class="text-zinc-500 italic col-span-full">No releases tracked yet. Visit /keystatic to add "Solo Postres".</p>
+      <p class="text-zinc-600 dark:text-zinc-500 italic col-span-full">No releases tracked yet. Visit /keystatic to add "Solo Postres".</p>
     ) : (
       releases.map((release) => (
-        <a href={`/music/${release.id}`} class="block bg-zinc-900 border border-zinc-800 hover:border-zinc-500 transition-all hover:-translate-y-1">
-          <div class="aspect-square bg-zinc-800 border-b border-zinc-800 flex justify-center items-center text-zinc-600 text-xs tracking-widest uppercase">
+        <a href={`/music/${release.id}`} class="block bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-red-500/50 dark:hover:border-zinc-500 transition-all hover:-translate-y-1 shadow-sm dark:shadow-none">
+          <div class="aspect-square bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-800 flex justify-center items-center text-zinc-400 dark:text-zinc-600 text-xs tracking-widest uppercase">
             Cover
           </div>
           <div class="p-4">
             <h2 class="text-lg font-bold mb-2">{release.data.title}</h2>
-            <p class="text-sm text-zinc-400 capitalize flex items-center gap-2">
-              <span class="font-bold border border-zinc-700 px-1.5 py-0.5 text-[0.65rem]">{release.data.type}</span> 
+            <p class="text-sm text-zinc-500 dark:text-zinc-400 capitalize flex items-center gap-2">
+              <span class="font-bold border border-zinc-300 dark:border-zinc-700 px-1.5 py-0.5 text-[0.65rem]">{release.data.type}</span> 
               <time datetime={release.data.releaseDate}>
                 {new Date(release.data.releaseDate).getFullYear()}
               </time>
