@@ -6,8 +6,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    restart: unless-stopped
     ports:
-      # We use same port for host and container
       - "4321:4321"
     volumes:
       - .:/app
@@ -17,6 +17,41 @@ services:
       - NODE_ENV=development
     # Enables colored terminal output in container logs
     tty: true
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://127.0.0.1:4321/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - ramper-net
+
+  playwright-dev:
+    # Testing service
+    image: mcr.microsoft.com/playwright:v1.59.1-noble # Make sure you use the same version as in package.json 
+    profiles: [ "test" ]
+    restart: "no"
+    ports:
+      - "9323:9323" # Reports are served here
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    working_dir: /app
+    environment:
+      - PLAYWRIGHT_TEST_BASE_URL=http://astro-dev:4321
+      - PLAYWRIGHT_HTML_OPEN=always # Always show results in development
+      # - CI=false
+    depends_on:
+      astro-dev:
+        condition: service_healthy
+    tty: true
+    command: npx playwright test
+    networks:
+      - ramper-net
+
+networks:
+  ramper-net:
+    driver: bridge
 
 volumes:
   node_modules:

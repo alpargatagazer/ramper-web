@@ -12,5 +12,8 @@ dist/
 .env.*
 !.env.example
 
+# Test results
+playwright-results/
+
 # My own bitacora
 LEARNING.md

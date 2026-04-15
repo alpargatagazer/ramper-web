@@ -5,6 +5,9 @@ node_modules
 dist
 .astro
 
+# Test results
+playwright-results
+
 # Git
 .git
 .gitignore

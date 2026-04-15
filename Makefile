@@ -34,7 +34,7 @@ local-setup:
 	@echo "Installing/Updating tools via Mise..."
 	mise install
 	@echo "Syncing npm dependencies..."
-	mise x -- npm ci
+	mise x -- npm install
 	@echo "Local environment is ready!"
 
 local-update-lock:
@@ -76,8 +76,8 @@ clean:
 
 # --- FUTURE PHASES ---
 
-test:
-	@echo "Testing phase not implemented yet."
+test: dev-bg
+	$(COMPOSE_DEV) --profile test up playwright-dev --abort-on-container-exit --exit-code-from playwright-dev; $(COMPOSE_DEV) --profile test rm -f playwright-dev
 
 build-prod:
 	@echo "Production build phase not implemented yet."
