@@ -43,7 +43,7 @@ export default defineConfig({
     // Listen on all interfaces so Docker can forward the port
     host: true,
     // Allow the Docker service name as a valid host for testing
-    allowedHosts: ['astro-dev'],
+    allowedHosts: ['astro'],
   },
 
   vite: {

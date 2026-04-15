@@ -21,7 +21,12 @@ export default defineConfig({
   reporter: [
     [
       'html',
-      { host: '0.0.0.0', port: 9323, open: 'on-failure', outputFolder: 'playwright-results' }
+      { 
+        host: '0.0.0.0', 
+        port: 9323, 
+        open: (process.env.PLAYWRIGHT_HTML_OPEN as any) || 'on-failure', 
+        outputFolder: 'playwright-results' 
+      }
     ]
   ],
 

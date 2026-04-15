@@ -17,8 +17,8 @@
 # build-prod     	→ (TBD) Build production container
 
 # Project Configuration
-PROJECT_NAME = ramper-web
-COMPOSE_DEV = docker compose -p $(PROJECT_NAME) -f docker-compose.yml
+PROJECT_NAME = ramper-web-dev
+COMPOSE_DEV = docker compose -p $(PROJECT_NAME) -f docker-compose.dev.yml
 
 .PHONY: local-setup local-update-lock dev dev-bg dev-down dev-logs dev-shell dev-rebuild dev-reset-deps clean test build-prod
 
@@ -54,10 +54,10 @@ dev-down:
 	$(COMPOSE_DEV) down
 
 dev-logs:
-	$(COMPOSE_DEV) logs -f astro-dev
+	$(COMPOSE_DEV) logs -f astro
 
 dev-shell:
-	$(COMPOSE_DEV) exec astro-dev sh
+	$(COMPOSE_DEV) exec astro sh
 
 dev-rebuild:
 	$(COMPOSE_DEV) build --no-cache
@@ -77,7 +77,7 @@ clean:
 # --- FUTURE PHASES ---
 
 test: dev-bg
-	$(COMPOSE_DEV) --profile test up playwright-dev --abort-on-container-exit --exit-code-from playwright-dev; $(COMPOSE_DEV) --profile test rm -f playwright-dev
+	$(COMPOSE_DEV) --profile test up playwright --abort-on-container-exit --exit-code-from playwright; $(COMPOSE_DEV) --profile test rm -f playwright
 
 build-prod:
 	@echo "Production build phase not implemented yet."
