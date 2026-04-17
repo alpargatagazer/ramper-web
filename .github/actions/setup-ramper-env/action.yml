@@ -1,0 +1,42 @@
+name: 'Setup Ramper Environment'
+description: 'Prepares the environment by loading Docker images, starting Compose, and setting up Node.js'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v6
+
+    - name: Load external environment variables
+      run: cat .env.versions >> $GITHUB_ENV
+      shell: bash
+
+    - name: Download Docker image artifact
+      uses: actions/download-artifact@v8
+      with:
+        name: docker-image
+
+    - name: Load local Docker image
+      run: docker load < image.tar.gz
+      shell: bash
+
+    - name: Start mirror containers via Compose
+      run: |
+        export GITHUB_REPOSITORY="local-ramper"
+        docker compose -f docker/docker-compose.prod.yml up -d --wait
+      shell: bash
+
+    - name: Verify server readiness (Safety check)
+      run: |
+        while ! curl -s http://127.0.0.1:80/api/health > /dev/null; do sleep 1; done
+      shell: bash
+
+    - name: Setup Node runtime
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ env.NODE_NATIVE_VERSION }}
+        cache: 'npm'
+
+    - name: Install Base Dependencies
+      run: npm ci
+      shell: bash

@@ -79,8 +79,11 @@ dev-reset-deps:
 # --- Testing & Quality ---
 
 test: dev-bg
-	$(COMPOSE_DEV) --profile test up playwright --abort-on-container-exit --exit-code-from playwright
-	$(COMPOSE_DEV) --profile test rm -f playwright
+	-@$(COMPOSE_DEV) --profile test up playwright --abort-on-container-exit --exit-code-from playwright; \
+	EXIT_CODE=$$?; \
+	echo "Cleaning up test environment..."; \
+	$(COMPOSE_DEV) --profile test rm -f playwright; \
+	exit $$EXIT_CODE
 
 audit:
 	@echo "Building production image..."
@@ -92,11 +95,13 @@ audit:
 	@echo "Starting production container for audit..."
 	docker run -d --name ramper-audit -p 8080:80 $(PROJECT_NAME)-prod:local
 	@echo "Waiting for server to be ready..."
-	@until curl -s http://localhost:8080 > /dev/null; do sleep 1; done
-	@echo "Running Lighthouse CI audit..."
-	-npx lhci autorun --collect.url=http://localhost:8080/ --collect.url=http://localhost:8080/about
-	@echo "Cleaning up audit container..."
-	docker stop ramper-audit && docker rm ramper-audit
+	@until curl -s http://127.0.0.1:8080 > /dev/null; do sleep 1; done
+	@echo "Running strict Lighthouse audit with local thresholds..."
+	-@node scripts/lighthouse-check.mjs; \
+	EXIT_CODE=$$?; \
+	echo "Cleaning up audit container..."; \
+	docker stop ramper-audit && docker rm ramper-audit; \
+	exit $$EXIT_CODE
 
 # --- Production & Build ---
 

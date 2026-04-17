@@ -15,6 +15,7 @@ dist/
 
 # Test results
 playwright-results/
+.lighthouse/
 
 # My own bitacora
 LEARNING.md

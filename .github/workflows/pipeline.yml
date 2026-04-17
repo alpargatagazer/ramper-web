@@ -41,63 +41,42 @@ jobs:
           path: image.tar.gz
 
   test:
-    name: E2E Tests & Lighthouse Audit
+    name: E2E Tests
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-
-      - name: Load external environment variables
-        run: cat .env.versions >> $GITHUB_ENV
-
-      - uses: actions/download-artifact@v8
-        with:
-          name: docker-image
-
-      - name: Load local image
-        run: docker load < image.tar.gz
-
-      - name: Start mirror containers via Compose
-        run: |
-          # Override environment variable so docker-compose.prod.yml picks up local tag
-          export GITHUB_REPOSITORY="local-ramper"
-          docker compose -f docker/docker-compose.prod.yml up -d --wait
-
-      - name: Verify server readiness (Safety check)
-        run: |
-          # Explicit check for the /api/health endpoint
-          while ! curl -s http://localhost:80/api/health > /dev/null; do sleep 1; done
-
-      - name: Setup Node runtime
-        uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_NATIVE_VERSION }}
-          cache: 'npm'
-
-      - name: Install Dependencies
-        run: |
-          npm ci
-          npx playwright install --with-deps chromium firefox
-
+      - name: Setup Ramper Environment
+        uses: ./.github/actions/setup-ramper-env
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium firefox
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          # Compose production expone 80 by default (no 8080)
-          PLAYWRIGHT_TEST_BASE_URL: http://localhost:80
+          PLAYWRIGHT_TEST_BASE_URL: http://127.0.0.1:80
           CI: true
 
-      - name: Run Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v12
+  lighthouse:
+    name: Lighthouse Audit
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Ramper Environment
+        uses: ./.github/actions/setup-ramper-env
+      - name: Run Lighthouse audit
+        run: node scripts/lighthouse-check.mjs
+        env:
+          LIGHTHOUSE_TARGET: http://127.0.0.1:80
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
-          urls: |
-            http://localhost:80/
-            http://localhost:80/about
-          budgetPath: .lighthouserc.json
-          runs: 3
+          name: lighthouse-reports
+          path: .lighthouse/
+          retention-days: 15
 
   push-registry:
     name: Publish to Registry
-    needs: test
+    needs: [test, lighthouse]
     runs-on: ubuntu-latest
     permissions:
       contents: read

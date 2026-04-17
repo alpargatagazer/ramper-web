@@ -12,6 +12,8 @@ import keystatic from '@keystatic/astro';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 export default defineConfig({
 
   output: 'static',
@@ -31,8 +33,8 @@ export default defineConfig({
     markdoc(),
 
     // Keystatic — the CMS integration. Adds routes under /keystatic
-    // for the admin UI in development mode
-    keystatic(),
+    // for the admin UI only in development mode
+    ...(isDev ? [keystatic()] : []),
 
     // Sitemap — auto-generates sitemap.xml at build time for SEO
     sitemap(),
