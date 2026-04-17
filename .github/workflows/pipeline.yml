@@ -1,0 +1,135 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  # Local name before push
+  LOCAL_TAG: local-ramper:latest
+
+jobs:
+  build:
+    name: Build & Save Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Load external environment variables
+        # Exports variables from .env.versions to Github Actions environment
+        run: |
+          cat .env.versions >> $GITHUB_ENV
+
+      - name: Build local production image
+        run: |
+          docker build \
+            --build-arg NODE_VERSION=${NODE_IMAGE_VERSION} \
+            --build-arg CADDY_VERSION=${CADDY_IMAGE_VERSION} \
+            -t ${{ env.LOCAL_TAG }} \
+            -f docker/Dockerfile.prod .
+
+      - name: Save image as artifact
+        run: docker save ${{ env.LOCAL_TAG }} | gzip > image.tar.gz
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: docker-image
+          path: image.tar.gz
+
+  test:
+    name: E2E Tests & Lighthouse Audit
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Load external environment variables
+        run: cat .env.versions >> $GITHUB_ENV
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: docker-image
+
+      - name: Load local image
+        run: docker load < image.tar.gz
+
+      - name: Start mirror containers via Compose
+        run: |
+          # Override environment variable so docker-compose.prod.yml picks up local tag
+          export GITHUB_REPOSITORY="local-ramper"
+          docker compose -f docker/docker-compose.prod.yml up -d --wait
+
+      - name: Verify server readiness (Safety check)
+        run: |
+          # Explicit check for the /api/health endpoint
+          while ! curl -s http://localhost:80/api/health > /dev/null; do sleep 1; done
+
+      - name: Setup Node runtime
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_NATIVE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium firefox
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          # Compose production expone 80 by default (no 8080)
+          PLAYWRIGHT_TEST_BASE_URL: http://localhost:80
+          CI: true
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: |
+            http://localhost:80/
+            http://localhost:80/about
+          budgetPath: .lighthouserc.json
+          runs: 3
+
+  push-registry:
+    name: Publish to Registry
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: docker-image
+
+      - name: Load local image
+        run: docker load < image.tar.gz
+
+      - name: Login to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag and Push
+        run: |
+          IMG=$(echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
+          
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            # PR: Publish isolated tag for review
+            TAG="pr-${{ github.event.number }}"
+            docker tag ${{ env.LOCAL_TAG }} $IMG:$TAG
+            docker push $IMG:$TAG
+          else
+            # MAIN: Publish final tags (latest and specific SHA)
+            docker tag ${{ env.LOCAL_TAG }} $IMG:${{ github.sha }}
+            docker tag ${{ env.LOCAL_TAG }} $IMG:latest
+            docker push $IMG:${{ github.sha }}
+            docker push $IMG:latest
+          fi

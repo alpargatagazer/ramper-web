@@ -4,25 +4,21 @@ services:
   astro:
     # Service for development
     build:
-      context: .
-      dockerfile: Dockerfile.dev
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+      args:
+        NODE_VERSION: ${NODE_IMAGE_VERSION}
     restart: unless-stopped
     ports:
       - "4321:4321"
     volumes:
-      - .:/app
+      - ..:/app
       # Named volume for node_modules to allow surgical resets
       - node_modules:/app/node_modules
     environment:
       - NODE_ENV=development
     # Enables colored terminal output in container logs
     tty: true
-    healthcheck:
-      test: [ "CMD", "wget", "-qO-", "http://127.0.0.1:4321/" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
     networks:
       - ramper-net
 
@@ -34,7 +30,7 @@ services:
     ports:
       - "9323:9323" # Reports are served here
     volumes:
-      - .:/app
+      - ..:/app
       - node_modules:/app/node_modules
     working_dir: /app
     environment:

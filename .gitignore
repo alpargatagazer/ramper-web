@@ -11,6 +11,7 @@ dist/
 .env
 .env.*
 !.env.example
+!.env.versions
 
 # Test results
 playwright-results/
