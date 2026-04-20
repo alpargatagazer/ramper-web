@@ -1,0 +1,68 @@
+---
+// src/layouts/BaseLayout.astro
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = 'Ramper | Official Website',
+  description = 'Spanish slowcore / post-rock project based in Granada.'
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- Avoids FOUC (Flash of Unstyled Content) when loading theme -->
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    </script>
+  </head>
+  <body>
+    <div class="max-w-[900px] mx-auto px-8 w-full">
+      <header class="py-16 flex justify-between items-baseline flex-wrap gap-8 border-b border-ramper-black/10 dark:border-ramper-white/10 mb-16">
+        <a href="/" class="text-2xl font-extrabold tracking-tight uppercase hover:text-ramper-blue-mid transition-colors">Ramper</a>
+        <nav class="flex gap-4 md:gap-8 flex-wrap">
+          <a href="/about" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">About</a>
+          <a href="/music" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">Music</a>
+          <a href="/shows" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">Shows</a>
+          <a href="/news" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">News</a>
+          <a href="https://humointernacional.com/tienda/artista-ramper/" target="_blank" rel="noopener noreferrer" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">Merch ↗</a>
+        </nav>
+      </header>
+
+      <main class="min-h-[50vh]">
+        <slot />
+      </main>
+
+      <footer class="mt-16 py-16 border-t border-ramper-black/10 dark:border-ramper-white/10 text-center text-ramper-blue-mid dark:text-ramper-blue-light text-sm">
+        <p>&copy; {new Date().getFullYear()} Ramper. All rights reserved.</p>
+      </footer>
+    </div>
+  </body>
+</html>

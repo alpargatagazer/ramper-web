@@ -1,0 +1,37 @@
+---
+// src/pages/music/index.astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const releases = await getCollection('releases');
+releases.sort((a, b) => new Date(b.data.releaseDate).valueOf() - new Date(a.data.releaseDate).valueOf());
+---
+
+<BaseLayout title="Music | Ramper">
+  <div class="mb-16">
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">Discography</h1>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    {releases.length === 0 ? (
+      <p class="text-ramper-blue-mid/70 dark:text-ramper-blue-light/70 italic col-span-full">No releases tracked yet. Visit /keystatic to add "Solo Postres".</p>
+    ) : (
+      releases.map((release) => (
+        <a href={`/music/${release.id}`} class="block bg-ramper-blue-mid/5 dark:bg-ramper-blue-mid/10 border border-ramper-blue-mid/20 dark:border-ramper-white/10 hover:border-ramper-blue-mid/50 dark:hover:border-ramper-white/40 transition-all hover:-translate-y-1 shadow-sm dark:shadow-none">
+          <div class="aspect-square bg-ramper-blue-mid/10 dark:bg-ramper-blue-mid/20 border-b border-ramper-blue-mid/20 dark:border-ramper-white/10 flex justify-center items-center text-ramper-blue-mid/40 dark:text-ramper-white/20 text-xs tracking-widest uppercase">
+            Cover
+          </div>
+          <div class="p-4">
+            <h2 class="text-lg font-bold mb-2">{release.data.title}</h2>
+            <p class="text-sm text-ramper-blue-mid/80 dark:text-ramper-blue-light/80 capitalize flex items-center gap-2">
+              <span class="font-bold border border-ramper-blue-mid/30 dark:border-ramper-white/20 px-1.5 py-0.5 text-[0.65rem]">{release.data.type}</span> 
+              <time datetime={release.data.releaseDate}>
+                {new Date(release.data.releaseDate).getFullYear()}
+              </time>
+            </p>
+          </div>
+        </a>
+      ))
+    )}
+  </div>
+</BaseLayout>

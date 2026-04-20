@@ -1,0 +1,13 @@
+name: ramper-web-prod
+
+services:
+  astro:
+    # Use the pre-built image from GHCR, no local build
+    # This variable is injected by the GH Actions deploy script (defaults to latest)
+    image: ${DOCKER_IMAGE:-ghcr.io/${GITHUB_REPOSITORY:-alpargatagazer/ramper-web}:latest}
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NODE_ENV=production

@@ -1,0 +1,33 @@
+# Stage 1: Build the static Astro application
+ARG NODE_VERSION=24-alpine
+ARG CADDY_VERSION=2-alpine
+
+FROM node:${NODE_VERSION} AS builder
+
+WORKDIR /app
+
+# Copy package config first to leverage Docker layer caching
+COPY package.json package-lock.json* ./
+
+# Clean install for CI/production environments
+RUN npm ci
+
+# Copy source code and build (generates dist/)
+COPY . .
+RUN npm run build
+
+# Stage 2: Serve with Caddy
+FROM caddy:${CADDY_VERSION} AS runner
+
+# Copy custom Caddy configuration
+COPY docker/Caddyfile /etc/caddy/Caddyfile
+
+# Copy the built static assets from the builder stage
+COPY --from=builder /app/dist /usr/share/caddy
+
+# Embedded Healthcheck pointing to Caddy port 80
+HEALTHCHECK --interval=15s --timeout=3s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:80/api/health || exit 1
+
+# Expose container native port
+EXPOSE 80

@@ -1,0 +1,156 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'Makefile'
+      - 'LICENSE'
+      - 'README.md'
+      - '.mise.toml'
+      - '.gitignore'
+      - '.env.example'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - 'Makefile'
+      - 'LICENSE'
+      - 'README.md'
+      - '.mise.toml'
+      - '.gitignore'
+      - '.env.example'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  # Local name before push
+  LOCAL_TAG: local-ramper:latest
+
+jobs:
+  build:
+    name: Build & Save Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Load external environment variables
+        # Exports variables from .env.versions to Github Actions environment
+        run: |
+          cat .env.versions >> $GITHUB_ENV
+
+      - name: Build local production image
+        run: |
+          docker build \
+            --build-arg NODE_VERSION=${NODE_IMAGE_VERSION} \
+            --build-arg CADDY_VERSION=${CADDY_IMAGE_VERSION} \
+            -t ${{ env.LOCAL_TAG }} \
+            -f docker/Dockerfile.prod .
+
+      - name: Save image as artifact
+        run: docker save ${{ env.LOCAL_TAG }} | gzip > image.tar.gz
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: docker-image
+          path: image.tar.gz
+
+  test:
+    name: E2E Tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup Ramper Environment
+        uses: ./.github/actions/setup-ramper-env
+        
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(npx playwright --version | awk '{print $2}')" >> $GITHUB_ENV
+
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v5
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Install Playwright System Dependencies (if cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium firefox webkit
+
+      - name: Install Playwright Browsers (if not cached)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium firefox webkit
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: http://127.0.0.1:80
+          CI: true
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-results
+          path: playwright-results/
+          retention-days: 7
+
+  lighthouse:
+    name: Lighthouse Audit
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup Ramper Environment
+        uses: ./.github/actions/setup-ramper-env
+      - name: Run Lighthouse audit
+        run: node scripts/lighthouse-check.mjs
+        env:
+          LIGHTHOUSE_TARGET: http://127.0.0.1:80
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-reports
+          path: lighthouse-reports/
+          retention-days: 7
+
+  push-registry:
+    name: Publish to Registry
+    needs: [test, lighthouse]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: docker-image
+
+      - name: Load local image
+        run: docker load < image.tar.gz
+
+      - name: Login to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag and Push
+        run: |
+          IMG=$(echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
+          
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            # PR: Publish isolated tag for review
+            TAG="pr-${{ github.event.number }}"
+            docker tag ${{ env.LOCAL_TAG }} $IMG:$TAG
+            docker push $IMG:$TAG
+          else
+            # MAIN: Publish final tags (latest and specific SHA)
+            docker tag ${{ env.LOCAL_TAG }} $IMG:${{ github.sha }}
+            docker tag ${{ env.LOCAL_TAG }} $IMG:latest
+            docker push $IMG:${{ github.sha }}
+            docker push $IMG:latest
+          fi

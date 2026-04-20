@@ -1,0 +1,35 @@
+# Installed inside the container, not copied from host
+node_modules
+
+# We build inside the container
+dist
+.astro
+
+# Test results
+playwright-results
+.lighthouse
+
+# Git
+.git
+.gitignore
+
+# They're injected at runtime via docker-compose environment variables
+.env
+.env.*
+
+# IDE and OS files
+.vscode
+.idea
+.DS_Store
+*.swp
+*.swo
+
+# Docker files
+docker/Dockerfile*
+docker/docker-compose*.yml
+.dockerignore
+
+# Documentation
+README.md
+LEARNING.md
+LICENSE

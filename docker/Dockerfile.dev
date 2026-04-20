@@ -1,0 +1,21 @@
+ARG NODE_VERSION=24-alpine
+
+FROM node:${NODE_VERSION}
+
+WORKDIR /app
+
+# Copy only package files first for Docker layering optimization
+COPY package.json package-lock.json* ./
+
+# Install dependencies. Since it's only for development we use npm install instead of npm ci
+RUN npm install
+
+# Astro default port
+EXPOSE 4321
+
+# Embedded Healthcheck to ensure dev server is genuinely accepting connections
+HEALTHCHECK --interval=15s --timeout=3s --retries=3 --start-period=5s \
+    CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:4321/api/health || exit 1
+
+# Run Astro
+CMD ["npm", "run", "dev"]

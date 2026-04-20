@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Ramper Palette */
+  --color-ramper-black: #262425;
+  --color-ramper-blue-deep: #1F438C;
+  --color-ramper-blue-mid: #204F8C;
+  --color-ramper-blue-light: #35648C;
+  --color-ramper-white: #BFB8AA;
+
+  /* Default Accent */
+  --color-accent: var(--color-ramper-blue-mid);
+}
+
+/* Allow toggling dark mode manually via .dark class or system preference */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    /* Adaptive background and text using the Ramper palette */
+    @apply bg-ramper-white text-ramper-black dark:bg-ramper-black dark:text-ramper-white antialiased tracking-tight transition-colors duration-300;
+  }
+}

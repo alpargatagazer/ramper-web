@@ -1,0 +1,54 @@
+---
+// src/pages/shows.astro
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const linksData = await getCollection("links");
+const linksEntry = linksData.length > 0 ? linksData[0] : null;
+
+// 1. Env Var (Config), 2. CMS (Content)
+const songkickId =
+  import.meta.env.PUBLIC_SONGKICK_ARTIST_ID ||
+  linksEntry?.data?.songkickArtistId;
+---
+
+<BaseLayout title="Shows | Ramper">
+  <div class="mb-12">
+    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">
+      Live Shows
+    </h1>
+  </div>
+
+  <div class="min-h-[400px]">
+    {songkickId ? (
+      <>
+        <a 
+          href={`https://www.songkick.com/artists/${songkickId}`} 
+          class="songkick-widget" 
+          data-theme="dark" 
+          data-track-button="on" 
+          data-detect-style="off" 
+          data-background-color="transparent" 
+          data-font-color="rgb(191,184,170)" 
+          data-button-bg-color="rgb(191,184,170)" 
+          data-button-text-color="rgb(38,36,37)" 
+          data-locale="en" 
+          data-other-artists="on" 
+          data-share-button="on" 
+          data-country-filter="on" 
+          data-rsvp="on" 
+          data-request-show="on" 
+          data-past-events="off" 
+          data-past-events-offtour="off" 
+          data-remind-me="off" 
+          style="display: none;"
+        ></a>
+        <script is:inline src={`//widget-app.songkick.com/injector/${songkickId}`}></script>
+      </>
+    ) : (
+      <div class="border border-ramper-blue-mid/20 dark:border-ramper-white/10 bg-ramper-blue-mid/5 dark:bg-ramper-blue-mid/10 p-8 text-center">
+        <p class="text-ramper-blue-mid/60 dark:text-ramper-blue-light/60 italic">No Songkick Artist ID configured. Please add it to your .env or CMS.</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

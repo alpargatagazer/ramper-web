@@ -1,0 +1,9 @@
+# Mise configuration for local isolation
+# Usage: mise install && mise use
+
+[env]
+NODE_ENV = 'development'
+_.file = ".env.versions"
+
+[tools]
+node = "{{env.NODE_NATIVE_VERSION}}"
