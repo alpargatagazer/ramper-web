@@ -50,7 +50,7 @@ jobs:
       - name: Setup Ramper Environment
         uses: ./.github/actions/setup-ramper-env
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium firefox
+        run: npx playwright install --with-deps chromium firefox webkit
       - name: Run Playwright tests
         run: npx playwright test
         env:
@@ -82,7 +82,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: lighthouse-reports
-          path: .lighthouse/
+          path: lighthouse-reports/
           retention-days: 15
 
   push-registry:

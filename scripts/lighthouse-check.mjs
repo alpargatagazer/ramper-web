@@ -16,18 +16,20 @@ const THRESHOLDS = {
 
 const baseTarget = process.env.LIGHTHOUSE_TARGET || 'http://127.0.0.1:8080';
 
+const reportPath = 'lighthouse-reports'
+
 const urls = [
   { url: `${baseTarget}/`, name: 'index' },
   { url: `${baseTarget}/about/`, name: 'about' },
 ];
 
 // Ensure output directory exists
-mkdirSync('.lighthouse', { recursive: true });
+mkdirSync(reportPath, { recursive: true });
 
 let globalFailed = false;
 
 for (const { url, name } of urls) {
-  const jsonPath = join('.lighthouse', `${name}.report.json`);
+  const jsonPath = join(reportPath, `${name}.report.json`);
 
   console.log(`\n🔍 Auditing: ${url}`);
 
@@ -36,7 +38,7 @@ for (const { url, name } of urls) {
     execSync(
       `npx lighthouse ${url} ` +
       `--output json --output html ` +
-      `--output-path .lighthouse/${name} ` +
+      `--output-path ${reportPath}/${name} ` +
       `--chrome-flags="--headless --no-sandbox --disable-dev-shm-usage"`,
       { stdio: 'inherit' }
     );
