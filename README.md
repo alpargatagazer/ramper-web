@@ -5,43 +5,70 @@ The official website for **Ramper**, a Spanish slowcore / post-rock project.
 *Built entirely independently by the band.*
 
 ## Tech Stack
-- **Framework**: [Astro](https://astro.build) (SSR in dev, Static in production)
+- **Framework**: [Astro](https://astro.build) (Static mode for maximum performance)
 - **CMS**: [Keystatic](https://keystatic.com/) (Local mode/Git-backed CMS)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (Utility-first CSS via Vite plugin)
-- **Environment**: Docker & Docker Compose
+- **Infrastructure**: Docker & Docker Compose
+- **Quality Assurance**: Playwright (E2E Testing) & Lighthouse (Performance & Accessibility Audits)
+- **CI/CD**: GitHub Actions (Containerized build, test, and publish to GHCR)
 
-## Development
+## Development Environment
 
-The entire local development environment is containerized. You do not need Node.js mounted locally, just Docker.
+The entire local development environment is containerized. You do not need Node.js mounted locally, just Docker and `make`.
 
 ### Quick Start
 
-```bash
-# Build and start the development container in the background
-make dev-bg
-```
+1. Clone the repository.
+2. Copy the `.env.example` file to create your local `.env.versions` (this defines node and caddy image versions).
+   ```bash
+   cp .env.example .env.versions
+   ```
+3. Start the development environment:
+   ```bash
+   make dev-bg
+   ```
 
 Once running:
 - The website is mapped to `http://localhost:4321`
 - The Keystatic Admin panel is at `http://localhost:4321/keystatic`
 - The local filesystem is bind-mounted, so edits in VS Code instantly trigger a browser hot-reload.
 
-### Helpful Commands
-We use a `Makefile` to simplify Docker operations:
+### Automated Testing (Local)
 
-- `make logs` — Tail the logs from the running Astro container
-- `make shell` — Open an interactive terminal (`sh`) inside the container
-- `make down` — Stop the container gracefully
-- `make clean` — Stop and remove the container AND clear the cached `node_modules` volume (useful if dependencies break)
-- `make rebuild` — Force a clean build of the Docker image from scratch
+The project includes an automated test suite matching the GitHub Actions pipeline.
+
+- **E2E Tests**: Run the Playwright suite inside a dedicated container:
+  ```bash
+  make test
+  ```
+- **Lighthouse Audit**: Run a strict Lighthouse test against a production-like build (thresholds at 85-95%):
+  ```bash
+  make audit
+  ```
+
+### Helpful `make` Commands
+
+- `make dev-logs` — Tail the logs from the running Astro container
+- `make dev-shell` — Open an interactive terminal (`sh`) inside the container
+- `make dev-down` — Stop the development containers gracefully
+- `make dev-reset-deps` — Stop containers, remove the cached `node_modules` volume, and rebuild
 
 ## Project Structure
 
-- `src/pages/`: Astro file-based router.
-- `src/layouts/`: Global wrapper structures (nav, footer).
-- `src/styles/global.css`: The root of the design system.
-- `src/content/`: Where Keystatic saves your CMS data locally in `.mdoc` (Markdoc) format.
-- `keystatic.config.ts`: Defines the CMS schema.
+- `src/` — Astro source code (pages, components, layouts)
+  - `src/content/` — Where Keystatic saves your CMS data locally in `.mdoc` (Markdoc) format.
+- `docker/` — Dockerfiles and Compose configurations for `dev` and `prod` stages
+- `tests/` — Playwright E2E smoke tests
+- `scripts/` — Node.js utility scripts (like the Lighthouse auditor)
+- `.github/workflows/` — CI/CD Pipeline definition
+  - `.github/actions/` — Shared composite actions for DRY CI execution
 
-## Deployment (TODO in Phase 2)
-Currently scoped for local dev. Production deployment (Docker multi-stage + Playwright + Lighthouse + Caddy reverse proxy on Hetzner) will be added shortly.
+## CI/CD Pipeline
+
+The project uses GitHub Actions for a robust Smart Pipeline:
+1. Validates the build.
+2. Runs **Playwright** and **Lighthouse** tests in parallel via a Composite Action, using `docker-compose.prod.yml` to mirror the exact production environment.
+3. Automatically pushes the signed Docker image to **GHCR (GitHub Container Registry)** upon success.
+
+## Deployment (Phase 1 Completed)
+The project is container-ready, thoroughly tested, and pushes its artifacts to GHCR. Real-world continuous deployment to a VPS using Caddy as a reverse proxy will be added in Phase 2.
