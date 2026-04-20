@@ -19,7 +19,7 @@ runs:
 
     - name: Start mirror containers via Compose
       run: |
-        export GITHUB_REPOSITORY="local-ramper"
+        export DOCKER_IMAGE="local-ramper:latest"
         docker compose -f docker/docker-compose.prod.yml up -d --wait
       shell: bash
 

@@ -56,6 +56,13 @@ jobs:
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://127.0.0.1:80
           CI: true
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-results
+          path: playwright-results/
+          retention-days: 15
 
   lighthouse:
     name: Lighthouse Audit

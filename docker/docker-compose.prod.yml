@@ -4,7 +4,7 @@ services:
   astro:
     # Use the pre-built image from GHCR, no local build
     # This variable is injected by the GH Actions deploy script (defaults to latest)
-    image: ghcr.io/${GITHUB_REPOSITORY:-alpargatagazer/ramper-web}:latest
+    image: ${DOCKER_IMAGE:-ghcr.io/${GITHUB_REPOSITORY:-alpargatagazer/ramper-web}:latest}
     restart: always
     ports:
       - "80:80"
