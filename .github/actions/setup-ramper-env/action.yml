@@ -4,9 +4,6 @@ description: 'Prepares the environment by loading Docker images, starting Compos
 runs:
   using: "composite"
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6
-
     - name: Load external environment variables
       run: cat .env.versions >> $GITHUB_ENV
       shell: bash
