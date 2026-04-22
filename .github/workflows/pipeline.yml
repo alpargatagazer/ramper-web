@@ -55,7 +55,7 @@ jobs:
           path: image.tar.gz
 
   test:
-    name: E2E Tests
+    name: Playwright E2E Tests
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -131,7 +131,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   trivy:
-    name: Security Scan (Trivy)
+    name: Trivy Security Scan
     needs: build
     runs-on: ubuntu-latest
     steps:
