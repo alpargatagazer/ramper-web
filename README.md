@@ -1,5 +1,11 @@
 # Ramper Web
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=alpargatagazer_ramper-web&metric=alert_status)](https://sonarcloud.io/dashboard?id=alpargatagazer_ramper-web)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=alpargatagazer_ramper-web&metric=bugs)](https://sonarcloud.io/dashboard?id=alpargatagazer_ramper-web)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=alpargatagazer_ramper-web&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=alpargatagazer_ramper-web)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=alpargatagazer_ramper-web&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=alpargatagazer_ramper-web)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=alpargatagazer_ramper-web&metric=security_rating)](https://sonarcloud.io/dashboard?id=alpargatagazer_ramper-web)
+
 The official website for **Ramper**, a Spanish slowcore / post-rock project.
 
 *Built entirely independently by the band.*
@@ -10,6 +16,9 @@ The official website for **Ramper**, a Spanish slowcore / post-rock project.
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (Utility-first CSS via Vite plugin)
 - **Infrastructure**: Docker & Docker Compose
 - **Quality Assurance**: Playwright (E2E Testing) & Lighthouse (Performance & Accessibility Audits)
+- **Static Analysis**: [SonarQube Cloud](https://sonarcloud.io) (Code quality, bugs, duplication)
+- **Security**: [Trivy](https://trivy.dev) (CVE scanning on Docker images)
+- **Dependency Management**: [Renovate](https://github.com/apps/renovate) (Automated dependency updates)
 - **CI/CD**: GitHub Actions (Containerized build, test, and publish to GHCR)
 
 ## Development Environment
@@ -67,8 +76,13 @@ The project includes an automated test suite matching the GitHub Actions pipelin
 
 The project uses GitHub Actions for a robust Smart Pipeline:
 1. Validates the build.
-2. Runs **Playwright** and **Lighthouse** tests in parallel via a Composite Action, using `docker-compose.prod.yml` to mirror the exact production environment.
-3. Automatically pushes the signed Docker image to **GHCR (GitHub Container Registry)** upon success.
+2. Runs **four parallel validation jobs**:
+   - **Playwright** E2E tests across Chromium, Firefox and Webkit
+   - **Lighthouse** audits with strict performance/accessibility thresholds
+   - **SonarQube Cloud** static analysis for bugs, smells and duplication
+   - **Trivy** security scan for CVEs in the production Docker image
+3. Automatically pushes the signed Docker image to **GHCR** upon success.
+4. **Renovate** bot monitors dependencies (npm, Docker, GitHub Actions) and opens grouped PRs.
 
-## Deployment (Phase 1 Completed)
-The project is container-ready, thoroughly tested, and pushes its artifacts to GHCR. Real-world continuous deployment to a VPS using Caddy as a reverse proxy will be added in Phase 2.
+## Deployment
+The project is container-ready, thoroughly tested, and pushes its artifacts to GHCR. Real-world continuous deployment to a VPS will be added in a future phase.

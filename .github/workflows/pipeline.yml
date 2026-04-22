@@ -55,7 +55,7 @@ jobs:
           path: image.tar.gz
 
   test:
-    name: E2E Tests
+    name: Playwright E2E Tests
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -116,9 +116,58 @@ jobs:
           path: lighthouse-reports/
           retention-days: 7
 
+  sonar:
+    name: SonarQube Analysis
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          
+      - name: Load external environment variables
+        run: cat .env.versions >> $GITHUB_ENV
+        shell: bash
+
+      - name: Setup Node runtime
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_NATIVE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies for a better analysis
+        run: npm ci
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v7.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  trivy:
+    name: Trivy Security Scan
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: docker-image
+
+      - name: Load Docker image
+        run: docker load < image.tar.gz
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: local-ramper:latest
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+
   push-registry:
     name: Publish to Registry
-    needs: [test, lighthouse]
+    needs: [test, lighthouse, sonar, trivy]
     runs-on: ubuntu-latest
     permissions:
       contents: read
