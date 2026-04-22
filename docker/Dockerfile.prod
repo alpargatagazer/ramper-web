@@ -16,8 +16,22 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Stage 2: Serve with Caddy
-FROM caddy:${CADDY_VERSION} AS runner
+# Stage 2: Custom Caddy Build to patch vulnerabilities
+FROM caddy:${CADDY_VERSION}-builder-alpine AS caddy-builder
+
+# Build Caddy with patched versions of vulnerable dependencies
+RUN xcaddy build \
+    --replace github.com/smallstep/certificates=github.com/smallstep/certificates@v0.30.0 \
+    --replace google.golang.org/grpc=google.golang.org/grpc@v1.79.3 \
+    --replace github.com/go-jose/go-jose/v3=github.com/go-jose/go-jose/v3@v3.0.5 \
+    --replace github.com/go-jose/go-jose/v4=github.com/go-jose/go-jose/v4@v4.1.4 \
+    --replace go.opentelemetry.io/otel/sdk=go.opentelemetry.io/otel/sdk@v1.43.0
+
+# Stage 3: Serve with custom Caddy
+FROM caddy:${CADDY_VERSION}-alpine AS runner
+
+# Replace official binary with our patched version
+COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
 
 # Copy custom Caddy configuration
 COPY docker/Caddyfile /etc/caddy/Caddyfile
