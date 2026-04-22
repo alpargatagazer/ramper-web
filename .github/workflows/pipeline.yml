@@ -116,9 +116,44 @@ jobs:
           path: lighthouse-reports/
           retention-days: 7
 
+  sonar:
+    name: SonarQube Analysis
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v7.1.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  trivy:
+    name: Security Scan (Trivy)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: docker-image
+
+      - name: Load Docker image
+        run: docker load < image.tar.gz
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          image-ref: local-ramper:latest
+          format: table
+          exit-code: '1'
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+
   push-registry:
     name: Publish to Registry
-    needs: [test, lighthouse]
+    needs: [test, lighthouse, sonar, trivy]
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -5,15 +5,21 @@ node_modules
 dist
 .astro
 
-# Test results
+# Test results and coverage
 playwright-results
-.lighthouse
+lighthouse-reports
+coverage
 
-# Git
+# Git and CI/CD
 .git
+.github
 .gitignore
 
-# They're injected at runtime via docker-compose environment variables
+# Analysis and dependency tools
+sonar-project.properties
+renovate.json
+
+# Environment files (runtime injected)
 .env
 .env.*
 
@@ -24,10 +30,12 @@ playwright-results
 *.swp
 *.swo
 
-# Docker files
+# Docker and Build files
 docker/Dockerfile*
 docker/docker-compose*.yml
 .dockerignore
+Makefile
+image.tar.gz
 
 # Documentation
 README.md
