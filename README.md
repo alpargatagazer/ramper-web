@@ -87,3 +87,8 @@ The project uses GitHub Actions for a robust Smart Pipeline:
 
 ## Deployment
 The project is container-ready, thoroughly tested, and pushes its artifacts to GHCR. Real-world continuous deployment to a VPS will be added in a future phase.
+
+### Required Secrets for CI/CD
+To run the full pipeline, including security scans and automated releases, the following GitHub Secrets are required:
+- `SONAR_TOKEN`: Authentication token for SonarQube Cloud.
+- `GH_PAT`: Personal Access Token with `Contents: Read & Write` permissions (used to bypass branch protection for automated versioning).
