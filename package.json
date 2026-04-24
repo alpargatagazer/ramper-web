@@ -1,7 +1,7 @@
 {
   "name": "ramper-web",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Website for Ramper, the Spanish slowcore / post-rock band",
   "scripts": {
     "dev": "astro dev --host 0.0.0.0",
