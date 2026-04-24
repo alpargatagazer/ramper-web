@@ -17,7 +17,8 @@ The official website for **Ramper**, a Spanish slowcore / post-rock project.
 - **Infrastructure**: Docker & Docker Compose
 - **Quality Assurance**: Playwright (E2E Testing) & Lighthouse (Performance & Accessibility Audits)
 - **Static Analysis**: [SonarQube Cloud](https://sonarcloud.io) (Code quality, bugs, duplication)
-- **Security**: [Trivy](https://trivy.dev) (CVE scanning on Docker images)
+- **Security**: Trivy vulnerability scanning on final Docker images.
+- **Versioning**: Automated SemVer with GitHub Releases and synchronized `package.json`.
 - **Dependency Management**: [Renovate](https://github.com/apps/renovate) (Automated dependency updates)
 - **CI/CD**: GitHub Actions (Containerized build, test, and publish to GHCR)
 
@@ -34,7 +35,7 @@ The entire local development environment is containerized. You do not need Node.
    ```
 3. Start the development environment:
    ```bash
-   make dev-bg
+   make dev-up
    ```
 
 Once running:
@@ -86,3 +87,8 @@ The project uses GitHub Actions for a robust Smart Pipeline:
 
 ## Deployment
 The project is container-ready, thoroughly tested, and pushes its artifacts to GHCR. Real-world continuous deployment to a VPS will be added in a future phase.
+
+### Required Secrets for CI/CD
+To run the full pipeline, including security scans and automated releases, the following GitHub Secrets are required:
+- `SONAR_TOKEN`: Authentication token for SonarQube Cloud.
+- `GH_PAT`: Personal Access Token with `Contents: Read & Write` permissions (used to bypass branch protection for automated versioning).
