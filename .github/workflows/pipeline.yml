@@ -30,13 +30,42 @@ jobs:
   build:
     name: Build & Save Docker Image
     runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.versioning.outputs.new_version }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Load external environment variables
-        # Exports variables from .env.versions to Github Actions environment
+        run: cat .env.versions >> $GITHUB_ENV
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_NATIVE_VERSION }}
+          cache: 'npm'
+
+      - name: Determine Version Bump
+        id: versioning
         run: |
-          cat .env.versions >> $GITHUB_ENV
+          # Get current version
+          CURRENT=$(node -p "require('./package.json').version")
+          
+          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
+            BUMP="patch"
+            if [[ "${{ github.event.head_commit.message }}" == *"#major"* ]]; then
+              BUMP="major"
+            elif [[ "${{ github.event.head_commit.message }}" == *"#minor"* ]]; then
+              BUMP="minor"
+            fi
+            # Update package.json locally for the docker build
+            NEW_VERSION=$(npm version $BUMP --no-git-tag-version)
+            echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          else
+            # For PRs or other branches, keep current version
+            echo "new_version=v$CURRENT" >> $GITHUB_OUTPUT
+          fi
 
       - name: Build local production image
         run: |
@@ -61,6 +90,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
       - name: Setup Ramper Environment
         uses: ./.github/actions/setup-ramper-env
         
@@ -82,11 +112,13 @@ jobs:
       - name: Install Playwright Browsers (if not cached)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium firefox webkit
+
       - name: Run Playwright tests
         run: npx playwright test
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://127.0.0.1:80
           CI: true
+
       - name: Upload Playwright test results
         if: always()
         uses: actions/upload-artifact@v7
@@ -102,12 +134,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
       - name: Setup Ramper Environment
         uses: ./.github/actions/setup-ramper-env
+
       - name: Run Lighthouse audit
         run: node scripts/lighthouse-check.mjs
         env:
           LIGHTHOUSE_TARGET: http://127.0.0.1:80
+
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v7
@@ -190,16 +225,67 @@ jobs:
       - name: Tag and Push
         run: |
           IMG=$(echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}" | tr '[:upper:]' '[:lower:]')
+          VERSION=${{ needs.build.outputs.new_version }}
           
           if [ "${{ github.event_name }}" == "pull_request" ]; then
-            # PR: Publish isolated tag for review
             TAG="pr-${{ github.event.number }}"
             docker tag ${{ env.LOCAL_TAG }} $IMG:$TAG
             docker push $IMG:$TAG
           else
-            # MAIN: Publish final tags (latest and specific SHA)
-            docker tag ${{ env.LOCAL_TAG }} $IMG:${{ github.sha }}
+            # MAIN: Publish with version, latest and SHA
+            docker tag ${{ env.LOCAL_TAG }} $IMG:$VERSION
             docker tag ${{ env.LOCAL_TAG }} $IMG:latest
-            docker push $IMG:${{ github.sha }}
+            docker tag ${{ env.LOCAL_TAG }} $IMG:${{ github.sha }}
+            docker push $IMG:$VERSION
             docker push $IMG:latest
+            docker push $IMG:${{ github.sha }}
           fi
+
+  release:
+    name: GitHub Release & Version Sync
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [build, push-registry]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GH_PAT }}
+          fetch-depth: 0
+
+      - name: Load external environment variables
+        run: cat .env.versions >> $GITHUB_ENV
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_NATIVE_VERSION }}
+          cache: 'npm'
+
+      - name: Sync Version and Tag
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          VERSION=${{ needs.build.outputs.new_version }}
+          
+          # Update package.json to match the version used in build
+          npm version $VERSION --allow-same-version --no-git-tag-version
+          
+          git add package.json
+          git commit -m "chore(release): $VERSION [skip ci]"
+          git tag $VERSION
+          git push origin main --tags
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3.0.0
+        with:
+          tag_name: ${{ needs.build.outputs.new_version }}
+          name: Release ${{ needs.build.outputs.new_version }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}

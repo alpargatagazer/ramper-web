@@ -14,7 +14,7 @@ const THRESHOLDS = {
   seo: 0.90,
 };
 
-const baseTarget = process.env.LIGHTHOUSE_TARGET || 'http://127.0.0.1:8080';
+const baseTarget = process.env.LIGHTHOUSE_TARGET;
 
 const reportPath = 'lighthouse-reports'
 
