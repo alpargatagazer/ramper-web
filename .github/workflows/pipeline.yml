@@ -202,7 +202,7 @@ jobs:
 
   push-registry:
     name: Publish to Registry
-    needs: [test, lighthouse, sonar, trivy]
+    needs: [build, test, lighthouse, sonar, trivy]
     runs-on: ubuntu-latest
     permissions:
       contents: read
