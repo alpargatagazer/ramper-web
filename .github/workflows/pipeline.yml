@@ -184,6 +184,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
       - uses: actions/download-artifact@v8
         with:
           name: docker-image
@@ -195,10 +198,7 @@ jobs:
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: local-ramper:latest
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          severity: CRITICAL,HIGH
+          trivy-config: trivy.yaml
 
   push-registry:
     name: Publish to Registry
@@ -283,7 +283,7 @@ jobs:
         uses: softprops/action-gh-release@v3.0.0
         with:
           tag_name: ${{ needs.build.outputs.new_version }}
-          name: Release ${{ needs.build.outputs.new_version }}
+          name: Ramper web ${{ needs.build.outputs.new_version }}
           generate_release_notes: true
           draft: false
           prerelease: false

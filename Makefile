@@ -125,11 +125,11 @@ audit: build-prod
 
 scan: build-prod
 	@echo "Running Trivy vulnerability scanner on production image..."
-	docker run --rm --name ramper-scan -v /var/run/docker.sock:/var/run/docker.sock \
+	docker run --rm --name ramper-scan \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(PWD)/trivy.yaml:/trivy.yaml \
 		aquasec/trivy:latest image \
-		--severity CRITICAL,HIGH \
-		--ignore-unfixed \
-		--exit-code 1 \
+		--config /trivy.yaml \
 		$(PROJECT_NAME)-prod:local
 
 # --- Utilities ---
