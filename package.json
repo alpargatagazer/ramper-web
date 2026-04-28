@@ -10,15 +10,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/markdoc": "^0.14.0",
-    "@astrojs/react": "^4.0.0",
+    "@astrojs/markdoc": "^1.0.0",
+    "@astrojs/react": "^5.0.0",
     "@astrojs/rss": "^4.0.0",
     "@astrojs/sitemap": "^3.0.0",
     "@keystatic/astro": "^5.0.0",
     "@keystatic/core": "^0.5.36",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.2",
-    "astro": "^5.0.0",
+    "astro": "^6.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.2.2"
