@@ -3,9 +3,11 @@
 //
 // This isn't really a page. This is server-side code that executes
 // when someone visits /merch and instantly redirects them to the Humo store.
-// 
+//
 // Since we set Astro to output 'static' but still dynamically routes
 // some endpoints, we can configure redirects perfectly natively.
 
-return Astro.redirect('https://humointernacional.com/tienda/artista-ramper/', 302);
+const merchUrl = import.meta.env.PUBLIC_MERCH_URL || "https://humointernacional.com/tienda/artista-ramper/";
+
+return Astro.redirect(merchUrl, 302);
 ---

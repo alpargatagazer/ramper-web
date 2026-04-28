@@ -1,20 +1,46 @@
 ---
 // src/layouts/BaseLayout.astro
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
   description?: string;
+  activeSection?: string;
 }
 
 const { 
-  title = 'Ramper | Official Website',
-  description = 'Spanish slowcore / post-rock project based in Granada.'
+  title = 'Ramper',
+  description = 'Helpless children',
+  activeSection = ''
 } = Astro.props;
+
+// Social media URLs from environment variables
+const instagramUrl = import.meta.env.PUBLIC_INSTAGRAM_URL || 'https://www.instagram.com/ramper.dep/';
+const xUrl = import.meta.env.PUBLIC_X_URL || 'https://x.com/ramper_dep';
+const blueskyUrl = import.meta.env.PUBLIC_BLUESKY_URL || 'https://bsky.app/profile/ramper.bsky.social';
+const merchUrl = import.meta.env.PUBLIC_MERCH_URL || 'https://humointernacional.com/tienda/artista-ramper/';
+
+// Navigation items
+const navItems = [
+  { label: 'música', href: '/music', section: 'music' },
+  { label: 'conciertos', href: '/shows', section: 'shows' },
+  { label: 'noticias', href: '/news', section: 'news' },
+  { label: 'vídeo', href: '#', section: 'video' },
+  { label: 'merch↗', href: merchUrl, section: 'merch', external: true },
+];
+
+const secondaryNavItems = [
+  { label: '¿...quién?', href: '/about', section: 'about' },
+];
+
+const tertiaryNavItems = [
+  { label: 'escribe', href: '#', section: 'contact' },
+];
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,46 +49,141 @@ const {
     
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
-    
-    <!-- Avoids FOUC (Flash of Unstyled Content) when loading theme -->
-    <script is:inline>
-      const theme = (() => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
-        }
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          return 'dark';
-        }
-        return 'light';
-      })();
-      if (theme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+    <ClientRouter />
   </head>
-  <body>
-    <div class="max-w-[900px] mx-auto px-8 w-full">
-      <header class="py-16 flex justify-between items-baseline flex-wrap gap-8 border-b border-ramper-black/10 dark:border-ramper-white/10 mb-16">
-        <a href="/" class="text-2xl font-extrabold tracking-tight uppercase hover:text-ramper-blue-mid transition-colors">Ramper</a>
-        <nav class="flex gap-4 md:gap-8 flex-wrap">
-          <a href="/about" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">About</a>
-          <a href="/music" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">Music</a>
-          <a href="/shows" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">Shows</a>
-          <a href="/news" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">News</a>
-          <a href="https://humointernacional.com/tienda/artista-ramper/" target="_blank" rel="noopener noreferrer" class="font-medium uppercase text-sm tracking-wider hover:text-ramper-blue-mid transition-colors">Merch ↗</a>
-        </nav>
-      </header>
+  <body class="overflow-hidden">
+    {/* Full-screen wrapper */}
+    <div class="relative w-screen h-screen overflow-hidden" id="site-wrapper">
+      
+      {/* === TEXTURE BACKGROUND LAYERS === */}
+      <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+        {/* Layer 1: Paper/dirt texture (bottom) */}
+        <img 
+          src="/images/textures/dirty.svg" 
+          alt="" 
+          class="absolute inset-0 w-full h-full object-cover opacity-50"
+        />
+        {/* Layer 2: Hand-drawn stars */}
+        <img 
+          src="/images/textures/stars.svg" 
+          alt="" 
+          class="absolute inset-0 w-full h-full object-cover opacity-80"
+        />
+        {/* Layer 3: Red scribble (top) */}
+        <img 
+          src="/images/textures/red.svg" 
+          alt="" 
+          class="absolute inset-0 h-full w-auto object-contain top-100 opacity-50 scale-[2.2] 
+          -translate-x-[150px] origin-left"
+        />
+      </div>
 
-      <main class="min-h-[50vh]">
-        <slot />
-      </main>
+      {/* === MAIN LAYOUT: Sidebar + Content === */}
+      <div class="relative z-10 flex h-full">
+        
+        {/* LEFT SIDEBAR (persistent navigation) */}
+        <aside class="flex flex-col justify-start w-[42%] min-w-[500px] h-full px-12 py-10 gap-y-16" id="sidebar">
+          
+          {/* Logo (Right aligned with Nav) */}
+          <header class="flex justify-end pr-0">
+            <a href="/" class="inline-block" id="logo-link">
+              <img 
+                src="/images/logo.png" 
+                alt="Ramper" 
+                class="w-[700px] h-auto"
+              />
+            </a>
+          </header>
 
-      <footer class="mt-16 py-16 border-t border-ramper-black/10 dark:border-ramper-white/10 text-center text-ramper-blue-mid dark:text-ramper-blue-light text-sm">
-        <p>&copy; {new Date().getFullYear()} Ramper. All rights reserved.</p>
-      </footer>
+          {/* Navigation Container (Nav + Socials) */}
+          <div class="flex flex-col items-end pr-8 mt-[-10px]" id="nav-container">
+            {/* Primary sections */}
+            <nav id="main-nav">
+              <ul class="list-none space-y-0 text-[50px] leading-[1.1] font-normal">
+                {/* Main Links */}
+                {navItems.map((item) => (
+                  <li>
+                    <a 
+                      href={item.href}
+                      class:list={[
+                        'block text-right transition-colors hover:text-ramper-blue-mid',
+                        activeSection === item.section 
+                          ? 'font-bold text-ramper-blue-deep' 
+                          : 'text-ramper-black'
+                      ]}
+                      {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      id={`nav-${item.section}`}
+                    >
+                      {item.label.replace('↗', '')}
+                      {item.label.includes('↗') && (
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-8 h-8 ml-[-15px] mb-[4px]">
+                          <line x1="7" y1="17" x2="17" y2="7"></line>
+                          <polyline points="7 7 17 7 17 17"></polyline>
+                        </svg>
+                      )}
+                    </a>
+                  </li>
+                ))}
+
+              {/* About section (with extra top margin) */}
+                <div class="mt-12">
+                  {secondaryNavItems.map((item) => (
+                    <a 
+                      href={item.href}
+                      class:list={[
+                        'block text-right transition-colors hover:text-ramper-blue-mid',
+                        activeSection === item.section 
+                          ? 'font-bold text-ramper-blue-deep' 
+                          : 'text-ramper-black'
+                      ]}
+                      id={`nav-${item.section}`}
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+
+              {/* Contact section (with extra top margin) */}
+                <div class="mt-12">
+                  {tertiaryNavItems.map((item) => (
+                    <a 
+                      href={item.href}
+                      class:list={[
+                        'block text-right transition-colors hover:text-ramper-blue-mid',
+                        activeSection === item.section 
+                          ? 'font-bold text-ramper-blue-deep' 
+                          : 'text-ramper-black'
+                      ]}
+                      id={`nav-${item.section}`}
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              </ul>
+            </nav>
+
+            {/* Social Links (Right Aligned under nav) */}
+            <footer class="flex items-center gap-4 mt-18" id="social-links">
+              <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:opacity-60 transition-opacity">
+                <img src="/icons/instagram.svg" alt="Instagram" class="w-[28px] h-[28px]" />
+              </a>
+              <a href={xUrl} target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" class="hover:opacity-60 transition-opacity">
+                <img src="/icons/x.svg" alt="X" class="w-[28px] h-[28px]" />
+              </a>
+              <a href={blueskyUrl} target="_blank" rel="noopener noreferrer" aria-label="Bluesky" class="hover:opacity-60 transition-opacity">
+                <img src="/icons/bluesky.svg" alt="Bluesky" class="w-[28px] h-[28px]" />
+              </a>
+            </footer>
+          </div>
+        </aside>
+
+        {/* RIGHT CONTENT AREA */}
+        <main class="flex-1 h-full overflow-y-auto" id="content-area">
+          <slot />
+        </main>
+      </div>
     </div>
   </body>
 </html>

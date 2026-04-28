@@ -271,10 +271,10 @@ jobs:
           
           VERSION=${{ needs.build.outputs.new_version }}
           
-          # Update package.json to match the version used in build
+          # Update package.json and package-lock.json to match the version used in build
           npm version $VERSION --allow-same-version --no-git-tag-version
           
-          git add package.json
+          git add package.json package-lock.json
           git commit -m "chore(release): $VERSION [skip ci]"
           git tag $VERSION
           git push origin main --tags
