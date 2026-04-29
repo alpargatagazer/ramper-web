@@ -68,7 +68,7 @@ export default config({
       label: 'Published Material (Releases)',
       slugField: 'title',
       path: 'src/content/releases/*',
-      format: { contentField: 'description' },
+      format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Album/Release Title' } }),
         releaseDate: fields.date({ label: 'Release Date' }),
@@ -88,9 +88,26 @@ export default config({
           label: 'Cover Image Filename',
           description: 'Filename in public/images/covers/ (e.g. "postres.jpg")',
         }),
-        spotifyUrl: fields.url({ label: 'Spotify URL' }),
         bandcampUrl: fields.url({ label: 'Bandcamp URL' }),
-        description: fields.markdoc({
+        spotifyUrl: fields.url({ label: 'Spotify URL' }),
+        tidalUrl: fields.url({ label: 'Tidal URL' }),
+        qobuzUrl: fields.url({ label: 'Qobuz URL' }),
+        appleMusicUrl: fields.url({ label: 'Apple Music URL' }),
+        storeUrl: fields.url({ 
+          label: 'Store URL', 
+          description: 'Link to buy physical copies (e.g., Humo store)' 
+        }),
+        tracks: fields.array(
+          fields.object({
+            title: fields.text({ label: 'Track Title' }),
+            lyrics: fields.text({ label: 'Lyrics', multiline: true }),
+          }),
+          {
+            label: 'Tracklist',
+            itemLabel: props => props.fields.title.value || 'New Track'
+          }
+        ),
+        content: fields.markdoc({
           label: 'Description / Credits',
         }),
       },

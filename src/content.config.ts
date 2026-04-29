@@ -21,8 +21,18 @@ const releases = defineCollection({
     releaseDate: z.string(),
     type: z.enum(['album', 'ep', 'single', 'live', 'demo', 'session']),
     coverImage: z.string().optional(),
-    spotifyUrl: z.string().url().optional(),
     bandcampUrl: z.string().url().optional(),
+    spotifyUrl: z.string().url().optional(),
+    tidalUrl: z.string().url().optional(),
+    qobuzUrl: z.string().url().optional(),
+    appleMusicUrl: z.string().url().optional(),
+    storeUrl: z.string().url().optional(),
+    tracks: z.array(
+      z.object({
+        title: z.string(),
+        lyrics: z.string().optional(),
+      })
+    ).default([]),
   }),
 });
 

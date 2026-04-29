@@ -30,18 +30,20 @@ const typeLabels: Record<string, string> = {
 ---
 
 <BaseLayout title={`${release.data.title} — Ramper`} activeSection="music">
-  <div class="h-full overflow-y-auto p-8 max-w-5xl pt-section-top">
+  <div class="h-full overflow-y-auto p-8 max-w-5xl">
     
     <div class="content-overlay p-8 md:p-12">
     
     {/* Header: Cover + metadata side by side */}
     <header class="flex gap-8 mb-12 items-start">
       {coverSrc ? (
-        <img 
-          src={coverSrc} 
-          alt={`Portada de ${release.data.title}`}
-          class="w-[280px] h-auto aspect-square object-cover flex-shrink-0"
-        />
+        <div class="relative w-[280px] h-auto aspect-square flex-shrink-0 noise-overlay overflow-hidden">
+          <img 
+            src={coverSrc} 
+            alt={`Portada de ${release.data.title}`}
+            class="w-full h-full object-cover"
+          />
+        </div>
       ) : (
         <div class="w-[280px] aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest flex-shrink-0">
           Cover
@@ -63,34 +65,106 @@ const typeLabels: Record<string, string> = {
         </p>
 
         <div class="flex gap-3 flex-wrap">
+          {/* Main Actions */}
+          {release.data.storeUrl && (
+            <a 
+              href={release.data.storeUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="bg-ramper-blue-deep text-ramper-white px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-ramper-blue-mid transition-colors shadow-sm"
+            >
+              Comprar
+            </a>
+          )}
           {release.data.bandcampUrl && (
             <a 
               href={release.data.bandcampUrl} 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="bg-ramper-black text-ramper-white px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-ramper-blue-deep transition-colors"
+              class="bg-ramper-black text-ramper-white px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:opacity-80 transition-opacity"
             >
               Bandcamp
             </a>
           )}
+          
+          {/* Streaming Platforms */}
           {release.data.spotifyUrl && (
             <a 
               href={release.data.spotifyUrl} 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="border border-ramper-black/40 text-ramper-black px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep hover:text-ramper-blue-deep transition-colors"
+              class="border border-ramper-black/40 text-ramper-black px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep hover:text-ramper-blue-deep transition-colors"
             >
               Spotify
+            </a>
+          )}
+          {release.data.appleMusicUrl && (
+            <a 
+              href={release.data.appleMusicUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="border border-ramper-black/40 text-ramper-black px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep hover:text-ramper-blue-deep transition-colors"
+            >
+              Apple Music
+            </a>
+          )}
+          {release.data.tidalUrl && (
+            <a 
+              href={release.data.tidalUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="border border-ramper-black/40 text-ramper-black px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep hover:text-ramper-blue-deep transition-colors"
+            >
+              Tidal
+            </a>
+          )}
+          {release.data.qobuzUrl && (
+            <a 
+              href={release.data.qobuzUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="border border-ramper-black/40 text-ramper-black px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep hover:text-ramper-blue-deep transition-colors"
+            >
+              Qobuz
             </a>
           )}
         </div>
       </div>
     </header>
 
-    {/* Body content (description, tracklist, etc.) */}
-    <div class="prose max-w-none prose-p:text-ramper-black/80 prose-headings:text-ramper-black prose-a:text-ramper-blue-deep hover:prose-a:text-ramper-blue-mid prose-strong:text-ramper-black mb-12">
+    {/* Body content (credits, description) */}
+    {/* Reduced line spacing for list items specifically for credits */}
+    <div class="prose max-w-none prose-p:text-ramper-black/80 prose-headings:text-ramper-black prose-a:text-ramper-blue-deep hover:prose-a:text-ramper-blue-mid prose-strong:text-ramper-black prose-ul:my-2 prose-li:my-0 mb-12">
       <Content />
     </div>
+
+    {/* Tracklist & Lyrics */}
+    {release.data.tracks && release.data.tracks.length > 0 && (
+      <div class="mb-12">
+        <h2 class="text-2xl font-bold tracking-tight text-ramper-black mb-6">Tracklist</h2>
+        <ul class="space-y-1">
+          {release.data.tracks.map((track, idx) => (
+            <li class="border-b border-ramper-black/10 last:border-0">
+              {track.lyrics ? (
+                <details class="group">
+                  <summary class="flex justify-between items-center cursor-pointer list-none text-ramper-black hover:text-ramper-blue-deep transition-colors py-3">
+                    <span class="font-bold">{idx + 1}. {track.title}</span>
+                    <span class="text-[10px] uppercase tracking-widest opacity-40 group-open:opacity-0 transition-opacity">Letra ↓</span>
+                  </summary>
+                  <div class="mt-2 mb-8 pl-4 border-l-2 border-ramper-black/10 text-ramper-black/70 whitespace-pre-wrap font-serif italic text-lg leading-relaxed">
+                    {track.lyrics.trim()}
+                  </div>
+                </details>
+              ) : (
+                <div class="py-3 font-bold text-ramper-black">
+                  {idx + 1}. {track.title}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
 
     {/* Footer: back link */}
     <footer class="pt-8 border-t border-ramper-black/10">
