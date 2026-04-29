@@ -5,33 +5,76 @@ import { getCollection } from 'astro:content';
 
 const releases = await getCollection('releases');
 releases.sort((a, b) => new Date(b.data.releaseDate).valueOf() - new Date(a.data.releaseDate).valueOf());
+
+// Separate albums (large) from other types (small)
+const albums = releases.filter(r => r.data.type === 'album');
+const others = releases.filter(r => r.data.type !== 'album');
+
+// Display label for non-album types
+const typeLabels: Record<string, string> = {
+  single: 'Single',
+  ep: 'EP',
+  live: 'Directo',
+  demo: 'Demo en directo',
+  session: 'Sesión en directo',
+};
 ---
 
-<BaseLayout title="Music | Ramper">
-  <div class="mb-16">
-    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">Discography</h1>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-    {releases.length === 0 ? (
-      <p class="text-ramper-blue-mid/70 dark:text-ramper-blue-light/70 italic col-span-full">No releases tracked yet. Visit /keystatic to add "Solo Postres".</p>
-    ) : (
-      releases.map((release) => (
-        <a href={`/music/${release.id}`} class="block bg-ramper-blue-mid/5 dark:bg-ramper-blue-mid/10 border border-ramper-blue-mid/20 dark:border-ramper-white/10 hover:border-ramper-blue-mid/50 dark:hover:border-ramper-white/40 transition-all hover:-translate-y-1 shadow-sm dark:shadow-none">
-          <div class="aspect-square bg-ramper-blue-mid/10 dark:bg-ramper-blue-mid/20 border-b border-ramper-blue-mid/20 dark:border-ramper-white/10 flex justify-center items-center text-ramper-blue-mid/40 dark:text-ramper-white/20 text-xs tracking-widest uppercase">
-            Cover
-          </div>
-          <div class="p-4">
-            <h2 class="text-lg font-bold mb-2">{release.data.title}</h2>
-            <p class="text-sm text-ramper-blue-mid/80 dark:text-ramper-blue-light/80 capitalize flex items-center gap-2">
-              <span class="font-bold border border-ramper-blue-mid/30 dark:border-ramper-white/20 px-1.5 py-0.5 text-[0.65rem]">{release.data.type}</span> 
-              <time datetime={release.data.releaseDate}>
-                {new Date(release.data.releaseDate).getFullYear()}
-              </time>
-            </p>
-          </div>
-        </a>
-      ))
-    )}
+<BaseLayout title="Ramper — música" activeSection="music">
+  {/* Asymmetric release grid inspired by the Figma design */}
+  <div class="h-full overflow-y-auto p-8 pt-section-top max-w-5xl" id="music-grid">
+    
+    {/* Top area: Albums (large) + smaller releases scattered */}
+    <div class="flex flex-wrap gap-6 items-start justify-start">
+      
+      {/* Interleave albums and others for asymmetric feel */}
+      {releases.map((release, i) => {
+        const isAlbum = release.data.type === 'album';
+        const coverSrc = release.data.coverImage 
+          ? `/images/covers/${release.data.coverImage}` 
+          : null;
+        const year = new Date(release.data.releaseDate).getFullYear();
+        const typeLabel = typeLabels[release.data.type];
+        
+        return (
+          <a 
+            href={`/music/${release.id}`} 
+            class:list={[
+              'block flex-shrink-0 transition-transform hover:scale-[1.02]',
+              isAlbum ? 'w-[280px]' : 'w-[180px]',
+              // Offset certain items vertically for asymmetry
+              i % 3 === 1 ? 'mt-12' : '',
+              i % 5 === 3 ? 'mt-8' : '',
+            ]}
+            id={`release-${release.id}`}
+          >
+            {coverSrc ? (
+              <img 
+                src={coverSrc} 
+                alt={`Portada de ${release.data.title}`}
+                class:list={[
+                  'w-full h-auto object-cover',
+                  isAlbum ? 'aspect-square' : 'aspect-square',
+                ]}
+              />
+            ) : (
+              <div class="w-full aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest">
+                Cover
+              </div>
+            )}
+            <div class="text-center mt-2">
+              <p class="font-bold text-ramper-black text-sm leading-tight">
+                {release.data.title} ({year})
+              </p>
+              {typeLabel && (
+                <p class="text-xs text-ramper-black/60 mt-0.5">
+                  [{typeLabel}]
+                </p>
+              )}
+            </div>
+          </a>
+        );
+      })}
+    </div>
   </div>
 </BaseLayout>

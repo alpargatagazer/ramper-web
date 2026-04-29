@@ -13,34 +13,73 @@ export async function getStaticPaths() {
 
 const { release } = Astro.props;
 const { Content } = await render(release);
+
+const year = new Date(release.data.releaseDate).getFullYear();
+const coverSrc = release.data.coverImage 
+  ? `/images/covers/${release.data.coverImage}` 
+  : null;
+
+const typeLabels: Record<string, string> = {
+  single: 'Single',
+  ep: 'EP',
+  live: 'Directo',
+  demo: 'Demo en directo',
+  session: 'Sesión en directo',
+  album: 'Álbum',
+};
 ---
 
-<BaseLayout title={`${release.data.title} | Ramper`}>
-  <article class="max-w-4xl">
+<BaseLayout title={`${release.data.title} — Ramper`} activeSection="music">
+  <div class="h-full overflow-y-auto p-8 max-w-5xl pt-section-top">
     
-    <header class="grid grid-cols-1 sm:grid-cols-[300px_1fr] md:grid-cols-[350px_1fr] gap-8 mb-16">
-      <div class="aspect-square bg-ramper-blue-mid/10 dark:bg-ramper-blue-mid/20 border border-ramper-blue-mid/20 dark:border-ramper-white/10 flex justify-center items-center text-ramper-blue-mid/40 dark:text-ramper-white/20 text-sm tracking-widest uppercase">
-        Cover Art
-      </div>
+    <div class="content-overlay p-8 md:p-12">
+    
+    {/* Header: Cover + metadata side by side */}
+    <header class="flex gap-8 mb-12 items-start">
+      {coverSrc ? (
+        <img 
+          src={coverSrc} 
+          alt={`Portada de ${release.data.title}`}
+          class="w-[280px] h-auto aspect-square object-cover flex-shrink-0"
+        />
+      ) : (
+        <div class="w-[280px] aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest flex-shrink-0">
+          Cover
+        </div>
+      )}
       
       <div class="flex flex-col justify-center">
-        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">{release.data.title}</h1>
+        <h1 class="text-4xl font-bold tracking-tight text-ramper-black mb-3">
+          {release.data.title}
+        </h1>
         
-        <p class="flex items-center gap-4 text-ramper-blue-mid/80 dark:text-ramper-blue-light/80 mb-8 border-b border-ramper-blue-mid/20 dark:border-ramper-white/10 pb-8">
-          <span class="uppercase text-xs font-bold border border-ramper-blue-mid/30 dark:border-ramper-white/20 px-2 py-1 tracking-wider">{release.data.type}</span>
+        <p class="flex items-center gap-3 text-ramper-black/70 mb-6">
+          <span class="text-xs font-bold uppercase tracking-wider border border-ramper-black/30 px-2 py-1">
+            {typeLabels[release.data.type]}
+          </span>
           <time datetime={release.data.releaseDate}>
-            {new Date(release.data.releaseDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            {new Date(release.data.releaseDate).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
           </time>
         </p>
 
-        <div class="flex gap-4 flex-wrap">
+        <div class="flex gap-3 flex-wrap">
           {release.data.bandcampUrl && (
-            <a href={release.data.bandcampUrl} target="_blank" rel="noopener noreferrer" class="bg-ramper-black dark:bg-ramper-white text-ramper-white dark:text-ramper-black px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-ramper-blue-mid dark:hover:bg-ramper-blue-light transition-colors">
+            <a 
+              href={release.data.bandcampUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="bg-ramper-black text-ramper-white px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-ramper-blue-deep transition-colors"
+            >
               Bandcamp
             </a>
           )}
           {release.data.spotifyUrl && (
-            <a href={release.data.spotifyUrl} target="_blank" rel="noopener noreferrer" class="border border-ramper-blue-mid/40 dark:border-ramper-white/40 px-6 py-3 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep dark:hover:border-ramper-blue-light hover:text-ramper-blue-deep dark:hover:text-ramper-black transition-colors">
+            <a 
+              href={release.data.spotifyUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="border border-ramper-black/40 text-ramper-black px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep hover:text-ramper-blue-deep transition-colors"
+            >
               Spotify
             </a>
           )}
@@ -48,9 +87,20 @@ const { Content } = await render(release);
       </div>
     </header>
 
-    <div class="prose dark:prose-invert max-w-none prose-p:text-ramper-blue-deep dark:prose-p:text-ramper-white/80 prose-headings:text-ramper-black dark:prose-headings:text-ramper-white prose-a:text-ramper-blue-mid dark:prose-a:text-ramper-blue-light hover:prose-a:text-ramper-blue-deep dark:hover:prose-a:text-ramper-white transition-colors">
+    {/* Body content (description, tracklist, etc.) */}
+    <div class="prose max-w-none prose-p:text-ramper-black/80 prose-headings:text-ramper-black prose-a:text-ramper-blue-deep hover:prose-a:text-ramper-blue-mid prose-strong:text-ramper-black mb-12">
       <Content />
     </div>
 
-  </article>
+    {/* Footer: back link */}
+    <footer class="pt-8 border-t border-ramper-black/10">
+      <a 
+        href="/music" 
+        class="text-sm uppercase tracking-widest font-bold text-ramper-blue-deep hover:text-ramper-blue-mid transition-colors"
+      >
+        ← volver a música
+      </a>
+    </footer>
+    </div>
+  </div>
 </BaseLayout>

@@ -4,34 +4,52 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const posts = await getCollection('posts');
+// Newest first
 posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 ---
 
-<BaseLayout title="News | Ramper">
-  <div class="mb-16 flex justify-between items-end border-b border-ramper-blue-mid/20 dark:border-ramper-white/10 pb-8">
-    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">News</h1>
-    <a href="/rss.xml" target="_blank" class="text-xs uppercase tracking-widest font-bold text-ramper-blue-mid dark:text-ramper-blue-light hover:text-ramper-blue-deep dark:hover:text-ramper-white transition-colors flex items-center gap-2">
-      RSS Feed
-    </a>
-  </div>
+<BaseLayout title="Ramper — noticias" activeSection="news">
+  <div class="h-full overflow-y-auto p-8 pt-section-top max-w-5xl">
+    
+    <div class="p- md:p-12">
+      {/* RSS link - aligned with content column */}
+      <div class="flex justify-end mb-2">
+        <a 
+          href="/rss.xml" 
+          target="_blank" 
+          class="flex items-center gap-1 text-sm uppercase tracking-widest font-bold text-ramper-black hover:text-ramper-blue-deep transition-colors"
+          id="rss-link"
+        >
+          <span>RSS</span>
+          <img src="/icons/rss.png" alt="" class="w-2.5 h-2.5" />
+        </a>
+      </div>
 
-  <div class="space-y-12">
-    {posts.length === 0 ? (
-      <p class="text-ramper-blue-mid/70 dark:text-ramper-blue-light/70 italic">No news published yet.</p>
-    ) : (
-      posts.map((post) => (
-        <article class="group">
-          <a href={`/news/${post.id}`} class="block border-l-2 border-transparent hover:border-ramper-blue-mid dark:hover:border-ramper-blue-light pl-6 transition-colors">
-            <time datetime={post.data.date} class="text-sm font-mono text-ramper-blue-mid/80 dark:text-ramper-blue-light/80 mb-2 block">
-              {new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </time>
-            <h2 class="text-2xl font-bold mb-3 group-hover:text-ramper-blue-mid dark:group-hover:text-ramper-blue-light transition-colors">{post.data.title}</h2>
-            <p class="text-ramper-blue-mid dark:text-ramper-blue-light leading-relaxed max-w-3xl">
-              {post.data.summary}
-            </p>
-          </a>
-        </article>
-      ))
-    )}
+      {/* News list - individual boxes */}
+      <div class="space-y-8">
+        {posts.length === 0 ? (
+          <p class="text-ramper-black/50 italic">No hay noticias publicadas todavía.</p>
+        ) : (
+          posts.map((post) => (
+            <article class="group content-overlay p-8 md:p-6 transition-transform hover:scale-[1.01]">
+              <a href={`/news/${post.id}`} class="block hover:opacity-80 transition-opacity">
+                <time 
+                  datetime={post.data.date} 
+                  class="text-sm text-ramper-blue-deep mb-1 block"
+                >
+                  {new Date(post.data.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+                </time>
+                <h2 class="text-2xl font-bold text-ramper-black mb-2 group-hover:text-ramper-blue-deep transition-colors">
+                  {post.data.title}
+                </h2>
+                <p class="text-ramper-black/70 leading-relaxed max-w-2xl">
+                  {post.data.summary}
+                </p>
+              </a>
+            </article>
+          ))
+        )}
+      </div>
+    </div>
   </div>
 </BaseLayout>

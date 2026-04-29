@@ -19,7 +19,8 @@ const releases = defineCollection({
   schema: z.object({
     title: z.string(),
     releaseDate: z.string(),
-    type: z.enum(['album', 'ep', 'single']),
+    type: z.enum(['album', 'ep', 'single', 'live', 'demo', 'session']),
+    coverImage: z.string().optional(),
     spotifyUrl: z.string().url().optional(),
     bandcampUrl: z.string().url().optional(),
   }),

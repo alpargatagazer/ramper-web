@@ -11,8 +11,17 @@
   --color-ramper-blue-light: #35648C;
   --color-ramper-white: #BFB8AA;
 
-  /* Default Accent */
-  --color-accent: var(--color-ramper-blue-mid);
+  /* Layout & Hygiene */
+  --spacing-section-top: 285px;
+  --color-ramper-overlay: color-mix(in srgb, var(--color-ramper-white) 40%, transparent);
+}
+
+/* Custom Utilities for recurring patterns */
+@utility content-overlay {
+  background-color: var(--color-ramper-overlay);
+  backdrop-filter: blur(3px);
+  border-radius: var(--radius-xs);
+  box-shadow: var(--shadow-xs);
 }
 
 /* Allow toggling dark mode manually via .dark class or system preference */

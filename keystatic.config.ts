@@ -78,8 +78,15 @@ export default config({
             { label: 'Album', value: 'album' },
             { label: 'EP', value: 'ep' },
             { label: 'Single', value: 'single' },
+            { label: 'Live', value: 'live' },
+            { label: 'Demo', value: 'demo' },
+            { label: 'Session', value: 'session' },
           ],
           defaultValue: 'album'
+        }),
+        coverImage: fields.text({
+          label: 'Cover Image Filename',
+          description: 'Filename in public/images/covers/ (e.g. "postres.jpg")',
         }),
         spotifyUrl: fields.url({ label: 'Spotify URL' }),
         bandcampUrl: fields.url({ label: 'Bandcamp URL' }),
