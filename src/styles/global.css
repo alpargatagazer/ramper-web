@@ -16,7 +16,7 @@
   --color-ramper-overlay: color-mix(in srgb, var(--color-ramper-white) 40%, transparent);
 }
 
-/* Custom Utilities for recurring patterns */
+/* Semi-transparent frosted glass overlay used for content cards */
 @utility content-overlay {
   background-color: var(--color-ramper-overlay);
   backdrop-filter: blur(3px);
@@ -36,6 +36,40 @@
     mix-blend-mode: hard-light;
     pointer-events: none;
   }
+}
+
+/* Standard page layout wrapper with scrolling and padding */
+@utility page-container {
+  @apply h-full overflow-y-auto p-8 max-w-5xl;
+}
+
+/* Section headings (h2) used across the site */
+@utility section-title {
+  @apply text-2xl font-bold tracking-tight text-ramper-black mb-6;
+}
+
+/* Small-caps links for secondary navigation or "back" links */
+@utility link-secondary {
+  @apply text-sm uppercase tracking-widest font-bold transition-colors;
+}
+
+/* Base typography styling for Markdoc/Markdown content */
+@utility prose-ramper {
+  @apply prose max-w-none prose-p:text-ramper-black/80 prose-headings:text-ramper-black prose-a:text-ramper-blue-deep hover:prose-a:text-ramper-blue-mid prose-strong:text-ramper-black;
+  --tw-prose-bullets: var(--color-ramper-black);
+}
+
+/* Buttons */
+@utility btn-primary {
+  @apply bg-ramper-blue-deep text-ramper-white px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-ramper-blue-mid transition-colors shadow-sm;
+}
+
+@utility btn-secondary {
+  @apply bg-ramper-black text-ramper-white px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:opacity-80 transition-opacity;
+}
+
+@utility btn-outline {
+  @apply border border-ramper-black/40 text-ramper-black px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep hover:text-ramper-blue-deep transition-colors;
 }
 
 /* Allow toggling dark mode manually via .dark class or system preference */

@@ -45,13 +45,6 @@ const about = defineCollection({
   }),
 });
 
-const links = defineCollection({
-  loader: glob({ pattern: 'index.mdoc', base: 'src/content/links' }),
-  schema: z.object({
-    merchUrl: z.string().url(),
-    songkickArtistId: z.string().optional(),
-  }),
-});
 
 // Export the collections so Astro can use them
-export const collections = { posts, releases, about, links };
+export const collections = { posts, releases, about };

@@ -16,7 +16,7 @@ const { Content } = await render(post);
 ---
 
 <BaseLayout title={`${post.data.title} — Ramper`} activeSection="news">
-  <div class="h-full overflow-y-auto p-8 max-w-5xl pt-section-top">
+  <div class="page-container">
     
     <article class="content-overlay p-8 md:p-8">
       <header class="mb-10">
@@ -34,14 +34,14 @@ const { Content } = await render(post);
         </p>
       </header>
 
-      <div class="prose max-w-none prose-p:text-ramper-black/80 prose-headings:text-ramper-black prose-a:text-ramper-blue-deep hover:prose-a:text-ramper-blue-mid prose-strong:text-ramper-black prose-img:border prose-img:border-ramper-black/10 mb-12">
+      <div class="prose-ramper prose-img:border prose-img:border-ramper-black/10 mb-12">
         <Content />
       </div>
 
       <footer class="pt-8 border-t border-ramper-black/10">
         <a 
           href="/news" 
-          class="text-sm uppercase tracking-widest font-bold text-ramper-blue-deep hover:text-ramper-blue-mid transition-colors"
+          class="link-secondary text-ramper-blue-deep hover:text-ramper-blue-mid"
         >
           ← volver a noticias
         </a>

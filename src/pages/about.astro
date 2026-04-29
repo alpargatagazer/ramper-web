@@ -1,10 +1,14 @@
 ---
 // src/pages/about.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry, render } from 'astro:content';
+
+const aboutEntry = await getEntry('about', 'index');
+const { Content } = aboutEntry ? await render(aboutEntry) : { Content: null };
 ---
 
-<BaseLayout title="¿...quién? | Ramper" activeSection="about">
-  <div class="flex flex-col h-full" id="about-content">
+<BaseLayout title="Ramper | ¿...quién?" activeSection="about">
+  <div class="flex flex-col h-full overflow-y-auto" id="about-content">
     {/* Band photo — occupies most of the right content area top */}
     <div class="flex-shrink-0">
       <img 
@@ -17,10 +21,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     {/* Bio text — below the photo */}
     <div class="px-8 py-6 max-w-4xl" id="about-bio">
-      <p class="text-xl leading-tight tracking-tight text-ramper-black">
-        Hace siete años, en Granada, Joserto, Antonio, Álvaro y Ángel se embarcaron en un viaje.
-        Le pusieron como nombre Ramper. Con la humildad y la ambición en un perfecto (y difícil) equilibrio, sin perder de vista ni quiénes son ni lo que quieren conseguir, Ramper juegan a un preciosismo exquisito y florido, se arriesgan a ser más serios de lo que está permitido sin ni siquiera rozar lo pretencioso, y, con una vocación de trascendencia poco habitual en nuestros tiempos, conjugan ruido, densidad, vulnerabilidad y pop. Haciendo honor a su modestia, a Ramper no se le caen los anillos en advertir que entre sus influencias están Slint, Low, Swans o My Bloody Valentine, como faros alumbrando en la noche, y es cierto que las cadencias opiáceas, la pesadez meticulosamente medida, la calidez del sonido, el riesgo y las metas que apuntan más allá de trayectorias fugaces, se pueden palpar en cada corte.
-      </p>
+      <div class="text-xl leading-tight tracking-tight text-ramper-black">
+        {Content && <Content />}
+      </div>
     </div>
   </div>
 </BaseLayout>

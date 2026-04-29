@@ -8,8 +8,8 @@ const posts = await getCollection('posts');
 posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 ---
 
-<BaseLayout title="Ramper — noticias" activeSection="news">
-  <div class="h-full overflow-y-auto p-8 pt-section-top max-w-5xl">
+<BaseLayout title="Ramper | noticias" activeSection="news">
+  <div class="page-container pt-section-top">
     
     <div class="p- md:p-12">
       {/* RSS link - aligned with content column */}
@@ -17,7 +17,7 @@ posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).val
         <a 
           href="/rss.xml" 
           target="_blank" 
-          class="flex items-center gap-1 text-sm uppercase tracking-widest font-bold text-ramper-black hover:text-ramper-blue-deep transition-colors"
+          class="flex items-center gap-1 link-secondary text-ramper-black hover:text-ramper-blue-deep"
           id="rss-link"
         >
           <span>RSS</span>
@@ -39,7 +39,7 @@ posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).val
                 >
                   {new Date(post.data.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
                 </time>
-                <h2 class="text-2xl font-bold text-ramper-black mb-2 group-hover:text-ramper-blue-deep transition-colors">
+                <h2 class="section-title !mb-2 group-hover:text-ramper-blue-deep transition-colors">
                   {post.data.title}
                 </h2>
                 <p class="text-ramper-black/70 leading-relaxed max-w-2xl">

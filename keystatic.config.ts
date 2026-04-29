@@ -23,21 +23,6 @@ export default config({
       },
     }),
 
-    links: singleton({
-      label: 'External Links',
-      path: 'src/content/links/index',
-      schema: {
-        merchUrl: fields.url({
-          label: 'Merch URL',
-          description: 'Link to the Humo Internacional store.',
-          defaultValue: 'https://humointernacional.com/tienda/artista-ramper/',
-        }),
-        songkickArtistId: fields.text({
-          label: 'Songkick Artist ID',
-          description: 'The ID used in the Songkick widget for the shows section.',
-        }),
-      },
-    }),
   },
 
   // Collections: repeating content like news posts or releases

@@ -1,19 +1,13 @@
 ---
 // src/pages/shows.astro
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
 
-const linksData = await getCollection("links");
-const linksEntry = linksData.length > 0 ? linksData[0] : null;
-
-// 1. Env Var (Config), 2. CMS (Content)
-const songkickId =
-  import.meta.env.PUBLIC_SONGKICK_ARTIST_ID ||
-  linksEntry?.data?.songkickArtistId;
+// 1. Env Var (Config)
+const songkickId = import.meta.env.PUBLIC_SONGKICK_ARTIST_ID;
 ---
 
-<BaseLayout title="Ramper — conciertos" activeSection="shows">
-  <div class="h-full overflow-y-auto p-8 max-w-5xl">
+<BaseLayout title="Ramper | conciertos" activeSection="shows">
+  <div class="page-container">
     
     {songkickId ? (
       <div class="min-h-[600px] w-full">
