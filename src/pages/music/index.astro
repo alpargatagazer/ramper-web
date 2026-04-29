@@ -4,11 +4,19 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const releases = await getCollection('releases');
+// Sort chronologically for mobile fallback
 releases.sort((a, b) => new Date(b.data.releaseDate).valueOf() - new Date(a.data.releaseDate).valueOf());
 
-// Separate albums (large) from other types (small)
-const albums = releases.filter(r => r.data.type === 'album');
-const others = releases.filter(r => r.data.type !== 'album');
+// Map precise desktop layout sizes and positions
+const layoutStyles: Record<string, string> = {
+  '1-el-hoyo': 'md:absolute md:w-[180px] md:left-[80px] md:top-[0px]',
+  '2-nuestros-mejores-deseos': 'md:absolute md:w-[300px] md:left-[300px] md:top-[-60px]',
+  '3-sesiones-bravas': 'md:absolute md:w-[180px] md:left-[650px] md:top-[80px]',
+  '4-solo-postres': 'md:absolute md:w-[300px] md:left-[50px] md:top-[300px]',
+  '5-el-tamborilero': 'md:absolute md:w-[140px] md:left-[390px] md:top-[310px]',
+  '6-la-caja-del-diablo': 'md:absolute md:w-[140px] md:left-[440px] md:top-[530px]',
+  '7-solo-postres-en-teatros-del-canal': 'md:absolute md:w-[250px] md:left-[630px] md:top-[340px]'
+};
 
 // Display label for non-album types
 const typeLabels: Record<string, string> = {
@@ -21,30 +29,24 @@ const typeLabels: Record<string, string> = {
 ---
 
 <BaseLayout title="Ramper — música" activeSection="music">
-  {/* Asymmetric release grid inspired by the Figma design */}
-  <div class="h-full overflow-y-auto p-8 pt-section-top max-w-5xl" id="music-grid">
+  <div class="h-full overflow-y-auto overflow-x-hidden p-8 pt-[180px] max-w-[1000px] mx-auto" id="music-grid">
     
-    {/* Top area: Albums (large) + smaller releases scattered */}
-    <div class="flex flex-wrap gap-6 items-start justify-start">
-      
-      {/* Interleave albums and others for asymmetric feel */}
-      {releases.map((release, i) => {
-        const isAlbum = release.data.type === 'album';
+    <div class="flex flex-col gap-16 items-center md:block md:relative md:w-full md:min-h-[720px]">
+      {releases.map((release) => {
         const coverSrc = release.data.coverImage 
           ? `/images/covers/${release.data.coverImage}` 
           : null;
         const year = new Date(release.data.releaseDate).getFullYear();
         const typeLabel = typeLabels[release.data.type];
+        const desktopStyles = layoutStyles[release.id] || 'md:relative md:w-[200px]';
         
         return (
           <a 
             href={`/music/${release.id}`} 
             class:list={[
-              'block flex-shrink-0 transition-transform hover:scale-[1.02]',
-              isAlbum ? 'w-[280px]' : 'w-[180px]',
-              // Offset certain items vertically for asymmetry
-              i % 3 === 1 ? 'mt-12' : '',
-              i % 5 === 3 ? 'mt-8' : '',
+              'block group transition-transform duration-300 hover:scale-[1.02] hover:z-50 relative z-10',
+              'w-[80%] max-w-[400px]', // Mobile default width
+              desktopStyles
             ]}
             id={`release-${release.id}`}
           >
@@ -52,22 +54,19 @@ const typeLabels: Record<string, string> = {
               <img 
                 src={coverSrc} 
                 alt={`Portada de ${release.data.title}`}
-                class:list={[
-                  'w-full h-auto object-cover',
-                  isAlbum ? 'aspect-square' : 'aspect-square',
-                ]}
+                class="w-full h-auto object-cover aspect-square noise-overlay shadow-sm"
               />
             ) : (
-              <div class="w-full aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest">
+              <div class="w-full aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest shadow-sm">
                 Cover
               </div>
             )}
-            <div class="text-center mt-2">
-              <p class="font-bold text-ramper-black text-sm leading-tight">
+            <div class="text-center mt-2 w-full">
+              <p class="font-bold text-ramper-black text-[13px] leading-tight">
                 {release.data.title} ({year})
               </p>
               {typeLabel && (
-                <p class="text-xs text-ramper-black/60 mt-0.5">
+                <p class="text-[11px] text-ramper-black/60 mt-1">
                   [{typeLabel}]
                 </p>
               )}
