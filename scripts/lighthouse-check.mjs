@@ -20,7 +20,12 @@ const reportPath = 'lighthouse-reports'
 
 const urls = [
   { url: `${baseTarget}/`, name: 'index' },
+  { url: `${baseTarget}/music/`, name: 'music' },
+  { url: `${baseTarget}/news/`, name: 'news' },
+  { url: `${baseTarget}/shows/`, name: 'shows' },
+  { url: `${baseTarget}/video/`, name: 'video' },
   { url: `${baseTarget}/about/`, name: 'about' },
+  { url: `${baseTarget}/contact/`, name: 'contact' },
 ];
 
 // Ensure output directory exists
@@ -39,6 +44,7 @@ for (const { url, name } of urls) {
       `npx lighthouse ${url} ` +
       `--output json --output html ` +
       `--output-path ${reportPath}/${name} ` +
+      `--preset=desktop ` +
       `--chrome-flags="--headless --no-sandbox --disable-dev-shm-usage"`,
       { stdio: 'inherit' }
     );

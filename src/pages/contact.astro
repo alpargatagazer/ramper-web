@@ -30,7 +30,7 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernac
       {/* Humo Internacional logo */}
       <div class="flex-shrink-0">
         <img 
-          src="/images/logo-humo.png" 
+          src="/images/logo-humo.webp" 
           alt="Humo Internacional" 
           class="w-[280px] md:w-[350px] h-auto opacity-100"
         />
@@ -50,7 +50,7 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernac
         if (email) {
           try {
             await navigator.clipboard.writeText(email);
-            feedback.textContent = '¡Copiado al portapapeles!';
+            feedback.textContent = 'Copiado al portapapeles';
             feedback.classList.remove('opacity-0');
             feedback.classList.add('opacity-100');
             setTimeout(() => {
