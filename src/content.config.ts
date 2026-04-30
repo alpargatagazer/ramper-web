@@ -16,11 +16,11 @@ const posts = defineCollection({
 // 2. Music Releases Collection
 const releases = defineCollection({
   loader: glob({ pattern: '**/*.mdoc', base: 'src/content/releases' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     releaseDate: z.string(),
     type: z.enum(['album', 'ep', 'single', 'live', 'demo', 'session']),
-    coverImage: z.string().optional(),
+    coverImage: image().optional(),
     bandcampUrl: z.string().url().optional(),
     spotifyUrl: z.string().url().optional(),
     tidalUrl: z.string().url().optional(),

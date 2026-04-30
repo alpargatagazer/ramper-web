@@ -2,6 +2,7 @@
 // src/pages/music/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 
 const releases = await getCollection('releases');
 // Sort chronologically for mobile fallback
@@ -32,10 +33,7 @@ const typeLabels: Record<string, string> = {
   <div class="h-full overflow-y-auto overflow-x-hidden p-8 pt-[180px] max-w-[1000px] mx-auto" id="music-grid">
     
     <div class="flex flex-col gap-16 items-center md:block md:relative md:w-full md:min-h-[720px]">
-      {releases.map((release) => {
-        const coverSrc = release.data.coverImage 
-          ? `/images/covers/${release.data.coverImage}` 
-          : null;
+      {releases.map((release, index) => {
         const year = new Date(release.data.releaseDate).getFullYear();
         const typeLabel = typeLabels[release.data.type];
         const desktopStyles = layoutStyles[release.id] || 'md:relative md:w-[200px]';
@@ -50,11 +48,14 @@ const typeLabels: Record<string, string> = {
             ]}
             id={`release-${release.id}`}
           >
-            {coverSrc ? (
-              <img 
-                src={coverSrc} 
+            {release.data.coverImage ? (
+              <Image 
+                src={release.data.coverImage} 
                 alt={`Portada de ${release.data.title}`}
                 class="w-full h-auto object-cover aspect-square noise-overlay shadow-sm"
+                width={400}
+                loading={index < 2 ? "eager" : "lazy"}
+                fetchpriority={index < 2 ? "high" : "auto"}
               />
             ) : (
               <div class="w-full aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest shadow-sm">

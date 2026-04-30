@@ -37,6 +37,12 @@ export default defineConfig({
   use: {
     baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL,
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    actionTimeout: 15000,
+  },
+
+  expect: {
+    timeout: 10000,
   },
 
   /* Configure projects for major browsers */

@@ -45,6 +45,7 @@ for (const { url, name } of urls) {
       `--output json --output html ` +
       `--output-path ${reportPath}/${name} ` +
       `--preset=desktop ` +
+      `--quiet ` +
       `--chrome-flags="--headless --no-sandbox --disable-dev-shm-usage"`,
       { stdio: 'inherit' }
     );

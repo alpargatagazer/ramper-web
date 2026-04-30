@@ -1,8 +1,11 @@
 ---
 // src/layouts/BaseLayout.astro
-import '../styles/global.css';
-import '../styles/fonts.css';
 import { ClientRouter } from 'astro:transitions';
+import { Image } from 'astro:assets';
+import logoImage from '../assets/logo.webp';
+import redTexture from '../assets/textures/red.webp';
+import dirtyTexture from '../assets/textures/dirty.webp';
+import starsTexture from '../assets/textures/stars.webp';
 
 interface Props {
   title?: string;
@@ -45,13 +48,11 @@ const tertiaryNavItems = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href="/fonts/host-grotesk/host-grotesk-normal.woff2" as="font" type="font/woff2" crossorigin />
+    
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.webp" />
-    <link rel="preload" href="/images/logo.webp" as="image" type="image/webp" />
-    
-    <link rel="preload" href="/images/logo.webp" as="image" type="image/webp" />
-    <ClientRouter />
   </head>
   <body class="overflow-hidden">
     {/* Full-screen wrapper */}
@@ -60,23 +61,32 @@ const tertiaryNavItems = [
       {/* === TEXTURE BACKGROUND LAYERS === */}
       <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
         {/* Layer 1: Paper/dirt texture (bottom) */}
-        <img 
-          src="/images/textures/dirty.webp" 
+        <Image 
+          src={dirtyTexture} 
           alt="" 
           class="absolute inset-0 w-full h-full object-cover opacity-50"
+          width={1920}
+          loading="lazy"
+          decoding="async"
         />
         {/* Layer 2: Hand-drawn stars */}
-        <img 
-          src="/images/textures/stars.webp" 
+        <Image 
+          src={starsTexture} 
           alt="" 
           class="absolute inset-0 w-full h-full object-cover opacity-80"
+          width={1920}
+          loading="lazy"
+          decoding="async"
         />
         {/* Layer 3: Red scribble (top) */}
-        <img 
-          src="/images/textures/red.webp" 
+        <Image 
+          src={redTexture} 
           alt="" 
           class="absolute inset-0 h-full w-auto object-contain top-100 opacity-50 scale-[2.2] 
           -translate-x-[150px] origin-left"
+          fetchpriority="high"
+          width={1200}
+          decoding="async"
         />
       </div>
 
@@ -89,12 +99,12 @@ const tertiaryNavItems = [
           {/* Logo (Right aligned with Nav) */}
           <header class="flex justify-end pr-0">
             <a href="/" class="inline-block" id="logo-link">
-              <img 
-                src="/images/logo.webp" 
+              <Image 
+                src={logoImage} 
                 alt="Ramper" 
                 class="w-[700px] h-auto"
-                width="3061"
-                height="1150"
+                width={800}
+                loading="eager"
               />
             </a>
           </header>
@@ -188,5 +198,11 @@ const tertiaryNavItems = [
         </main>
       </div>
     </div>
+    <ClientRouter />
   </body>
 </html>
+
+<style is:global>
+  @import "../styles/global.css";
+  @import "../styles/fonts.css";
+</style>

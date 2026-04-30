@@ -1,6 +1,8 @@
 ---
 // src/pages/about.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import bandPhoto from '../assets/band.png';
 import { getEntry, render } from 'astro:content';
 
 const aboutEntry = await getEntry('about', 'index');
@@ -11,11 +13,13 @@ const { Content } = aboutEntry ? await render(aboutEntry) : { Content: null };
   <div class="flex flex-col h-full overflow-y-auto" id="about-content">
     {/* Band photo — occupies most of the right content area top */}
     <div class="flex-shrink-0">
-      <img 
-        src="/images/band.png" 
+      <Image 
+        src={bandPhoto} 
         alt="Ramper - foto de banda" 
         class="w-full h-auto object-cover"
         id="band-photo"
+        width={1000}
+        loading="eager"
       />
     </div>
 

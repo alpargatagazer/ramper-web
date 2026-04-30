@@ -4,10 +4,10 @@ test.describe('Layout and Visuals', () => {
   test('Textures are present in the DOM', async ({ page }) => {
     await page.goto('/');
     
-    // Check for the three texture layers
-    await expect(page.locator('img[src="/images/textures/dirty.webp"]')).toBeAttached();
-    await expect(page.locator('img[src="/images/textures/stars.webp"]')).toBeAttached();
-    await expect(page.locator('img[src="/images/textures/red.webp"]')).toBeAttached();
+    // Check for the three texture layers - using partial match for hashed filenames
+    await expect(page.locator('img[src*="dirty"]')).toBeAttached();
+    await expect(page.locator('img[src*="stars"]')).toBeAttached();
+    await expect(page.locator('img[src*="red"]')).toBeAttached();
   });
 
   test('Page titles are correctly formatted', async ({ page }) => {

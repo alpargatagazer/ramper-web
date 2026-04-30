@@ -2,6 +2,7 @@
 // src/pages/music/[slug].astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const releases = await getCollection('releases');
@@ -15,9 +16,6 @@ const { release } = Astro.props;
 const { Content } = await render(release);
 
 const year = new Date(release.data.releaseDate).getFullYear();
-const coverSrc = release.data.coverImage 
-  ? `/images/covers/${release.data.coverImage}` 
-  : null;
 
 const typeLabels: Record<string, string> = {
   single: 'Single',
@@ -36,12 +34,15 @@ const typeLabels: Record<string, string> = {
     
     {/* Header: Cover + metadata side by side */}
     <header class="flex gap-8 mb-12 items-start">
-      {coverSrc ? (
+      {release.data.coverImage ? (
         <div class="relative w-[280px] h-auto aspect-square flex-shrink-0 noise-overlay overflow-hidden">
-          <img 
-            src={coverSrc} 
+          <Image 
+            src={release.data.coverImage} 
             alt={`Portada de ${release.data.title}`}
             class="w-full h-full object-cover"
+            width={600}
+            loading="eager"
+            fetchpriority="high"
           />
         </div>
       ) : (

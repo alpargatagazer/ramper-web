@@ -1,6 +1,8 @@
 ---
 // src/pages/contact.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import humoLogo from '../assets/logo-humo.webp';
 
 const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernacional.com';
 ---
@@ -29,10 +31,11 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernac
 
       {/* Humo Internacional logo */}
       <div class="flex-shrink-0">
-        <img 
-          src="/images/logo-humo.webp" 
+        <Image 
+          src={humoLogo} 
           alt="Humo Internacional" 
           class="w-[280px] md:w-[350px] h-auto opacity-100"
+          width={350}
         />
       </div>
     </div>
