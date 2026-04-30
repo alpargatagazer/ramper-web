@@ -28,7 +28,7 @@ test.describe('News Section', () => {
       const href = await firstArticle.getAttribute('href');
       if (href) {
         await firstArticle.click();
-        await page.waitForURL(href);
+        await page.waitForURL(href, { waitUntil: 'domcontentloaded' });
         
         // Check for prose-ramper styling container
         await expect(page.locator('.prose-ramper')).toBeVisible();

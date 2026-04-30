@@ -20,14 +20,14 @@ test.describe('Interactive Elements and Widgets', () => {
     }
   });
 
-  test('Songkick widget loads on shows page', async ({ page }) => {
+  test('Songkick widget or placeholder loads on shows page', async ({ page }) => {
     await page.goto('/shows');
     
-    // The widget is added dynamically via script, we wait for either the Songkick link or widget container
     const widgetLink = page.locator('a.songkick-widget');
     
-    // It should be attached to the DOM at least
-    await expect(widgetLink).toBeAttached();
+    const isWidgetPresent = await widgetLink.count() > 0;
+    
+    expect(isWidgetPresent).toBeTruthy();
   });
 
   test('Email copy to clipboard functionality on contact page', async ({ page }) => {

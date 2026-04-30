@@ -26,7 +26,7 @@ test.describe('Music Section', () => {
     
     if (albumHref) {
       await firstAlbum.click();
-      await page.waitForURL(albumHref);
+      await page.waitForURL(albumHref, { waitUntil: 'domcontentloaded' });
       
       // Verify detail page elements
       await expect(page.locator('h1').first()).toBeVisible();
