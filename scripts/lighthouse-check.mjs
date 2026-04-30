@@ -61,8 +61,14 @@ for (const { url, name } of urls) {
     console.log(`\n📊 Scores for ${url}:`);
 
     let pageFailed = false;
+    
+    // Page-specific overrides for external constraints (like Songkick third-party cookies)
+    const pageThresholds = { ...THRESHOLDS };
+    if (name === 'shows') {
+      pageThresholds['best-practices'] = 0.75;
+    }
 
-    for (const [key, threshold] of Object.entries(THRESHOLDS)) {
+    for (const [key, threshold] of Object.entries(pageThresholds)) {
       const category = categories[key];
       if (!category) continue;
 

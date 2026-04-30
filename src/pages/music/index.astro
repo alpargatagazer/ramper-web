@@ -10,13 +10,13 @@ releases.sort((a, b) => new Date(b.data.releaseDate).valueOf() - new Date(a.data
 
 // Map precise desktop layout sizes and positions
 const layoutStyles: Record<string, string> = {
-  '1-el-hoyo': 'md:absolute md:w-[180px] md:left-[80px] md:top-[0px]',
-  '2-nuestros-mejores-deseos': 'md:absolute md:w-[300px] md:left-[300px] md:top-[-60px]',
-  '3-sesiones-bravas': 'md:absolute md:w-[180px] md:left-[650px] md:top-[80px]',
-  '4-solo-postres': 'md:absolute md:w-[300px] md:left-[50px] md:top-[300px]',
-  '5-el-tamborilero': 'md:absolute md:w-[140px] md:left-[390px] md:top-[310px]',
-  '6-la-caja-del-diablo': 'md:absolute md:w-[140px] md:left-[440px] md:top-[530px]',
-  '7-solo-postres-en-teatros-del-canal': 'md:absolute md:w-[250px] md:left-[630px] md:top-[340px]'
+  '1-el-hoyo': 'md:absolute md:w-[19%] md:left-[8%] md:top-[-3%]',
+  '2-nuestros-mejores-deseos': 'md:absolute md:w-[32%] md:left-[35%] md:top-[-12%]',
+  '3-sesiones-bravas': 'md:absolute md:w-[19%] md:left-[72.5%] md:top-[10%]',
+  '4-solo-postres': 'md:absolute md:w-[32%] md:left-[7%] md:top-[39.5%]',
+  '5-el-tamborilero': 'md:absolute md:w-[16%] md:left-[46%] md:top-[40.75%]',
+  '6-la-caja-del-diablo': 'md:absolute md:w-[16%] md:left-[52%] md:top-[74.25%]',
+  '7-solo-postres-en-teatros-del-canal': 'md:absolute md:w-[25%] md:left-[75%] md:top-[42.5%]'
 };
 
 // Display label for non-album types
@@ -30,9 +30,9 @@ const typeLabels: Record<string, string> = {
 ---
 
 <BaseLayout title="Ramper | música" activeSection="music">
-  <div class="h-full overflow-y-auto overflow-x-hidden p-8 pt-[180px] max-w-[1000px] mx-auto" id="music-grid">
+  <div class="h-full overflow-y-auto overflow-x-hidden p-8 pt-[200px] max-w-[1000px] mx-auto" id="music-grid">
     
-    <div class="flex flex-col gap-16 items-center md:block md:relative md:w-full md:min-h-[720px]">
+    <div class="flex flex-col gap-16 items-center md:block md:relative md:w-full md:aspect-[1000/800]">
       {releases.map((release, index) => {
         const year = new Date(release.data.releaseDate).getFullYear();
         const typeLabel = typeLabels[release.data.type];
