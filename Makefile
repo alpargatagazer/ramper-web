@@ -29,7 +29,8 @@ PROJECT_NAME = ramper-web
 AUDIT_PORT = 8084
 AUDIT_URL = http://127.0.0.1:$(AUDIT_PORT)
 
-# Load and export versions as environment variables for all commands
+# Load and export versions as environment variables end envs for all commands
+include .env
 include .env.versions
 export
 
@@ -87,6 +88,12 @@ build-prod:
 	docker build \
 		--build-arg NODE_VERSION=${NODE_IMAGE_VERSION} \
 		--build-arg CADDY_VERSION=${CADDY_IMAGE_VERSION} \
+		--build-arg PUBLIC_SONGKICK_ARTIST_ID=${PUBLIC_SONGKICK_ARTIST_ID} \
+		--build-arg PUBLIC_CONTACT_EMAIL=${PUBLIC_CONTACT_EMAIL} \
+		--build-arg PUBLIC_INSTAGRAM_URL=${PUBLIC_INSTAGRAM_URL} \
+		--build-arg PUBLIC_X_URL=${PUBLIC_X_URL} \
+		--build-arg PUBLIC_BLUESKY_URL=${PUBLIC_BLUESKY_URL} \
+		--build-arg PUBLIC_MERCH_URL=${PUBLIC_MERCH_URL} \
 		-t $(PROJECT_NAME)-prod:local \
 		-f docker/Dockerfile.prod .
 

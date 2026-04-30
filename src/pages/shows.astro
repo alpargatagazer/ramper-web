@@ -43,7 +43,8 @@ const songkickId = import.meta.env.PUBLIC_SONGKICK_ARTIST_ID;
 
               const script = document.createElement('script');
               script.id = 'songkick-injector';
-              script.src = `//widget-app.songkick.com/injector/${songkickId}`;
+              // Force HTTPS to prevent Lighthouse "Insecure request" errors on local HTTP audits
+              script.src = `https://widget-app.songkick.com/injector/${songkickId}`;
               document.body.appendChild(script);
             }
           }
