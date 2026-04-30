@@ -1,7 +1,7 @@
 {
   "name": "ramper-web",
   "type": "module",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Helpless children",
   "scripts": {
     "dev": "astro dev --host 0.0.0.0",
