@@ -12,7 +12,8 @@ test.describe('Navigation and External Links', () => {
     
     // Click logo
     await page.click('#logo-link');
-    await expect(page).toHaveURL(/\/$/);
+    // Expect root URL with optional trailing slash
+    await expect(page).toHaveURL(new RegExp(`${process.env.PLAYWRIGHT_TEST_BASE_URL || ''}\/?$`));
   });
 
   test('All navigation links work and have active state', async ({ page }) => {
@@ -30,40 +31,57 @@ test.describe('Navigation and External Links', () => {
       await expect(link).toBeVisible();
       await link.click();
       
-      // Verify URL
+      // Verify URL using the provided regex
       await expect(page).toHaveURL(section.url);
       
-      // Re-locate and check active state
-      const activeLink = page.locator(section.id);
-      await expect(activeLink).toHaveClass(/font-bold/);
-      await expect(activeLink).toHaveClass(/text-ramper-blue-deep/);
+      // Check active state (bold and specific color)
+      await expect(link).toHaveClass(/font-bold/);
+      await expect(link).toHaveClass(/text-ramper-blue-deep/);
     }
   });
 
-  test('External social and merch links are valid and return successful status', async ({ request, page }) => {
-    const linksToCheck = [
-      '#social-links a[aria-label="Instagram"]',
-      '#social-links a[aria-label="X (Twitter)"]',
-      '#social-links a[aria-label="Bluesky"]',
-      '#nav-merch'
+  test('External social and merch links open in new tabs with successful status', async ({ page, context }) => {
+    const externalLinks = [
+      { 
+        selector: '#social-links a[aria-label="Instagram"]', 
+        expected: process.env.PUBLIC_INSTAGRAM_URL ? new RegExp(process.env.PUBLIC_INSTAGRAM_URL.replace(/https?:\/\//, '')) : /instagram\.com/ 
+      },
+      { 
+        selector: '#social-links a[aria-label="X (Twitter)"]', 
+        expected: process.env.PUBLIC_X_URL ? new RegExp(process.env.PUBLIC_X_URL.replace(/https?:\/\//, '')) : /x\.com/ 
+      },
+      { 
+        selector: '#social-links a[aria-label="Bluesky"]', 
+        expected: process.env.PUBLIC_BLUESKY_URL ? new RegExp(process.env.PUBLIC_BLUESKY_URL.replace(/https?:\/\//, '')) : /bsky\.app/ 
+      },
+      { 
+        selector: '#nav-merch', 
+        expected: process.env.PUBLIC_MERCH_URL ? new RegExp(process.env.PUBLIC_MERCH_URL.replace(/https?:\/\//, '')) : /humointernacional\.com/ 
+      }
     ];
 
-    for (const selector of linksToCheck) {
+    for (const { selector, expected } of externalLinks) {
       const link = page.locator(selector);
       await expect(link).toBeVisible();
-      const href = await link.getAttribute('href');
-      expect(href).toBeTruthy();
       
-      if (href) {
-        // Some social networks block automated requests, so we allow 403, 429, etc. 
-        // We mainly want to ensure it doesn't 404 (Not Found).
-        try {
-          const response = await request.get(href);
-          expect(response.status()).not.toBe(404);
-        } catch (e) {
-          console.warn(`Failed to fetch ${href}, might be blocked by CORS or bot protection.`);
-        }
-      }
+      // Ensure it has target="_blank"
+      await expect(link).toHaveAttribute('target', '_blank');
+
+      // Click and wait for the new page (tab) to open
+      const [newPage] = await Promise.all([
+        context.waitForEvent('page'),
+        link.click(),
+      ]);
+
+      // Verify the new tab's URL
+      await expect(newPage).toHaveURL(expected);
+      
+      // Verify that the page loaded successfully (no 404/500)
+      const href = await link.getAttribute('href') || '';
+      const response = await page.context().request.get(href);
+      expect(response.status()).not.toBe(404);
+      
+      await newPage.close();
     }
   });
 });

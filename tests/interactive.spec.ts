@@ -20,39 +20,44 @@ test.describe('Interactive Elements and Widgets', () => {
     }
   });
 
-  test('Songkick widget or placeholder loads on shows page', async ({ page }) => {
+  test('Songkick widget loads on shows page', async ({ page }) => {
     await page.goto('/shows');
     
+    // The widget anchor should be present in the DOM
     const widgetLink = page.locator('a.songkick-widget');
     
-    const isWidgetPresent = await widgetLink.count() > 0;
-    
-    expect(isWidgetPresent).toBeTruthy();
+    // Make sure your environment has PUBLIC_SONGKICK_ARTIST_ID configured
+    await expect(widgetLink).toBeAttached();
   });
 
   test('Email copy to clipboard functionality on contact page', async ({ page }) => {
+    const expectedEmail = process.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernacional.com';
     
     await page.goto('/contact');
 
-    // Mock clipboard API since it might fail in headless environments without a secure context
-    await page.evaluate(() => {
+    // Mock clipboard API to capture the text being copied
+    let copiedText = '';
+    await page.evaluate((email) => {
       Object.defineProperty(navigator, 'clipboard', {
         value: {
-          writeText: () => Promise.resolve(),
+          writeText: (text: string) => {
+            (window as any).lastCopiedText = text;
+            return Promise.resolve();
+          },
         },
         configurable: true
       });
-    });
+    }, expectedEmail);
     
     const emailButton = page.locator('#copy-email-btn');
     const feedbackText = page.locator('#copy-feedback');
     
-    // Verify initial state
-    await expect(emailButton).toBeVisible();
-    await expect(feedbackText).toHaveClass(/opacity-0/);
-    
     // Click to copy
     await emailButton.click();
+    
+    // Retrieve the text that was sent to the clipboard mock
+    const lastCopied = await page.evaluate(() => (window as any).lastCopiedText);
+    expect(lastCopied).toBe(expectedEmail);
     
     // Verify feedback appears
     await expect(feedbackText).toHaveClass(/opacity-100/);
