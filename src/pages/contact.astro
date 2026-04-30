@@ -1,0 +1,69 @@
+---
+// src/pages/contact.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernacional.com';
+---
+
+<BaseLayout title="Ramper | escribe" activeSection="contact">
+  <div class="h-full overflow-y-auto p-8 flex items-center justify-start min-h-screen">
+    <div class="flex flex-col md:flex-row items-center gap-16 md:gap-32 w-full max-w-6xl">
+      
+      <div class="flex-1">
+        <p class="text-xl text-ramper-black leading-relaxed mb-4">
+          Para cualquier propuesta o consulta, puedes escribir a nuestro líder:
+        </p>
+        
+        <button 
+          id="copy-email-btn"
+          class="text-xl text-ramper-blue-deep font-bold hover:text-ramper-blue-mid transition-colors cursor-pointer underline underline-offset-4 decoration-ramper-blue-deep/30 hover:decoration-ramper-blue-mid/50 bg-transparent border-none p-0"
+          data-email={contactEmail}
+        >
+          {contactEmail}
+        </button>
+        
+        <p id="copy-feedback" class="text-sm text-ramper-black/50 mt-2 h-5 transition-opacity opacity-0">
+          {/* Feedback text appears here */}
+        </p>
+      </div>
+
+      {/* Humo Internacional logo */}
+      <div class="flex-shrink-0">
+        <img 
+          src="/images/logo-humo.webp" 
+          alt="Humo Internacional" 
+          class="w-[280px] md:w-[350px] h-auto opacity-100"
+        />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const btn = document.getElementById('copy-email-btn');
+    const feedback = document.getElementById('copy-feedback');
+    
+    if (btn && feedback) {
+      btn.addEventListener('click', async () => {
+        const email = btn.getAttribute('data-email');
+        if (email) {
+          try {
+            await navigator.clipboard.writeText(email);
+            feedback.textContent = 'Copiado al portapapeles';
+            feedback.classList.remove('opacity-0');
+            feedback.classList.add('opacity-100');
+            setTimeout(() => {
+              feedback.classList.remove('opacity-100');
+              feedback.classList.add('opacity-0');
+              setTimeout(() => { feedback.textContent = ''; }, 300);
+            }, 2000);
+          } catch {
+            // Fallback: open mailto
+            window.location.href = `mailto:${email}`;
+          }
+        }
+      });
+    }
+  });
+</script>

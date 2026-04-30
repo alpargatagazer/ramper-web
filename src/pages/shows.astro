@@ -1,53 +1,59 @@
 ---
 // src/pages/shows.astro
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
 
-const linksData = await getCollection("links");
-const linksEntry = linksData.length > 0 ? linksData[0] : null;
-
-// 1. Env Var (Config), 2. CMS (Content)
-const songkickId =
-  import.meta.env.PUBLIC_SONGKICK_ARTIST_ID ||
-  linksEntry?.data?.songkickArtistId;
+// 1. Env Var (Config)
+const songkickId = import.meta.env.PUBLIC_SONGKICK_ARTIST_ID;
 ---
 
-<BaseLayout title="Shows | Ramper">
-  <div class="mb-12">
-    <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8">
-      Live Shows
-    </h1>
-  </div>
-
-  <div class="min-h-[400px]">
+<BaseLayout title="Ramper | conciertos" activeSection="shows">
+  <div class="page-container">
+    
     {songkickId ? (
-      <>
+      <div class="min-h-[600px] w-full">
         <a 
           href={`https://www.songkick.com/artists/${songkickId}`} 
           class="songkick-widget" 
-          data-theme="dark" 
+          data-theme="light" 
           data-track-button="on" 
           data-detect-style="off" 
-          data-background-color="transparent" 
-          data-font-color="rgb(191,184,170)" 
-          data-button-bg-color="rgb(191,184,170)" 
-          data-button-text-color="rgb(38,36,37)" 
-          data-locale="en" 
+          data-background-color="rgba(191,184,170,0.85)" 
+          data-font-color="rgb(38,36,37)" 
+          data-button-bg-color="rgb(38,36,37)" 
+          data-button-text-color="rgb(191,184,170)" 
+          data-locale="es" 
           data-other-artists="on" 
           data-share-button="on" 
           data-country-filter="on" 
           data-rsvp="on" 
           data-request-show="on" 
-          data-past-events="off" 
-          data-past-events-offtour="off" 
+          data-past-events="on" 
+          data-past-events-offtour="on" 
           data-remind-me="off" 
           style="display: none;"
         ></a>
-        <script is:inline src={`//widget-app.songkick.com/injector/${songkickId}`}></script>
-      </>
+        {/* Re-inject script on each navigation to ensure it runs with the new DOM */}
+        <script is:inline define:vars={{ songkickId }}>
+          function loadSongkick() {
+            // Only run if we are on the shows page and the widget placeholder exists
+            if (window.location.pathname.startsWith('/shows') && document.querySelector('.songkick-widget')) {
+              // Remove any existing injected script to avoid duplicates
+              const existingScript = document.getElementById('songkick-injector');
+              if (existingScript) existingScript.remove();
+
+              const script = document.createElement('script');
+              script.id = 'songkick-injector';
+              script.src = `//widget-app.songkick.com/injector/${songkickId}`;
+              document.body.appendChild(script);
+            }
+          }
+          // Run on initial load and on every View Transitions navigation
+          document.addEventListener('astro:page-load', loadSongkick);
+        </script>
+      </div>
     ) : (
-      <div class="border border-ramper-blue-mid/20 dark:border-ramper-white/10 bg-ramper-blue-mid/5 dark:bg-ramper-blue-mid/10 p-8 text-center">
-        <p class="text-ramper-blue-mid/60 dark:text-ramper-blue-light/60 italic">No Songkick Artist ID configured. Please add it to your .env or CMS.</p>
+      <div class="border border-ramper-black/20 bg-ramper-black/5 p-8 text-center max-w-xl">
+        <p class="text-ramper-black/60 italic">No hay un Songkick Artist ID configurado. Añádelo en .env o en el CMS.</p>
       </div>
     )}
   </div>

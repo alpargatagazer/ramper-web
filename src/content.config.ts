@@ -19,9 +19,20 @@ const releases = defineCollection({
   schema: z.object({
     title: z.string(),
     releaseDate: z.string(),
-    type: z.enum(['album', 'ep', 'single']),
-    spotifyUrl: z.string().url().optional(),
+    type: z.enum(['album', 'ep', 'single', 'live', 'demo', 'session']),
+    coverImage: z.string().optional(),
     bandcampUrl: z.string().url().optional(),
+    spotifyUrl: z.string().url().optional(),
+    tidalUrl: z.string().url().optional(),
+    qobuzUrl: z.string().url().optional(),
+    appleMusicUrl: z.string().url().optional(),
+    storeUrl: z.string().url().optional(),
+    tracks: z.array(
+      z.object({
+        title: z.string(),
+        lyrics: z.string().optional(),
+      })
+    ).default([]),
   }),
 });
 
@@ -34,13 +45,6 @@ const about = defineCollection({
   }),
 });
 
-const links = defineCollection({
-  loader: glob({ pattern: 'index.mdoc', base: 'src/content/links' }),
-  schema: z.object({
-    merchUrl: z.string().url(),
-    songkickArtistId: z.string().optional(),
-  }),
-});
 
 // Export the collections so Astro can use them
-export const collections = { posts, releases, about, links };
+export const collections = { posts, releases, about };

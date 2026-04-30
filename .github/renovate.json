@@ -1,0 +1,46 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "postUpdateOptions": ["npmInstall"],
+  "packageRules": [
+    {
+      "description": "Group all Astro core and integration updates",
+      "matchPackagePatterns": ["^astro", "^@astrojs/"],
+      "groupName": "Astro suite"
+    },
+    {
+      "description": "Group all non-major devDependency updates into a single weekly PR",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "devDependencies (non-major)",
+      "schedule": ["before 9am on monday"]
+    },
+    {
+      "description": "Group Docker image version updates",
+      "matchManagers": ["dockerfile", "custom.regex"],
+      "groupName": "Docker base images"
+    },
+    {
+      "description": "Group GitHub Actions version updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "Require dashboard approval for major updates",
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^\\.env\\.versions$"],
+      "matchStrings": [
+        "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s\\w+=(?<currentValue>.*)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}semver{{/if}}"
+    }
+  ]
+}

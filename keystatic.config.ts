@@ -23,21 +23,6 @@ export default config({
       },
     }),
 
-    links: singleton({
-      label: 'External Links',
-      path: 'src/content/links/index',
-      schema: {
-        merchUrl: fields.url({
-          label: 'Merch URL',
-          description: 'Link to the Humo Internacional store.',
-          defaultValue: 'https://humointernacional.com/tienda/artista-ramper/',
-        }),
-        songkickArtistId: fields.text({
-          label: 'Songkick Artist ID',
-          description: 'The ID used in the Songkick widget for the shows section.',
-        }),
-      },
-    }),
   },
 
   // Collections: repeating content like news posts or releases
@@ -68,7 +53,7 @@ export default config({
       label: 'Published Material (Releases)',
       slugField: 'title',
       path: 'src/content/releases/*',
-      format: { contentField: 'description' },
+      format: { contentField: 'content' },
       schema: {
         title: fields.slug({ name: { label: 'Album/Release Title' } }),
         releaseDate: fields.date({ label: 'Release Date' }),
@@ -78,12 +63,36 @@ export default config({
             { label: 'Album', value: 'album' },
             { label: 'EP', value: 'ep' },
             { label: 'Single', value: 'single' },
+            { label: 'Live', value: 'live' },
+            { label: 'Demo', value: 'demo' },
+            { label: 'Session', value: 'session' },
           ],
           defaultValue: 'album'
         }),
-        spotifyUrl: fields.url({ label: 'Spotify URL' }),
+        coverImage: fields.text({
+          label: 'Cover Image Filename',
+          description: 'Filename in public/images/covers/ (e.g. "postres.jpg")',
+        }),
         bandcampUrl: fields.url({ label: 'Bandcamp URL' }),
-        description: fields.markdoc({
+        spotifyUrl: fields.url({ label: 'Spotify URL' }),
+        tidalUrl: fields.url({ label: 'Tidal URL' }),
+        qobuzUrl: fields.url({ label: 'Qobuz URL' }),
+        appleMusicUrl: fields.url({ label: 'Apple Music URL' }),
+        storeUrl: fields.url({ 
+          label: 'Store URL', 
+          description: 'Link to buy physical copies (e.g., Humo store)' 
+        }),
+        tracks: fields.array(
+          fields.object({
+            title: fields.text({ label: 'Track Title' }),
+            lyrics: fields.text({ label: 'Lyrics', multiline: true }),
+          }),
+          {
+            label: 'Tracklist',
+            itemLabel: props => props.fields.title.value || 'New Track'
+          }
+        ),
+        content: fields.markdoc({
           label: 'Description / Credits',
         }),
       },
