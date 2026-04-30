@@ -72,6 +72,12 @@ jobs:
           docker build \
             --build-arg NODE_VERSION=${NODE_IMAGE_VERSION} \
             --build-arg CADDY_VERSION=${CADDY_IMAGE_VERSION} \
+            --build-arg PUBLIC_SONGKICK_ARTIST_ID=${{ secrets.PUBLIC_SONGKICK_ARTIST_ID }} \
+            --build-arg PUBLIC_CONTACT_EMAIL=${{ secrets.PUBLIC_CONTACT_EMAIL }} \
+            --build-arg PUBLIC_INSTAGRAM_URL=${{ secrets.PUBLIC_INSTAGRAM_URL }} \
+            --build-arg PUBLIC_X_URL=${{ secrets.PUBLIC_X_URL }} \
+            --build-arg PUBLIC_BLUESKY_URL=${{ secrets.PUBLIC_BLUESKY_URL }} \
+            --build-arg PUBLIC_MERCH_URL=${{ secrets.PUBLIC_MERCH_URL }} \
             -t ${{ env.LOCAL_TAG }} \
             -f docker/Dockerfile.prod .
 
@@ -119,6 +125,12 @@ jobs:
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://127.0.0.1:80
           CI: true
+          PUBLIC_SONGKICK_ARTIST_ID: ${{ secrets.PUBLIC_SONGKICK_ARTIST_ID }}
+          PUBLIC_CONTACT_EMAIL: ${{ secrets.PUBLIC_CONTACT_EMAIL }}
+          PUBLIC_INSTAGRAM_URL: ${{ secrets.PUBLIC_INSTAGRAM_URL }}
+          PUBLIC_X_URL: ${{ secrets.PUBLIC_X_URL }}
+          PUBLIC_BLUESKY_URL: ${{ secrets.PUBLIC_BLUESKY_URL }}
+          PUBLIC_MERCH_URL: ${{ secrets.PUBLIC_MERCH_URL }}
 
       - name: Upload Playwright test results
         if: always()

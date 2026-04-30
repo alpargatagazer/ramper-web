@@ -37,7 +37,8 @@ test.describe('Music Section', () => {
       // 2. Verify Cover Image (using Astro Image component)
       const cover = page.locator('img[alt*="Portada"]').first();
       await expect(cover).toBeVisible();
-      await expect(cover).toHaveAttribute('src', /.*\/_image\?href=.*/); // Astro 5 image service pattern
+      // Match both dev (/_image?href=) and prod (/_astro/) patterns
+      await expect(cover).toHaveAttribute('src', /.*(\/_image\?href=|\/_astro\/).*/);
 
       // 3. Verify Metadata (Year, Type)
       const releaseTime = page.locator('header time');

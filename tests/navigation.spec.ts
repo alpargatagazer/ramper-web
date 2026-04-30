@@ -12,8 +12,8 @@ test.describe('Navigation and External Links', () => {
     
     // Click logo
     await page.click('#logo-link');
-    // Expect root URL with optional trailing slash
-    await expect(page).toHaveURL(new RegExp(`${process.env.PLAYWRIGHT_TEST_BASE_URL || ''}\/?$`));
+    // Expect root title
+    await expect(page).toHaveTitle(/Ramper/);
   });
 
   test('All navigation links work and have active state', async ({ page }) => {

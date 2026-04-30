@@ -21,6 +21,12 @@ test.describe('Interactive Elements and Widgets', () => {
   });
 
   test('Songkick widget loads on shows page', async ({ page }) => {
+    // Debug: log the ID to see if it's being picked up in CI
+    const songkickId = process.env.PUBLIC_SONGKICK_ARTIST_ID;
+    if (!songkickId) {
+      console.warn('WARNING: PUBLIC_SONGKICK_ARTIST_ID is not defined in the environment.');
+    }
+
     await page.goto('/shows');
     
     // The widget anchor should be present in the DOM
