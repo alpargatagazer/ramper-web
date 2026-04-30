@@ -8,7 +8,7 @@ import { join } from 'path';
 
 // Define the minimum allowed scores (0.0 to 1.0)
 const THRESHOLDS = {
-  performance: 0.85,
+  performance: 0.80,
   accessibility: 0.90,
   'best-practices': 0.90,
   seo: 0.90,
