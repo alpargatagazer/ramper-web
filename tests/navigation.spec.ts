@@ -15,31 +15,29 @@ test.describe('Navigation and External Links', () => {
     await expect(page).toHaveURL(/\/$/);
   });
 
-  test('Primary navigation links work and have active state', async ({ page }) => {
-    const sections = ['música', 'conciertos', 'noticias', 'vídeo'];
+  test('All navigation links work and have active state', async ({ page }) => {
+    const sections = [
+      { name: 'música', id: '#nav-music', url: /\/music\/?$/ },
+      { name: 'conciertos', id: '#nav-shows', url: /\/shows\/?$/ },
+      { name: 'noticias', id: '#nav-news', url: /\/news\/?$/ },
+      { name: 'vídeo', id: '#nav-video', url: /\/video\/?$/ },
+      { name: '¿...quién?', id: '#nav-about', url: /\/about\/?$/ },
+      { name: 'escribe', id: '#nav-contact', url: /\/contact\/?$/ }
+    ];
     
     for (const section of sections) {
-      const link = page.getByRole('link', { name: section, exact: true });
+      const link = page.locator(section.id);
       await expect(link).toBeVisible();
       await link.click();
       
-      // Wait for navigation
-      await page.waitForLoadState('networkidle');
+      // Verify URL
+      await expect(page).toHaveURL(section.url);
       
-      // Check if it has the active class (font-bold text-ramper-blue-deep)
-      await expect(link).toHaveClass(/font-bold/);
-      await expect(link).toHaveClass(/text-ramper-blue-deep/);
+      // Re-locate and check active state
+      const activeLink = page.locator(section.id);
+      await expect(activeLink).toHaveClass(/font-bold/);
+      await expect(activeLink).toHaveClass(/text-ramper-blue-deep/);
     }
-  });
-
-  test('Secondary and tertiary links work', async ({ page }) => {
-    const aboutLink = page.getByRole('link', { name: '¿...quién?', exact: true });
-    await aboutLink.click();
-    await expect(page).toHaveURL(/.*\/about\/?$/);
-
-    const contactLink = page.getByRole('link', { name: 'escribe', exact: true });
-    await contactLink.click();
-    await expect(page).toHaveURL(/.*\/contact\/?$/);
   });
 
   test('External social and merch links are valid and return successful status', async ({ request, page }) => {

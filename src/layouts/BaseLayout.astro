@@ -1,6 +1,7 @@
 ---
 // src/layouts/BaseLayout.astro
 import '../styles/global.css';
+import '../styles/fonts.css';
 import { ClientRouter } from 'astro:transitions';
 
 interface Props {
@@ -47,10 +48,9 @@ const tertiaryNavItems = [
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.webp" />
+    <link rel="preload" href="/images/logo.webp" as="image" type="image/webp" />
     
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet" />
+    <link rel="preload" href="/images/logo.webp" as="image" type="image/webp" />
     <ClientRouter />
   </head>
   <body class="overflow-hidden">
@@ -93,6 +93,8 @@ const tertiaryNavItems = [
                 src="/images/logo.webp" 
                 alt="Ramper" 
                 class="w-[700px] h-auto"
+                width="3061"
+                height="1150"
               />
             </a>
           </header>
@@ -128,7 +130,7 @@ const tertiaryNavItems = [
                 ))}
 
               {/* About section (with extra top margin) */}
-                <div class="mt-12">
+                <li class="mt-12">
                   {secondaryNavItems.map((item) => (
                     <a 
                       href={item.href}
@@ -143,10 +145,10 @@ const tertiaryNavItems = [
                       {item.label}
                     </a>
                   ))}
-                </div>
+                </li>
 
               {/* Contact section (with extra top margin) */}
-                <div class="mt-12">
+                <li class="mt-12">
                   {tertiaryNavItems.map((item) => (
                     <a 
                       href={item.href}
@@ -161,7 +163,7 @@ const tertiaryNavItems = [
                       {item.label}
                     </a>
                   ))}
-                </div>
+                </li>
               </ul>
             </nav>
 
