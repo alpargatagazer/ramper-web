@@ -1,0 +1,9 @@
+# Trivy configuration file
+# Shared between CI (GitHub Actions) and local (Makefile)
+
+scan:
+  type: 'image'
+  severity: 'CRITICAL,HIGH'
+  exit-code: 1
+  ignore-unfixed: true
+  format: 'table'

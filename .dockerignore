@@ -17,7 +17,6 @@ coverage
 
 # Analysis and dependency tools
 sonar-project.properties
-renovate.json
 
 # Environment files (runtime injected)
 .env

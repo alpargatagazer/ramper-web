@@ -72,6 +72,12 @@ jobs:
           docker build \
             --build-arg NODE_VERSION=${NODE_IMAGE_VERSION} \
             --build-arg CADDY_VERSION=${CADDY_IMAGE_VERSION} \
+            --build-arg PUBLIC_SONGKICK_ARTIST_ID="${{ vars.PUBLIC_SONGKICK_ARTIST_ID }}" \
+            --build-arg PUBLIC_CONTACT_EMAIL="${{ vars.PUBLIC_CONTACT_EMAIL }}" \
+            --build-arg PUBLIC_INSTAGRAM_URL="${{ vars.PUBLIC_INSTAGRAM_URL }}" \
+            --build-arg PUBLIC_X_URL="${{ vars.PUBLIC_X_URL }}" \
+            --build-arg PUBLIC_BLUESKY_URL="${{ vars.PUBLIC_BLUESKY_URL }}" \
+            --build-arg PUBLIC_MERCH_URL="${{ vars.PUBLIC_MERCH_URL }}" \
             -t ${{ env.LOCAL_TAG }} \
             -f docker/Dockerfile.prod .
 
@@ -105,19 +111,26 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
 
+      # Running tests on chromium only to save some time
       - name: Install Playwright System Dependencies (if cached)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium firefox webkit
+        run: npx playwright install-deps chromium
 
       - name: Install Playwright Browsers (if not cached)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium firefox webkit
+        run: npx playwright install --with-deps chromium 
 
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --project=chromium
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://127.0.0.1:80
           CI: true
+          PUBLIC_SONGKICK_ARTIST_ID: ${{ vars.PUBLIC_SONGKICK_ARTIST_ID }}
+          PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
+          PUBLIC_INSTAGRAM_URL: ${{ vars.PUBLIC_INSTAGRAM_URL }}
+          PUBLIC_X_URL: ${{ vars.PUBLIC_X_URL }}
+          PUBLIC_BLUESKY_URL: ${{ vars.PUBLIC_BLUESKY_URL }}
+          PUBLIC_MERCH_URL: ${{ vars.PUBLIC_MERCH_URL }}
 
       - name: Upload Playwright test results
         if: always()
@@ -175,7 +188,7 @@ jobs:
         run: npm ci
 
       - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@v7.1.0
+        uses: sonarsource/sonarqube-scan-action@v8
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -184,6 +197,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
       - uses: actions/download-artifact@v8
         with:
           name: docker-image
@@ -195,10 +211,7 @@ jobs:
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: local-ramper:latest
-          format: table
-          exit-code: '1'
-          ignore-unfixed: true
-          severity: CRITICAL,HIGH
+          trivy-config: trivy.yaml
 
   push-registry:
     name: Publish to Registry
@@ -271,10 +284,10 @@ jobs:
           
           VERSION=${{ needs.build.outputs.new_version }}
           
-          # Update package.json to match the version used in build
+          # Update package.json and package-lock.json to match the version used in build
           npm version $VERSION --allow-same-version --no-git-tag-version
           
-          git add package.json
+          git add package.json package-lock.json
           git commit -m "chore(release): $VERSION [skip ci]"
           git tag $VERSION
           git push origin main --tags
@@ -283,7 +296,7 @@ jobs:
         uses: softprops/action-gh-release@v3.0.0
         with:
           tag_name: ${{ needs.build.outputs.new_version }}
-          name: Release ${{ needs.build.outputs.new_version }}
+          name: Ramper web ${{ needs.build.outputs.new_version }}
           generate_release_notes: true
           draft: false
           prerelease: false

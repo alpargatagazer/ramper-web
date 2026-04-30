@@ -1,36 +1,48 @@
 ---
+// src/pages/index.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
-
-const posts = await getCollection('posts');
-const latestPost = posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())[0];
+import { Image } from 'astro:assets';
+import hand1 from '../assets/hands/hand-1.webp';
+import hand2 from '../assets/hands/hand-2.webp';
+import hand3 from '../assets/hands/hand-3.webp';
+import hand4 from '../assets/hands/hand-4.webp';
 ---
 
 <BaseLayout>
-  <div class="flex flex-col md:flex-row h-full gap-16 md:gap-32 mt-16 md:mt-32">
-    <div class="flex-1 flex flex-col justify-center">
-      <h1 class="text-5xl md:text-8xl font-black uppercase tracking-tighter leading-none mb-8">
-        Ramper
-      </h1>
-      <p class="text-xl md:text-2xl text-ramper-blue-mid dark:text-ramper-blue-light font-medium tracking-tight mb-8">
-        Spanish slowcore & post-rock.
-      </p>
-      
-      {latestPost && (
-        <div class="mt-8 border border-ramper-blue-mid/20 dark:border-ramper-white/10 bg-ramper-blue-mid/5 dark:bg-ramper-blue-mid/10 p-6 hover:border-ramper-blue-mid/40 dark:hover:border-ramper-white/30 transition-colors shadow-sm dark:shadow-none">
-          <p class="text-xs uppercase tracking-widest text-ramper-blue-deep dark:text-ramper-blue-light font-bold mb-2">Latest News</p>
-          <a href={`/news/${latestPost.id}`} class="block">
-            <h2 class="text-xl font-bold mb-2 hover:text-ramper-blue-mid transition-colors">{latestPost.data.title}</h2>
-            <p class="text-ramper-blue-mid/80 dark:text-ramper-blue-light/80 text-sm line-clamp-2">{latestPost.data.summary}</p>
-          </a>
-        </div>
-      )}
+  {/* Asymmetric hand art grid - matching the Figma layout */}
+  <div class="flex flex-col justify-center items-center h-full p-12 gap-8" id="index-grid">
+    {/* Top row: large hand-1 (fist) + medium hand-2 (drooping) */}
+    <div class="flex gap-[4vw] md:gap-12 items-start translate-x-[-2vw] md:translate-x-[-40px] w-full max-w-[800px] justify-center">
+      <Image 
+        src={hand1} 
+        alt="Hand illustration — fist" 
+        class="w-[45%] max-w-[360px] h-auto object-contain"
+        width={360}
+        loading="eager"
+      />
+      <Image 
+        src={hand2} 
+        alt="Hand illustration — drooping hand" 
+        class="w-[40%] max-w-[320px] h-auto object-contain mt-[5%]"
+        width={320}
+        loading="eager"
+      />
     </div>
-    
-    <div class="flex-1 flex items-center justify-center">
-      <div class="w-full aspect-square bg-ramper-blue-mid/5 dark:bg-ramper-blue-mid/10 border border-ramper-blue-mid/20 dark:border-ramper-white/10 flex items-center justify-center text-ramper-blue-mid/40 dark:text-ramper-white/20 text-sm tracking-widest uppercase">
-        Band Image Placeholder
-      </div>
+    {/* Bottom row: large hand-3 (bird/flying) + small hand-4 (thumbs) */}
+    <div class="flex gap-[5vw] md:gap-16 items-start translate-x-[2vw] md:translate-x-[40px] w-full max-w-[800px] justify-center">
+      <Image 
+        src={hand3} 
+        alt="Hand illustration — flying hand" 
+        class="w-[50%] max-w-[380px] h-auto object-contain"
+        width={380}
+      />
+      <Image 
+        src={hand4} 
+        alt="Hand illustration — pointing hand" 
+        class="w-[30%] max-w-[220px] h-auto object-contain mt-[3%]"
+        width={220}
+      />
     </div>
   </div>
 </BaseLayout>
+

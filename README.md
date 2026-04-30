@@ -12,6 +12,7 @@ The official website for **Ramper**, a Spanish slowcore / post-rock project.
 
 ## Tech Stack
 - **Framework**: [Astro](https://astro.build) (Static mode for maximum performance)
+- **Design**: [Figma](https://www.figma.com) (For the UI design)
 - **CMS**: [Keystatic](https://keystatic.com/) (Local mode/Git-backed CMS)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (Utility-first CSS via Vite plugin)
 - **Infrastructure**: Docker & Docker Compose

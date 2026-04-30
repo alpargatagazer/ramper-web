@@ -2,7 +2,7 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: 'Host Grotesk', sans-serif;
 
   /* Ramper Palette */
   --color-ramper-black: #262425;
@@ -11,8 +11,65 @@
   --color-ramper-blue-light: #35648C;
   --color-ramper-white: #BFB8AA;
 
-  /* Default Accent */
-  --color-accent: var(--color-ramper-blue-mid);
+  /* Layout & Hygiene */
+  --spacing-section-top: 285px;
+  --color-ramper-overlay: color-mix(in srgb, var(--color-ramper-white) 40%, transparent);
+}
+
+/* Semi-transparent frosted glass overlay used for content cards */
+@utility content-overlay {
+  background-color: var(--color-ramper-overlay);
+  backdrop-filter: blur(3px);
+  border-radius: var(--radius-xs);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Subtle noise filter for cover images */
+@utility noise-overlay {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.15;
+    mix-blend-mode: hard-light;
+    pointer-events: none;
+  }
+}
+
+/* Standard page layout wrapper with scrolling and padding */
+@utility page-container {
+  @apply h-full overflow-y-auto p-8 max-w-5xl;
+}
+
+/* Section headings (h2) used across the site */
+@utility section-title {
+  @apply text-2xl font-bold tracking-tight text-ramper-black mb-6;
+}
+
+/* Small-caps links for secondary navigation or "back" links */
+@utility link-secondary {
+  @apply text-sm uppercase tracking-widest font-bold transition-colors;
+}
+
+/* Base typography styling for Markdoc/Markdown content */
+@utility prose-ramper {
+  @apply prose max-w-none prose-p:text-ramper-black/80 prose-headings:text-ramper-black prose-a:text-ramper-blue-deep hover:prose-a:text-ramper-blue-mid prose-strong:text-ramper-black;
+  --tw-prose-bullets: var(--color-ramper-black);
+}
+
+/* Buttons */
+@utility btn-primary {
+  @apply bg-ramper-blue-deep text-ramper-white px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:bg-ramper-blue-mid transition-colors shadow-sm;
+}
+
+@utility btn-secondary {
+  @apply bg-ramper-black text-ramper-white px-5 py-2.5 text-sm font-bold uppercase tracking-wider hover:opacity-80 transition-opacity;
+}
+
+@utility btn-outline {
+  @apply border border-ramper-black/40 text-ramper-black px-4 py-2.5 text-sm font-bold uppercase tracking-wider hover:border-ramper-blue-deep hover:text-ramper-blue-deep transition-colors;
 }
 
 /* Allow toggling dark mode manually via .dark class or system preference */
@@ -20,7 +77,7 @@
 
 @layer base {
   body {
-    /* Adaptive background and text using the Ramper palette */
-    @apply bg-ramper-white text-ramper-black dark:bg-ramper-black dark:text-ramper-white antialiased tracking-tight transition-colors duration-300;
+    @apply bg-ramper-white text-ramper-black antialiased;
+    font-family: 'Host Grotesk', sans-serif;
   }
 }
