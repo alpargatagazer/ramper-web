@@ -42,6 +42,9 @@ RUN xcaddy build \
 # Stage 3: Serve with custom Caddy
 FROM caddy:${CADDY_VERSION}-alpine AS runner
 
+# Update all packages
+RUN apk update && apk upgrade --no-cache
+
 # Replace official binary with our patched version
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
 
