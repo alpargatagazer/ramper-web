@@ -12,6 +12,7 @@
 # dev-reset-deps    → SURGICAL: Delete node_modules volume and rebuild
 # build-prod        → Create final production image locally
 # prod-up           → Start the production environment (VPS simulation)
+# prod-latest       → Start the production environment using the latest GitHub image
 # prod-down         → Stop the production environment
 # prod-logs         → Follow logs from the Caddy container
 # prod-shell        → Open interactive shell inside the Caddy container
@@ -99,6 +100,9 @@ build-prod:
 
 prod-up: build-prod
 	DOCKER_IMAGE=$(PROJECT_NAME)-prod:local $(COMPOSE_PROD) up -d
+
+prod-latest:
+	$(COMPOSE_PROD) up -d
 
 prod-down:
 	$(COMPOSE_PROD) down

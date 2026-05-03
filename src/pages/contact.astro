@@ -10,20 +10,20 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernac
 <BaseLayout title="Ramper | escribe" activeSection="contact">
   <div class="h-full overflow-y-auto p-8 flex items-center justify-start min-h-screen">
     <div class="flex flex-col md:flex-row items-center gap-16 md:gap-32 w-full max-w-6xl">
-      
+
       <div class="flex-1">
         <p class="text-xl text-ramper-black leading-relaxed mb-4">
           Para cualquier propuesta o consulta, puedes escribir a nuestro líder:
         </p>
-        
-        <button 
+
+        <button
           id="copy-email-btn"
           class="text-xl text-ramper-blue-deep font-bold hover:text-ramper-blue-mid transition-colors cursor-pointer underline underline-offset-4 decoration-ramper-blue-deep/30 hover:decoration-ramper-blue-mid/50 bg-transparent border-none p-0"
           data-email={contactEmail}
         >
           {contactEmail}
         </button>
-        
+
         <p id="copy-feedback" class="text-sm text-ramper-black/50 mt-2 h-5 transition-opacity opacity-0">
           {/* Feedback text appears here */}
         </p>
@@ -31,9 +31,9 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernac
 
       {/* Humo Internacional logo */}
       <div class="flex-shrink-0">
-        <Image 
-          src={humoLogo} 
-          alt="Humo Internacional" 
+        <Image
+          src={humoLogo}
+          alt="Humo Internacional"
           class="w-[280px] md:w-[350px] h-auto opacity-100"
           width={350}
         />
@@ -46,7 +46,7 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernac
   document.addEventListener('astro:page-load', () => {
     const btn = document.getElementById('copy-email-btn');
     const feedback = document.getElementById('copy-feedback');
-    
+
     if (btn && feedback) {
       btn.addEventListener('click', async () => {
         const email = btn.getAttribute('data-email');

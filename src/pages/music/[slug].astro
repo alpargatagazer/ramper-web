@@ -3,6 +3,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
+import { typeLabels } from '../../constants';
 
 export async function getStaticPaths() {
   const releases = await getCollection('releases');
@@ -17,27 +18,20 @@ const { Content } = await render(release);
 
 const year = new Date(release.data.releaseDate).getFullYear();
 
-const typeLabels: Record<string, string> = {
-  single: 'Single',
-  ep: 'EP',
-  live: 'Directo',
-  demo: 'Demo en directo',
-  session: 'Sesión en directo',
-  album: 'Álbum',
-};
+
 ---
 
 <BaseLayout title={`${release.data.title} — Ramper`} activeSection="music">
   <div class="page-container">
-    
+
     <div class="content-overlay p-8 md:p-12">
-    
+
     {/* Header: Cover + metadata side by side */}
     <header class="flex gap-8 mb-12 items-start">
       {release.data.coverImage ? (
         <div class="relative w-[280px] h-auto aspect-square flex-shrink-0 noise-overlay overflow-hidden">
-          <Image 
-            src={release.data.coverImage} 
+          <Image
+            src={release.data.coverImage}
             alt={`Portada de ${release.data.title}`}
             class="w-full h-full object-cover"
             width={600}
@@ -50,12 +44,12 @@ const typeLabels: Record<string, string> = {
           Cover
         </div>
       )}
-      
+
       <div class="flex flex-col justify-center">
         <h1 class="text-4xl font-bold tracking-tight text-ramper-black mb-3">
           {release.data.title}
         </h1>
-        
+
         <p class="flex items-center gap-3 text-ramper-black/70 mb-6">
           <span class="text-xs font-bold uppercase tracking-wider border border-ramper-black/30 px-2 py-1">
             {typeLabels[release.data.type]}
@@ -68,62 +62,62 @@ const typeLabels: Record<string, string> = {
         <div class="flex gap-3 flex-wrap">
           {/* Main Actions */}
           {release.data.storeUrl && (
-            <a 
-              href={release.data.storeUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={release.data.storeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               class="btn-primary"
             >
               Comprar
             </a>
           )}
           {release.data.bandcampUrl && (
-            <a 
-              href={release.data.bandcampUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={release.data.bandcampUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               class="btn-secondary"
             >
               Bandcamp
             </a>
           )}
-          
+
           {/* Streaming Platforms */}
           {release.data.spotifyUrl && (
-            <a 
-              href={release.data.spotifyUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={release.data.spotifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               class="btn-outline"
             >
               Spotify
             </a>
           )}
           {release.data.appleMusicUrl && (
-            <a 
-              href={release.data.appleMusicUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={release.data.appleMusicUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               class="btn-outline"
             >
               Apple Music
             </a>
           )}
           {release.data.tidalUrl && (
-            <a 
-              href={release.data.tidalUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={release.data.tidalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               class="btn-outline"
             >
               Tidal
             </a>
           )}
           {release.data.qobuzUrl && (
-            <a 
-              href={release.data.qobuzUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href={release.data.qobuzUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               class="btn-outline"
             >
               Qobuz
@@ -169,8 +163,8 @@ const typeLabels: Record<string, string> = {
 
     {/* Footer: back link */}
     <footer class="pt-8 border-t border-ramper-black/10">
-      <a 
-        href="/music" 
+      <a
+        href="/music"
         class="link-secondary text-ramper-blue-deep hover:text-ramper-blue-mid"
       >
         ← volver a música

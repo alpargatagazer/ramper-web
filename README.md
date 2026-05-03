@@ -79,7 +79,7 @@ The project includes an automated test suite matching the GitHub Actions pipelin
 The project uses GitHub Actions for a robust Smart Pipeline:
 1. Validates the build.
 2. Runs **four parallel validation jobs**:
-   - **Playwright** E2E tests across Chromium, Firefox and Webkit
+   - **Playwright** E2E tests (Chromium in CI for speed; run all three browsers—Chromium, Firefox, WebKit—locally via `make test`)
    - **Lighthouse** audits with strict performance/accessibility thresholds
    - **SonarQube Cloud** static analysis for bugs, smells and duplication
    - **Trivy** security scan for CVEs in the production Docker image

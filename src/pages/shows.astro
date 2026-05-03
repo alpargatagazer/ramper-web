@@ -8,28 +8,28 @@ const songkickId = import.meta.env.PUBLIC_SONGKICK_ARTIST_ID;
 
 <BaseLayout title="Ramper | conciertos" activeSection="shows">
   <div class="page-container">
-    
+
     {songkickId ? (
       <div class="min-h-[600px] w-full">
-        <a 
-          href={`https://www.songkick.com/artists/${songkickId}`} 
-          class="songkick-widget" 
-          data-theme="light" 
-          data-track-button="on" 
-          data-detect-style="off" 
-          data-background-color="rgba(191,184,170,0.85)" 
-          data-font-color="rgb(38,36,37)" 
-          data-button-bg-color="rgb(38,36,37)" 
-          data-button-text-color="rgb(191,184,170)" 
-          data-locale="es" 
-          data-other-artists="on" 
-          data-share-button="on" 
-          data-country-filter="on" 
-          data-rsvp="on" 
-          data-request-show="on" 
-          data-past-events="on" 
-          data-past-events-offtour="on" 
-          data-remind-me="off" 
+        <a
+          href={`https://www.songkick.com/artists/${songkickId}`}
+          class="songkick-widget"
+          data-theme="light"
+          data-track-button="on"
+          data-detect-style="off"
+          data-background-color="rgba(191,184,170,0.85)"
+          data-font-color="rgb(38,36,37)"
+          data-button-bg-color="rgb(38,36,37)"
+          data-button-text-color="rgb(191,184,170)"
+          data-locale="es"
+          data-other-artists="on"
+          data-share-button="on"
+          data-country-filter="on"
+          data-rsvp="on"
+          data-request-show="on"
+          data-past-events="on"
+          data-past-events-offtour="on"
+          data-remind-me="off"
           style="display: none;"
         ></a>
         {/* Re-inject script on each navigation to ensure it runs with the new DOM */}

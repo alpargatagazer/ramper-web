@@ -17,11 +17,11 @@ const { Content } = await render(post);
 
 <BaseLayout title={`${post.data.title} — Ramper`} activeSection="news">
   <div class="page-container">
-    
+
     <article class="content-overlay p-8 md:p-8">
       <header class="mb-10">
-        <time 
-          datetime={post.data.date} 
+        <time
+          datetime={post.data.date}
           class="text-sm text-ramper-blue-deep mb-2 block"
         >
           {new Date(post.data.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -39,8 +39,8 @@ const { Content } = await render(post);
       </div>
 
       <footer class="pt-8 border-t border-ramper-black/10">
-        <a 
-          href="/news" 
+        <a
+          href="/news"
           class="link-secondary text-ramper-blue-deep hover:text-ramper-blue-mid"
         >
           ← volver a noticias
