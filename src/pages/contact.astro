@@ -5,38 +5,115 @@ import { Image } from 'astro:assets';
 import humoLogo from '../assets/logo-humo.webp';
 
 const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernacional.com';
+const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
 ---
 
 <BaseLayout title="Ramper | escribe" activeSection="contact">
-  <div class="h-full overflow-y-auto p-8 flex items-center justify-start min-h-screen">
-    <div class="flex flex-col md:flex-row items-center gap-16 md:gap-32 w-full max-w-6xl">
+  <div class="page-container pt-section-top mt-[-25px]" id="contact-page">
+    <div class="p-10 md:p-12">
 
-      <div class="flex-1">
-        <p class="text-xl text-ramper-black leading-relaxed mb-4">
-          Para cualquier propuesta o consulta, puedes escribir a nuestro líder:
-        </p>
+      {/* Header */}
+      <h1 class="text-3xl text-ramper-black mb-5" id="contact-heading">
+        pasa a decir hola:
+      </h1>
 
-        <button
-          id="copy-email-btn"
-          class="text-xl text-ramper-blue-deep font-bold hover:text-ramper-blue-mid transition-colors cursor-pointer underline underline-offset-4 decoration-ramper-blue-deep/30 hover:decoration-ramper-blue-mid/50 bg-transparent border-none p-0"
-          data-email={contactEmail}
-        >
-          {contactEmail}
-        </button>
+      {/* Two-column layout: Form + Info */}
+      <div class="content-overlay p-8 md:p-10 flex flex-col md:flex-row gap-16 md:gap-24">
 
-        <p id="copy-feedback" class="text-sm text-ramper-black/50 mt-2 h-5 transition-opacity opacity-0">
-          {/* Feedback text appears here */}
-        </p>
-      </div>
+        {/* LEFT: Contact Form */}
+        <div class="flex-1 max-w-md" id="contact-form-section">
+          <form id="contact-form" class="space-y-6">
+            {/* Name + Email side by side */}
+            <div class="flex gap-8">
+              <div class="flex-1">
+                <label for="contact-name" class="block text-sm font-bold text-ramper-black mb-2 uppercase tracking-wider">
+                  Nombre:
+                </label>
+                <input
+                  type="text"
+                  id="contact-name"
+                  name="name"
+                  required
+                  class="w-full bg-transparent border-b border-ramper-black/30 focus:border-ramper-blue-deep focus:outline-none py-2 text-ramper-black placeholder:text-ramper-black/30 transition-colors"
+                />
+              </div>
+              <div class="flex-1">
+                <label for="contact-email" class="block text-sm font-bold text-ramper-black mb-2 uppercase tracking-wider">
+                  Email:
+                </label>
+                <input
+                  type="email"
+                  id="contact-email"
+                  name="email"
+                  required
+                  class="w-full bg-transparent border-b border-ramper-black/30 focus:border-ramper-blue-deep focus:outline-none py-2 text-ramper-black placeholder:text-ramper-black/30 transition-colors"
+                />
+              </div>
+            </div>
 
-      {/* Humo Internacional logo */}
-      <div class="flex-shrink-0">
-        <Image
-          src={humoLogo}
-          alt="Humo Internacional"
-          class="w-[280px] md:w-[350px] h-auto opacity-100"
-          width={350}
-        />
+            {/* Message */}
+            <div>
+              <label for="contact-message" class="block text-sm font-bold text-ramper-black mb-2 uppercase tracking-wider">
+                Mensaje:
+              </label>
+              <textarea
+                id="contact-message"
+                name="message"
+                rows="5"
+                required
+                class="w-full bg-transparent border border-ramper-black/30 focus:border-ramper-blue-deep focus:outline-none p-3 text-ramper-black placeholder:text-ramper-black/30 transition-colors resize-none"
+              ></textarea>
+            </div>
+
+            {/* Submit button */}
+            <button
+              type="submit"
+              id="contact-submit"
+              class="btn-primary cursor-pointer"
+              data-form-email={formEmail}
+            >
+              enviar mensaje
+            </button>
+          </form>
+        </div>
+
+        {/* RIGHT: Contact Information */}
+        <div class="flex-shrink-0 md:min-w-[280px]" id="contact-info-section">
+          <h2 class="text-lg font-bold text-ramper-black mb-4">
+            Management & Bookings:
+          </h2>
+
+          <div class="flex items-center gap-2 mb-10">
+            <span class="text-ramper-black text-xs">■</span>
+            <button
+              id="copy-email-btn"
+              class="text-ramper-blue-deep font-bold hover:text-ramper-blue-mid transition-colors cursor-pointer underline underline-offset-4 decoration-ramper-blue-deep/30 hover:decoration-ramper-blue-mid/50 bg-transparent border-none p-0"
+              data-email={contactEmail}
+            >
+              {contactEmail}
+            </button>
+          </div>
+
+          <p id="copy-feedback" class="text-sm text-ramper-black/50 mt-[-32px] mb-6 h-5 transition-opacity opacity-0">
+            {/* Feedback text appears here */}
+          </p>
+
+          {/* Humo Internacional logo */}
+          <a
+            href="https://humointernacional.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block hover:opacity-80 transition-opacity"
+            id="humo-logo-link"
+          >
+            <Image
+              src={humoLogo}
+              alt="Humo Internacional"
+              class="w-[250px] mt-[-30px] md:w-[225px] h-auto"
+              width={300}
+            />
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -44,6 +121,26 @@ const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernac
 
 <script>
   document.addEventListener('astro:page-load', () => {
+    // --- Mailto Form Logic ---
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    const submitBtn = document.getElementById('contact-submit');
+
+    if (form && submitBtn) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formEmail = submitBtn.getAttribute('data-form-email');
+        const name = (document.getElementById('contact-name') as HTMLInputElement)?.value || '';
+        const email = (document.getElementById('contact-email') as HTMLInputElement)?.value || '';
+        const message = (document.getElementById('contact-message') as HTMLTextAreaElement)?.value || '';
+
+        const subject = encodeURIComponent(`Mensaje de ${name}`);
+        const body = encodeURIComponent(`De: ${name}\nEmail: ${email}\n\n${message}`);
+
+        window.location.href = `mailto:${formEmail}?subject=${subject}&body=${body}`;
+      });
+    }
+
+    // --- Copy Email Logic ---
     const btn = document.getElementById('copy-email-btn');
     const feedback = document.getElementById('copy-feedback');
 

@@ -74,6 +74,7 @@ jobs:
             --build-arg CADDY_VERSION=${CADDY_IMAGE_VERSION} \
             --build-arg PUBLIC_SONGKICK_ARTIST_ID="${{ vars.PUBLIC_SONGKICK_ARTIST_ID }}" \
             --build-arg PUBLIC_CONTACT_EMAIL="${{ vars.PUBLIC_CONTACT_EMAIL }}" \
+            --build-arg PUBLIC_FORM_EMAIL="${{ secrets.PUBLIC_FORM_EMAIL }}" \
             --build-arg PUBLIC_INSTAGRAM_URL="${{ vars.PUBLIC_INSTAGRAM_URL }}" \
             --build-arg PUBLIC_X_URL="${{ vars.PUBLIC_X_URL }}" \
             --build-arg PUBLIC_BLUESKY_URL="${{ vars.PUBLIC_BLUESKY_URL }}" \
@@ -127,6 +128,7 @@ jobs:
           CI: true
           PUBLIC_SONGKICK_ARTIST_ID: ${{ vars.PUBLIC_SONGKICK_ARTIST_ID }}
           PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
+          PUBLIC_FORM_EMAIL: ${{ secrets.PUBLIC_FORM_EMAIL }}
           PUBLIC_INSTAGRAM_URL: ${{ vars.PUBLIC_INSTAGRAM_URL }}
           PUBLIC_X_URL: ${{ vars.PUBLIC_X_URL }}
           PUBLIC_BLUESKY_URL: ${{ vars.PUBLIC_BLUESKY_URL }}
