@@ -93,6 +93,9 @@ const tertiaryNavItems = [
     </script>
   </head>
   <body class="overflow-hidden">
+    {/* Global noise layer */}
+    <div class="animated-grain" aria-hidden="true"></div>
+
     {/* Full-screen wrapper */}
     <div class="relative w-screen h-screen overflow-hidden" id="site-wrapper">
 
@@ -186,7 +189,7 @@ const tertiaryNavItems = [
                 <a
                   href={item.href}
                   class:list={[
-                    'block transition-colors hover:text-ramper-blue-mid mobile-nav-link',
+                    'block transition-colors hover:text-ramper-blue-mid mobile-nav-link nav-link-interactive',
                     activeSection === item.section
                       ? 'font-bold text-ramper-blue-deep'
                       : 'text-ramper-black'
@@ -273,7 +276,7 @@ const tertiaryNavItems = [
                     <a
                       href={item.href}
                       class:list={[
-                        'block text-right transition-colors hover:text-ramper-blue-mid',
+                        'block text-right transition-colors hover:text-ramper-blue-mid nav-link-interactive',
                         activeSection === item.section
                           ? 'font-bold text-ramper-blue-deep'
                           : 'text-ramper-black'
@@ -299,7 +302,7 @@ const tertiaryNavItems = [
                     <a
                       href={item.href}
                       class:list={[
-                        'block text-right transition-colors hover:text-ramper-blue-mid',
+                        'block text-right transition-colors hover:text-ramper-blue-mid nav-link-interactive',
                         activeSection === item.section
                           ? 'font-bold text-ramper-blue-deep'
                           : 'text-ramper-black'
@@ -318,7 +321,7 @@ const tertiaryNavItems = [
                     <a
                       href={item.href}
                       class:list={[
-                        'block text-right transition-colors hover:text-ramper-blue-mid',
+                        'block text-right transition-colors hover:text-ramper-blue-mid nav-link-interactive',
                         activeSection === item.section
                           ? 'font-bold text-ramper-blue-deep'
                           : 'text-ramper-black'

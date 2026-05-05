@@ -50,6 +50,7 @@ const layoutStyles: Record<string, string> = {
                 width={400}
                 loading={index < 2 ? "eager" : "lazy"}
                 fetchpriority={index < 2 ? "high" : "auto"}
+                transition:name={`release-cover-${release.id}`}
               />
             ) : (
               <div class="w-full aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest shadow-sm">

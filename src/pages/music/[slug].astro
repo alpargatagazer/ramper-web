@@ -38,6 +38,7 @@ const { Content } = await render(release);
             fetchpriority="high"
             quality={70}
             formats={['avif', 'webp']}
+            transition:name={`release-cover-${release.id}`}
           />
         </div>
       ) : (
