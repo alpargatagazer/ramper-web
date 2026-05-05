@@ -10,13 +10,13 @@ posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).val
 
 <BaseLayout title="Ramper | noticias" activeSection="news">
   <div class="page-container pt-section-top">
-    
+
     <div class="p- md:p-12">
       {/* RSS link - aligned with content column */}
       <div class="flex justify-end mb-2">
-        <a 
-          href="/rss.xml" 
-          target="_blank" 
+        <a
+          href="/rss.xml"
+          target="_blank"
           class="flex items-center gap-1 link-secondary text-ramper-black hover:text-ramper-blue-deep"
           id="rss-link"
         >
@@ -33,8 +33,8 @@ posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).val
           posts.map((post) => (
             <article class="group content-overlay p-8 md:p-6 transition-transform hover:scale-[1.01]">
               <a href={`/news/${post.id}`} class="block hover:opacity-80 transition-opacity">
-                <time 
-                  datetime={post.data.date} 
+                <time
+                  datetime={post.data.date}
                   class="text-sm text-ramper-blue-deep mb-1 block"
                 >
                   {new Date(post.data.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}

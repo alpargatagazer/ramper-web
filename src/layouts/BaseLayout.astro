@@ -11,13 +11,18 @@ interface Props {
   title?: string;
   description?: string;
   activeSection?: string;
+  ogImage?: string;
 }
 
-const { 
+const {
   title = 'Ramper',
   description = 'Helpless children',
-  activeSection = ''
+  activeSection = '',
+  ogImage = '/og-image.jpg',
 } = Astro.props;
+
+// Canonical URL for SEO
+const canonicalUrl = `${Astro.site}${Astro.url.pathname}`;
 
 // Social media URLs from environment variables
 const instagramUrl = import.meta.env.PUBLIC_INSTAGRAM_URL || 'https://www.instagram.com/ramper.dep/';
@@ -49,40 +54,68 @@ const tertiaryNavItems = [
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preload" href="/fonts/host-grotesk/host-grotesk-normal.woff2" as="font" type="font/woff2" crossorigin />
-    
+
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.webp" />
+    <link rel="icon" type="image/webp" href="/favicon.webp" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`https://ramper.band${ogImage}`} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content="es_ES" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`https://ramper.band${ogImage}`} />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "MusicGroup",
+        "name": "Ramper",
+        "url": "https://ramper.band",
+        "description": description,
+        "genre": ["Slowcore", "Post-rock"],
+        "nationality": "Spanish",
+      })}
+    </script>
   </head>
   <body class="overflow-hidden">
     {/* Full-screen wrapper */}
     <div class="relative w-screen h-screen overflow-hidden" id="site-wrapper">
-      
+
       {/* === TEXTURE BACKGROUND LAYERS === */}
       <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
         {/* Layer 1: Paper/dirt texture (bottom) */}
-        <Image 
-          src={dirtyTexture} 
-          alt="" 
+        <Image
+          src={dirtyTexture}
+          alt=""
           class="absolute inset-0 w-full h-full object-cover opacity-50"
           width={1920}
-          loading="lazy"
+          loading="eager"
           decoding="async"
         />
         {/* Layer 2: Hand-drawn stars */}
-        <Image 
-          src={starsTexture} 
-          alt="" 
+        <Image
+          src={starsTexture}
+          alt=""
           class="absolute inset-0 w-full h-full object-cover opacity-80"
           width={1920}
-          loading="lazy"
+          loading="eager"
           decoding="async"
         />
         {/* Layer 3: Red scribble (top) */}
-        <Image 
-          src={redTexture} 
-          alt="" 
-          class="absolute inset-0 h-full w-auto object-contain top-100 opacity-50 scale-[2.2] 
+        <Image
+          src={redTexture}
+          alt=""
+          class="absolute inset-0 h-full w-auto object-contain top-100 opacity-50 scale-[2.2]
           -translate-x-[150px] origin-left"
           fetchpriority="high"
           width={1200}
@@ -92,16 +125,16 @@ const tertiaryNavItems = [
 
       {/* === MAIN LAYOUT: Sidebar + Content === */}
       <div class="relative z-10 flex h-full">
-        
+
         {/* LEFT SIDEBAR (persistent navigation) */}
         <aside class="flex flex-col justify-start w-[42%] min-w-[500px] h-full px-12 py-10 gap-y-16" id="sidebar">
-          
+
           {/* Logo (Right aligned with Nav) */}
           <header class="flex justify-end pr-0">
             <a href="/" class="inline-block" id="logo-link">
-              <Image 
-                src={logoImage} 
-                alt="Ramper" 
+              <Image
+                src={logoImage}
+                alt="Ramper"
                 class="w-[700px] h-auto"
                 width={800}
                 loading="eager"
@@ -117,15 +150,16 @@ const tertiaryNavItems = [
                 {/* Main Links */}
                 {navItems.map((item) => (
                   <li>
-                    <a 
+                    <a
                       href={item.href}
                       class:list={[
                         'block text-right transition-colors hover:text-ramper-blue-mid',
-                        activeSection === item.section 
-                          ? 'font-bold text-ramper-blue-deep' 
+                        activeSection === item.section
+                          ? 'font-bold text-ramper-blue-deep'
                           : 'text-ramper-black'
                       ]}
                       {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                      {...(activeSection === item.section && !item.external ? { 'aria-current': 'page' } : {})}
                       id={`nav-${item.section}`}
                     >
                       {item.label.replace('↗', '')}
@@ -142,14 +176,15 @@ const tertiaryNavItems = [
               {/* About section (with extra top margin) */}
                 <li class="mt-12">
                   {secondaryNavItems.map((item) => (
-                    <a 
+                    <a
                       href={item.href}
                       class:list={[
                         'block text-right transition-colors hover:text-ramper-blue-mid',
-                        activeSection === item.section 
-                          ? 'font-bold text-ramper-blue-deep' 
+                        activeSection === item.section
+                          ? 'font-bold text-ramper-blue-deep'
                           : 'text-ramper-black'
                       ]}
+                      {...(activeSection === item.section ? { 'aria-current': 'page' } : {})}
                       id={`nav-${item.section}`}
                     >
                       {item.label}
@@ -160,14 +195,15 @@ const tertiaryNavItems = [
               {/* Contact section (with extra top margin) */}
                 <li class="mt-12">
                   {tertiaryNavItems.map((item) => (
-                    <a 
+                    <a
                       href={item.href}
                       class:list={[
                         'block text-right transition-colors hover:text-ramper-blue-mid',
-                        activeSection === item.section 
-                          ? 'font-bold text-ramper-blue-deep' 
+                        activeSection === item.section
+                          ? 'font-bold text-ramper-blue-deep'
                           : 'text-ramper-black'
                       ]}
+                      {...(activeSection === item.section ? { 'aria-current': 'page' } : {})}
                       id={`nav-${item.section}`}
                     >
                       {item.label}
@@ -180,13 +216,13 @@ const tertiaryNavItems = [
             {/* Social Links (Right Aligned under nav) */}
             <footer class="flex items-center gap-4 mt-18" id="social-links">
               <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:opacity-60 transition-opacity">
-                <img src="/icons/instagram.svg" alt="Instagram" class="w-[28px] h-[28px]" />
+                <img src="/icons/instagram.svg" role="presentation" class="w-[28px] h-[28px]" />
               </a>
               <a href={xUrl} target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" class="hover:opacity-60 transition-opacity">
-                <img src="/icons/x.svg" alt="X" class="w-[28px] h-[28px]" />
+                <img src="/icons/x.svg" role="presentation" class="w-[28px] h-[28px]" />
               </a>
               <a href={blueskyUrl} target="_blank" rel="noopener noreferrer" aria-label="Bluesky" class="hover:opacity-60 transition-opacity">
-                <img src="/icons/bluesky.svg" alt="Bluesky" class="w-[28px] h-[28px]" />
+                <img src="/icons/bluesky.svg" role="presentation" class="w-[28px] h-[28px]" />
               </a>
             </footer>
           </div>
