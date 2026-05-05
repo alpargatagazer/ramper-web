@@ -2,7 +2,7 @@
 // src/pages/music/[slug].astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import { typeLabels } from '../../constants';
 
 export async function getStaticPaths() {
@@ -16,9 +16,6 @@ export async function getStaticPaths() {
 const { release } = Astro.props;
 const { Content } = await render(release);
 
-const year = new Date(release.data.releaseDate).getFullYear();
-
-
 ---
 
 <BaseLayout title={`${release.data.title} — Ramper`} activeSection="music">
@@ -30,13 +27,17 @@ const year = new Date(release.data.releaseDate).getFullYear();
     <header class="flex flex-col md:flex-row gap-8 mb-12 items-start">
       {release.data.coverImage ? (
         <div class="relative w-full md:w-[280px] h-auto aspect-square flex-shrink-0 noise-overlay overflow-hidden">
-          <Image
+          <Picture
             src={release.data.coverImage}
             alt={`Portada de ${release.data.title}`}
             class="w-full h-full object-cover"
-            width={600}
+            widths={[300, 600]}
+            sizes="(min-width: 768px) 280px, 100vw"
             loading="eager"
+            decoding="sync"
             fetchpriority="high"
+            quality={70}
+            formats={['avif', 'webp']}
           />
         </div>
       ) : (

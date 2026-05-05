@@ -15,8 +15,9 @@ const THRESHOLDS = {
 };
 
 const baseTarget = process.env.LIGHTHOUSE_TARGET;
+const preset = process.env.LIGHTHOUSE_PRESET || 'desktop';
 
-const reportPath = 'lighthouse-reports'
+const reportPath = join('lighthouse-reports', preset);
 
 const urls = [
   { url: `${baseTarget}/`, name: 'index' },
@@ -36,15 +37,15 @@ let globalFailed = false;
 for (const { url, name } of urls) {
   const jsonPath = join(reportPath, `${name}.report.json`);
 
-  console.log(`\n🔍 Auditing: ${url}`);
+  console.log(`\n🔍 Auditing [${preset}]: ${url}`);
 
   try {
     // Generate both files simultaneously
     execSync(
       `npx lighthouse ${url} ` +
       `--output json --output html ` +
-      `--output-path ${reportPath}/${name} ` +
-      `--preset=desktop ` +
+      `--output-path ${join(reportPath, name)} ` +
+      (preset !== 'mobile' ? `--preset=${preset} ` : '') +
       `--quiet ` +
       `--chrome-flags="--headless --no-sandbox --disable-dev-shm-usage"`,
       { stdio: 'inherit' }

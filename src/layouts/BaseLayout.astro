@@ -1,11 +1,14 @@
 ---
 // src/layouts/BaseLayout.astro
 import { ClientRouter } from 'astro:transitions';
-import { Image } from 'astro:assets';
+import { Image, Picture } from 'astro:assets';
 import logoImage from '../assets/logo.webp';
 import redTexture from '../assets/textures/red.webp';
 import dirtyTexture from '../assets/textures/dirty.webp';
 import starsTexture from '../assets/textures/stars.webp';
+
+import '../styles/global.css';
+import '../styles/fonts.css';
 
 interface Props {
   title?: string;
@@ -47,8 +50,7 @@ const tertiaryNavItems = [
   { label: 'escribe', href: '/contact', section: 'contact' },
 ];
 
-// All nav items flattened for mobile menu
-const allNavItems = [...navItems, ...secondaryNavItems, ...tertiaryNavItems];
+
 ---
 
 <!DOCTYPE html>
@@ -78,7 +80,7 @@ const allNavItems = [...navItems, ...secondaryNavItems, ...tertiaryNavItems];
     <meta name="twitter:image" content={`https://ramper.band${ogImage}`} />
 
     <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
+    <script type="application/ld+json" is:inline>
       {JSON.stringify({
         "@context": "https://schema.org",
         "@type": "MusicGroup",
@@ -97,32 +99,40 @@ const allNavItems = [...navItems, ...secondaryNavItems, ...tertiaryNavItems];
       {/* === TEXTURE BACKGROUND LAYERS === */}
       <div class="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
         {/* Layer 1: Paper/dirt texture (bottom) */}
-        <Image
+        <Picture
           src={dirtyTexture}
           alt=""
           class="absolute inset-0 w-full h-full object-cover opacity-50"
-          width={1920}
+          widths={[640, 1200, 1920]}
+          sizes="100vw"
           loading="eager"
-          decoding="async"
+          quality={60}
+          formats={['avif', 'webp']}
         />
         {/* Layer 2: Hand-drawn stars */}
-        <Image
+        <Picture
           src={starsTexture}
           alt=""
           class="absolute inset-0 w-full h-full object-cover opacity-80"
-          width={1920}
+          widths={[640, 1200, 1920]}
+          sizes="100vw"
           loading="eager"
-          decoding="async"
+          quality={60}
+          formats={['avif', 'webp']}
         />
         {/* Layer 3: Red scribble (top) */}
-        <Image
+        <Picture
           src={redTexture}
           alt=""
           class="absolute inset-0 h-full w-auto object-contain top-100 opacity-50 scale-[2.2]
           -translate-x-[150px] origin-left"
+          widths={[640, 1200]}
+          sizes="(min-width: 1024px) 1200px, 100vw"
           fetchpriority="high"
-          width={1200}
-          decoding="async"
+          loading="eager"
+          decoding="sync"
+          quality={60}
+          formats={['avif', 'webp']}
         />
       </div>
 
@@ -136,6 +146,8 @@ const allNavItems = [...navItems, ...secondaryNavItems, ...tertiaryNavItems];
               class="h-[65px] w-auto"
               width={250}
               loading="eager"
+              decoding="sync"
+              fetchpriority="high"
             />
           </a>
           <button
@@ -233,7 +245,7 @@ const allNavItems = [...navItems, ...secondaryNavItems, ...tertiaryNavItems];
       <div class="relative z-10 flex h-full">
 
         {/* LEFT SIDEBAR — desktop only (persistent navigation) */}
-        <aside class="hidden lg:flex flex-col justify-start w-[42%] min-w-[500px] h-full px-12 py-10 gap-y-16" id="sidebar">
+        <aside class="hidden lg:flex flex-col justify-start w-[42%] min-w-[500px] h-full px-12 py-10 gap-y-16 relative z-20" id="sidebar">
 
           {/* Logo (Right aligned with Nav) */}
           <header class="flex justify-end pr-0">
@@ -244,6 +256,8 @@ const allNavItems = [...navItems, ...secondaryNavItems, ...tertiaryNavItems];
                 class="w-[700px] h-auto"
                 width={800}
                 loading="eager"
+                decoding="sync"
+                fetchpriority="high"
               />
             </a>
           </header>
@@ -358,8 +372,6 @@ const allNavItems = [...navItems, ...secondaryNavItems, ...tertiaryNavItems];
 </html>
 
 <style is:global>
-  @import "../styles/global.css";
-  @import "../styles/fonts.css";
 </style>
 
 <script>
@@ -372,23 +384,23 @@ const allNavItems = [...navItems, ...secondaryNavItems, ...tertiaryNavItems];
     if (!toggle || !overlay || !hamburger || !closeIcon) return;
 
     function openMenu() {
-      overlay.classList.remove('opacity-0', 'pointer-events-none');
-      overlay.classList.add('opacity-100');
-      overlay.setAttribute('aria-hidden', 'false');
-      hamburger.classList.add('hidden');
-      closeIcon.classList.remove('hidden');
-      toggle.setAttribute('aria-expanded', 'true');
-      toggle.setAttribute('aria-label', 'Cerrar menú');
+      overlay!.classList.remove('opacity-0', 'pointer-events-none');
+      overlay!.classList.add('opacity-100');
+      overlay!.setAttribute('aria-hidden', 'false');
+      hamburger!.classList.add('hidden');
+      closeIcon!.classList.remove('hidden');
+      toggle!.setAttribute('aria-expanded', 'true');
+      toggle!.setAttribute('aria-label', 'Cerrar menú');
     }
 
     function closeMenu() {
-      overlay.classList.add('opacity-0', 'pointer-events-none');
-      overlay.classList.remove('opacity-100');
-      overlay.setAttribute('aria-hidden', 'true');
-      hamburger.classList.remove('hidden');
-      closeIcon.classList.add('hidden');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Abrir menú');
+      overlay!.classList.add('opacity-0', 'pointer-events-none');
+      overlay!.classList.remove('opacity-100');
+      overlay!.setAttribute('aria-hidden', 'true');
+      hamburger!.classList.remove('hidden');
+      closeIcon!.classList.add('hidden');
+      toggle!.setAttribute('aria-expanded', 'false');
+      toggle!.setAttribute('aria-label', 'Abrir menú');
     }
 
     toggle.addEventListener('click', () => {
