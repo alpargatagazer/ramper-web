@@ -27,9 +27,9 @@ const year = new Date(release.data.releaseDate).getFullYear();
     <div class="content-overlay p-8 md:p-12">
 
     {/* Header: Cover + metadata side by side */}
-    <header class="flex gap-8 mb-12 items-start">
+    <header class="flex flex-col md:flex-row gap-8 mb-12 items-start">
       {release.data.coverImage ? (
-        <div class="relative w-[280px] h-auto aspect-square flex-shrink-0 noise-overlay overflow-hidden">
+        <div class="relative w-full md:w-[280px] h-auto aspect-square flex-shrink-0 noise-overlay overflow-hidden">
           <Image
             src={release.data.coverImage}
             alt={`Portada de ${release.data.title}`}

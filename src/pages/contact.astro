@@ -9,8 +9,8 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
 ---
 
 <BaseLayout title="Ramper | escribe" activeSection="contact">
-  <div class="page-container pt-section-top mt-[-25px]" id="contact-page">
-    <div class="p-10 md:p-12">
+  <div class="page-container pt-section-top mt-[-25px] w-full max-w-6xl" id="contact-page">
+    <div class="w-full">
 
       {/* Header */}
       <h1 class="text-3xl text-ramper-black mb-5" id="contact-heading">
@@ -18,13 +18,13 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
       </h1>
 
       {/* Two-column layout: Form + Info */}
-      <div class="content-overlay p-8 md:p-10 flex flex-col md:flex-row gap-16 md:gap-24">
+      <div class="content-overlay p-6 md:p-10 flex flex-col md:flex-row gap-12 md:gap-24 w-full">
 
         {/* LEFT: Contact Form */}
         <div class="flex-1 max-w-md" id="contact-form-section">
           <form id="contact-form" class="space-y-6">
             {/* Name + Email side by side */}
-            <div class="flex gap-8">
+            <div class="flex flex-col md:flex-row gap-8">
               <div class="flex-1">
                 <label for="contact-name" class="block text-sm font-bold text-ramper-black mb-2 uppercase tracking-wider">
                   Nombre:
@@ -87,7 +87,7 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
             <span class="text-ramper-black text-xs">■</span>
             <button
               id="copy-email-btn"
-              class="text-ramper-blue-deep font-bold hover:text-ramper-blue-mid transition-colors cursor-pointer underline underline-offset-4 decoration-ramper-blue-deep/30 hover:decoration-ramper-blue-mid/50 bg-transparent border-none p-0"
+              class="text-ramper-blue-deep font-bold hover:text-ramper-blue-mid transition-colors cursor-pointer underline underline-offset-4 decoration-ramper-blue-deep/30 hover:decoration-ramper-blue-mid/50 bg-transparent border-none p-0 text-left break-all"
               data-email={contactEmail}
             >
               {contactEmail}

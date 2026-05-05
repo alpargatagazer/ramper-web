@@ -46,6 +46,9 @@ const secondaryNavItems = [
 const tertiaryNavItems = [
   { label: 'escribe', href: '/contact', section: 'contact' },
 ];
+
+// All nav items flattened for mobile menu
+const allNavItems = [...navItems, ...secondaryNavItems, ...tertiaryNavItems];
 ---
 
 <!DOCTYPE html>
@@ -123,11 +126,114 @@ const tertiaryNavItems = [
         />
       </div>
 
+      {/* === MOBILE HEADER (< lg) === */}
+      <header class="absolute top-0 left-0 right-0 z-50 bg-ramper-white lg:hidden" id="mobile-header">
+        <div class="flex items-center justify-between px-5 pt-8 pb-3">
+          <a href="/" id="mobile-logo-link">
+            <Image
+              src={logoImage}
+              alt="Ramper"
+              class="h-[65px] w-auto"
+              width={250}
+              loading="eager"
+            />
+          </a>
+          <button
+            id="mobile-menu-toggle"
+            class="p-1 text-ramper-black cursor-pointer"
+            aria-label="Abrir menú"
+            aria-expanded="false"
+          >
+            {/* Hamburger icon */}
+            <svg id="hamburger-icon" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <line x1="4" y1="6" x2="20" y2="6"></line>
+              <line x1="4" y1="12" x2="20" y2="12"></line>
+              <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+            {/* Close icon (hidden by default) */}
+            <svg id="close-icon" class="w-10 h-10 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+              <line x1="6" y1="18" x2="18" y2="6"></line>
+            </svg>
+          </button>
+        </div>
+        {/* Thin divider line — reaches almost to the edges but reserves a few pixels */}
+        <div class="mx-4 border-b border-ramper-black/20"></div>
+      </header>
+
+      {/* === MOBILE MENU OVERLAY (fullscreen, toggled by JS) === */}
+      <div
+        id="mobile-menu-overlay"
+        class="absolute inset-0 z-40 bg-ramper-white opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
+        aria-hidden="true"
+      >
+        <nav class="flex flex-col items-end pr-8 pt-[160px] h-full overflow-y-auto">
+          <ul class="list-none space-y-6 text-[36px] leading-[1.2] font-normal text-right">
+            {navItems.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class:list={[
+                    'block transition-colors hover:text-ramper-blue-mid mobile-nav-link',
+                    activeSection === item.section
+                      ? 'font-bold text-ramper-blue-deep'
+                      : 'text-ramper-black'
+                  ]}
+                  {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {item.label.replace('↗', '')}
+                  {item.label.includes('↗') && (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-6 h-6 ml-[-10px] mb-[3px]">
+                      <line x1="7" y1="17" x2="17" y2="7"></line>
+                      <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                  )}
+                </a>
+              </li>
+            ))}
+
+            {/* About section (with spacing) */}
+            <li class="mt-10">
+              {secondaryNavItems.map((item) => (
+                <a
+                  href={item.href}
+                  class:list={[
+                    'block transition-colors hover:text-ramper-blue-mid mobile-nav-link',
+                    activeSection === item.section
+                      ? 'font-bold text-ramper-blue-deep'
+                      : 'text-ramper-black'
+                  ]}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </li>
+
+            {/* Contact section (with spacing) */}
+            <li class="mt-10">
+              {tertiaryNavItems.map((item) => (
+                <a
+                  href={item.href}
+                  class:list={[
+                    'block transition-colors hover:text-ramper-blue-mid mobile-nav-link',
+                    activeSection === item.section
+                      ? 'font-bold text-ramper-blue-deep'
+                      : 'text-ramper-black'
+                  ]}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </li>
+          </ul>
+        </nav>
+      </div>
+
       {/* === MAIN LAYOUT: Sidebar + Content === */}
       <div class="relative z-10 flex h-full">
 
-        {/* LEFT SIDEBAR (persistent navigation) */}
-        <aside class="flex flex-col justify-start w-[42%] min-w-[500px] h-full px-12 py-10 gap-y-16" id="sidebar">
+        {/* LEFT SIDEBAR — desktop only (persistent navigation) */}
+        <aside class="hidden lg:flex flex-col justify-start w-[42%] min-w-[500px] h-full px-12 py-10 gap-y-16" id="sidebar">
 
           {/* Logo (Right aligned with Nav) */}
           <header class="flex justify-end pr-0">
@@ -213,7 +319,7 @@ const tertiaryNavItems = [
               </ul>
             </nav>
 
-            {/* Social Links (Right Aligned under nav) */}
+            {/* Social Links (Right Aligned under nav) — desktop only */}
             <footer class="flex items-center gap-4 mt-18" id="social-links">
               <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:opacity-60 transition-opacity">
                 <img src="/icons/instagram.svg" role="presentation" class="w-[28px] h-[28px]" />
@@ -229,8 +335,21 @@ const tertiaryNavItems = [
         </aside>
 
         {/* RIGHT CONTENT AREA */}
-        <main class="flex-1 h-full overflow-y-auto" id="content-area">
+        <main class="flex-1 h-full overflow-y-auto pt-[var(--mobile-header-h)] lg:pt-0" id="content-area">
           <slot />
+
+          {/* Mobile social links — at the bottom after all content */}
+          <footer class="flex lg:hidden items-center justify-center gap-6 py-8 border-t border-ramper-black/10 mx-8" id="mobile-social-links">
+            <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:opacity-60 transition-opacity">
+              <img src="/icons/instagram.svg" role="presentation" class="w-[28px] h-[28px]" />
+            </a>
+            <a href={xUrl} target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" class="hover:opacity-60 transition-opacity">
+              <img src="/icons/x.svg" role="presentation" class="w-[28px] h-[28px]" />
+            </a>
+            <a href={blueskyUrl} target="_blank" rel="noopener noreferrer" aria-label="Bluesky" class="hover:opacity-60 transition-opacity">
+              <img src="/icons/bluesky.svg" role="presentation" class="w-[28px] h-[28px]" />
+            </a>
+          </footer>
         </main>
       </div>
     </div>
@@ -242,3 +361,47 @@ const tertiaryNavItems = [
   @import "../styles/global.css";
   @import "../styles/fonts.css";
 </style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const overlay = document.getElementById('mobile-menu-overlay');
+    const hamburger = document.getElementById('hamburger-icon');
+    const closeIcon = document.getElementById('close-icon');
+
+    if (!toggle || !overlay || !hamburger || !closeIcon) return;
+
+    function openMenu() {
+      overlay.classList.remove('opacity-0', 'pointer-events-none');
+      overlay.classList.add('opacity-100');
+      overlay.setAttribute('aria-hidden', 'false');
+      hamburger.classList.add('hidden');
+      closeIcon.classList.remove('hidden');
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Cerrar menú');
+    }
+
+    function closeMenu() {
+      overlay.classList.add('opacity-0', 'pointer-events-none');
+      overlay.classList.remove('opacity-100');
+      overlay.setAttribute('aria-hidden', 'true');
+      hamburger.classList.remove('hidden');
+      closeIcon.classList.add('hidden');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Abrir menú');
+    }
+
+    toggle.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      isOpen ? closeMenu() : openMenu();
+    });
+
+    // Close menu when a navigation link is clicked
+    overlay.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Ensure menu is closed on page load (View Transitions may preserve state)
+    closeMenu();
+  });
+</script>

@@ -76,6 +76,15 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  :root {
+    --spacing-section-top: 40px;
+    --mobile-header-h: 100px;
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --spacing-section-top: 285px;
+    }
+  }
   body {
     @apply bg-ramper-white text-ramper-black antialiased;
     font-family: 'Host Grotesk', sans-serif;
