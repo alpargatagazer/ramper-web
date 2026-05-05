@@ -2,7 +2,7 @@
 // src/pages/music/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import { typeLabels } from '../../constants';
 
 const releases = await getCollection('releases');
@@ -43,13 +43,15 @@ const layoutStyles: Record<string, string> = {
             id={`release-${release.id}`}
           >
             {release.data.coverImage ? (
-              <Image
+              <Picture
                 src={release.data.coverImage}
                 alt={`Portada de ${release.data.title}`}
                 class="w-full h-auto object-cover aspect-square noise-overlay shadow-sm"
-                width={400}
+                widths={[200, 400, 800]}
+                sizes="(min-width: 1024px) 400px, 80vw"
                 loading={index < 2 ? "eager" : "lazy"}
                 fetchpriority={index < 2 ? "high" : "auto"}
+                formats={['avif', 'webp']}
                 transition:name={`release-cover-${release.id}`}
               />
             ) : (

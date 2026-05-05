@@ -17,14 +17,16 @@ import hand4 from '../assets/hands/hand-4.webp';
         src={hand1}
         alt="Hand illustration — fist"
         class="w-[45%] max-w-[360px] h-auto object-contain"
-        width={360}
+        widths={[240, 360, 720]}
+        sizes="(min-width: 1024px) 360px, 45vw"
         loading="eager"
       />
       <Image
         src={hand2}
         alt="Hand illustration — drooping hand"
         class="w-[40%] max-w-[320px] h-auto object-contain mt-[5%]"
-        width={320}
+        widths={[200, 320, 640]}
+        sizes="(min-width: 1024px) 320px, 40vw"
         loading="eager"
       />
     </div>
@@ -34,13 +36,15 @@ import hand4 from '../assets/hands/hand-4.webp';
         src={hand3}
         alt="Hand illustration — flying hand"
         class="w-[50%] max-w-[380px] h-auto object-contain"
-        width={380}
+        widths={[280, 380, 760]}
+        sizes="(min-width: 1024px) 380px, 50vw"
       />
       <Image
         src={hand4}
         alt="Hand illustration — pointing hand"
         class="w-[30%] max-w-[220px] h-auto object-contain mt-[3%]"
-        width={220}
+        widths={[150, 220, 440]}
+        sizes="(min-width: 1024px) 220px, 30vw"
       />
     </div>
   </div>
