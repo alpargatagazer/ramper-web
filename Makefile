@@ -91,6 +91,7 @@ build-prod:
 		--build-arg CADDY_VERSION=${CADDY_IMAGE_VERSION} \
 		--build-arg PUBLIC_SONGKICK_ARTIST_ID=${PUBLIC_SONGKICK_ARTIST_ID} \
 		--build-arg PUBLIC_CONTACT_EMAIL=${PUBLIC_CONTACT_EMAIL} \
+		--build-arg PUBLIC_FORM_EMAIL=${PUBLIC_FORM_EMAIL} \
 		--build-arg PUBLIC_INSTAGRAM_URL=${PUBLIC_INSTAGRAM_URL} \
 		--build-arg PUBLIC_X_URL=${PUBLIC_X_URL} \
 		--build-arg PUBLIC_BLUESKY_URL=${PUBLIC_BLUESKY_URL} \
@@ -122,17 +123,23 @@ test: dev-up
 	$(COMPOSE_DEV) --profile test rm -f playwright; \
 	exit $$EXIT_CODE
 
-audit: build-prod
+_run-audit:
 	@echo "Starting production container for audit on $(AUDIT_URL)..."
 	docker run -d --name ramper-audit -p $(AUDIT_PORT):80 $(PROJECT_NAME)-prod:local
 	@echo "Waiting for server to be ready..."
 	@until curl -s $(AUDIT_URL) > /dev/null; do sleep 1; done
-	@echo "Running strict Lighthouse audit with local thresholds..."
-	-@LIGHTHOUSE_TARGET=$(AUDIT_URL) node scripts/lighthouse-check.mjs; \
+	@echo "Running strict Lighthouse audit [$(PRESET)]..."
+	-@LIGHTHOUSE_TARGET=$(AUDIT_URL) LIGHTHOUSE_PRESET=$(PRESET) node scripts/lighthouse-check.mjs; \
 	EXIT_CODE=$$?; \
 	echo "Cleaning up audit container..."; \
 	docker stop ramper-audit && docker rm ramper-audit; \
 	exit $$EXIT_CODE
+
+audit-desktop: build-prod
+	@$(MAKE) _run-audit PRESET=desktop
+
+audit-mobile: build-prod
+	@$(MAKE) _run-audit PRESET=mobile
 
 scan: build-prod
 	@echo "Running Trivy vulnerability scanner on production image..."

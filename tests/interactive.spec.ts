@@ -42,8 +42,7 @@ test.describe('Interactive Elements and Widgets', () => {
     await page.goto('/contact');
 
     // Mock clipboard API to capture the text being copied
-    let copiedText = '';
-    await page.evaluate((email) => {
+    await page.evaluate(() => {
       Object.defineProperty(navigator, 'clipboard', {
         value: {
           writeText: (text: string) => {
@@ -53,7 +52,7 @@ test.describe('Interactive Elements and Widgets', () => {
         },
         configurable: true
       });
-    }, expectedEmail);
+    });
     
     const emailButton = page.locator('#copy-email-btn');
     const feedbackText = page.locator('#copy-feedback');

@@ -16,6 +16,12 @@
 	}
 	header @static Cache-Control "public, max-age=31536000, immutable"
 
+	# Cache fonts and static images in /public
+	@static_public {
+		path /fonts/* /icons/* /favicon.webp
+	}
+	header @static_public Cache-Control "public, max-age=31536000, immutable"
+
 	# Basic security headers
 	header {
 		X-Content-Type-Options nosniff

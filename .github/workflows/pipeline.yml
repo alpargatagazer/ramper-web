@@ -74,6 +74,7 @@ jobs:
             --build-arg CADDY_VERSION=${CADDY_IMAGE_VERSION} \
             --build-arg PUBLIC_SONGKICK_ARTIST_ID="${{ vars.PUBLIC_SONGKICK_ARTIST_ID }}" \
             --build-arg PUBLIC_CONTACT_EMAIL="${{ vars.PUBLIC_CONTACT_EMAIL }}" \
+            --build-arg PUBLIC_FORM_EMAIL="${{ secrets.PUBLIC_FORM_EMAIL }}" \
             --build-arg PUBLIC_INSTAGRAM_URL="${{ vars.PUBLIC_INSTAGRAM_URL }}" \
             --build-arg PUBLIC_X_URL="${{ vars.PUBLIC_X_URL }}" \
             --build-arg PUBLIC_BLUESKY_URL="${{ vars.PUBLIC_BLUESKY_URL }}" \
@@ -89,8 +90,8 @@ jobs:
           name: docker-image
           path: image.tar.gz
 
-  test:
-    name: Playwright E2E Tests
+  test-desktop:
+    name: Playwright E2E Tests (Desktop)
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -111,7 +112,7 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
 
-      # Running tests on chromium only to save some time
+                # Running tests on chromium only to save some time
       - name: Install Playwright System Dependencies (if cached)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
@@ -127,6 +128,7 @@ jobs:
           CI: true
           PUBLIC_SONGKICK_ARTIST_ID: ${{ vars.PUBLIC_SONGKICK_ARTIST_ID }}
           PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
+          PUBLIC_FORM_EMAIL: ${{ secrets.PUBLIC_FORM_EMAIL }}
           PUBLIC_INSTAGRAM_URL: ${{ vars.PUBLIC_INSTAGRAM_URL }}
           PUBLIC_X_URL: ${{ vars.PUBLIC_X_URL }}
           PUBLIC_BLUESKY_URL: ${{ vars.PUBLIC_BLUESKY_URL }}
@@ -136,12 +138,63 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-results
+          name: playwright-desktop-results
           path: playwright-results/
           retention-days: 7
 
-  lighthouse:
-    name: Lighthouse Audit
+  test-mobile:
+    name: Playwright E2E Tests (Mobile)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Ramper Environment
+        uses: ./.github/actions/setup-ramper-env
+        
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "PLAYWRIGHT_VERSION=$(npx playwright --version | awk '{print $2}')" >> $GITHUB_ENV
+
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v5
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Install Playwright System Dependencies (if cached)
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Install Playwright Browsers (if not cached)
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium 
+
+      - name: Run Playwright tests
+        run: npx playwright test --project=mobile-chrome
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: http://127.0.0.1:80
+          CI: true
+          PUBLIC_SONGKICK_ARTIST_ID: ${{ vars.PUBLIC_SONGKICK_ARTIST_ID }}
+          PUBLIC_CONTACT_EMAIL: ${{ vars.PUBLIC_CONTACT_EMAIL }}
+          PUBLIC_FORM_EMAIL: ${{ secrets.PUBLIC_FORM_EMAIL }}
+          PUBLIC_INSTAGRAM_URL: ${{ vars.PUBLIC_INSTAGRAM_URL }}
+          PUBLIC_X_URL: ${{ vars.PUBLIC_X_URL }}
+          PUBLIC_BLUESKY_URL: ${{ vars.PUBLIC_BLUESKY_URL }}
+          PUBLIC_MERCH_URL: ${{ vars.PUBLIC_MERCH_URL }}
+
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-mobile-results
+          path: playwright-results/
+          retention-days: 7
+
+  audit-desktop:
+    name: Lighthouse Audit (Desktop)
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -155,13 +208,39 @@ jobs:
         run: node scripts/lighthouse-check.mjs
         env:
           LIGHTHOUSE_TARGET: http://127.0.0.1:80
+          LIGHTHOUSE_PRESET: desktop
 
       - name: Upload Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: lighthouse-reports
-          path: lighthouse-reports/
+          name: lighthouse-desktop-reports
+          path: lighthouse-reports/desktop/
+          retention-days: 7
+
+  audit-mobile:
+    name: Lighthouse Audit (Mobile)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Ramper Environment
+        uses: ./.github/actions/setup-ramper-env
+
+      - name: Run Lighthouse audit
+        run: node scripts/lighthouse-check.mjs
+        env:
+          LIGHTHOUSE_TARGET: http://127.0.0.1:80
+          LIGHTHOUSE_PRESET: mobile
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-mobile-reports
+          path: lighthouse-reports/mobile/
           retention-days: 7
 
   sonar:
@@ -215,7 +294,7 @@ jobs:
 
   push-registry:
     name: Publish to Registry
-    needs: [build, test, lighthouse, sonar, trivy]
+    needs: [build, test-desktop, test-mobile, audit-desktop, audit-mobile, sonar, trivy]
     runs-on: ubuntu-latest
     permissions:
       contents: read

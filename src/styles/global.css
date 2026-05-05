@@ -38,12 +38,60 @@
   }
 }
 
+/* Global Animated Grain */
+@utility animated-grain {
+  position: fixed;
+  inset: -100%;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform:translate(0, 0) }
+  10% { transform:translate(-5%, -10%) }
+  20% { transform:translate(-15%, 5%) }
+  30% { transform:translate(7%, -25%) }
+  40% { transform:translate(-5%, 25%) }
+  50% { transform:translate(-15%, 10%) }
+  60% { transform:translate(15%, 0) }
+  70% { transform:translate(0, 15%) }
+  80% { transform:translate(3%, 35%) }
+  90% { transform:translate(-10%, 10%) }
+}
+
+@utility animate-reveal {
+  animation: reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Standard page layout wrapper with scrolling and padding */
 @utility page-container {
   @apply h-full overflow-y-auto p-8 max-w-5xl;
 }
 
-/* Section headings (h2) used across the site */
+/* Global Dynamic Typography for headers and interactive links */
+h1, h2, h3, .nav-link-interactive {
+  @apply transition-all duration-700 ease-out;
+}
+
+h1:hover, h2:hover, h3:hover, .nav-link-interactive:hover {
+  @apply tracking-[0.001em];
+}
+
+/* Section headings utility */
 @utility section-title {
   @apply text-2xl font-bold tracking-tight text-ramper-black mb-6;
 }
@@ -76,6 +124,15 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  :root {
+    --spacing-section-top: 40px;
+    --mobile-header-h: 100px;
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --spacing-section-top: 285px;
+    }
+  }
   body {
     @apply bg-ramper-white text-ramper-black antialiased;
     font-family: 'Host Grotesk', sans-serif;

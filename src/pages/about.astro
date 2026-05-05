@@ -18,7 +18,8 @@ const { Content } = aboutEntry ? await render(aboutEntry) : { Content: null };
         alt="Ramper - foto de banda"
         class="w-full h-auto object-cover"
         id="band-photo"
-        width={1000}
+        widths={[640, 1000, 1600]}
+        sizes="(min-width: 1024px) 1000px, 100vw"
         loading="eager"
       />
     </div>
