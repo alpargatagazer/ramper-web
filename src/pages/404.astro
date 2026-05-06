@@ -1,0 +1,38 @@
+---
+// src/pages/404.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Ramper | 404">
+  <div class="page-container">
+    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center max-w-2xl mx-auto">
+
+      {/* 404 Number */}
+      <h1 class="text-[120px] md:text-[180px] font-bold text-ramper-black/20 leading-none mb-4">
+        404
+      </h1>
+
+      {/* Message */}
+      <h2 class="text-2xl md:text-3xl font-bold text-ramper-black mb-4">
+        Página no encontrada
+      </h2>
+
+      <p class="text-lg text-ramper-black/70 mb-12 max-w-md">
+        Parece que esta página no existe o ha sido movida.
+      </p>
+
+      {/* Navigation Options */}
+      <div class="flex flex-wrap gap-4 justify-center">
+        <a href="/" class="btn-primary">
+          Volver al inicio
+        </a>
+        <a href="/music" class="btn-outline">
+          Ver música
+        </a>
+        <a href="/shows" class="btn-outline">
+          Ver conciertos
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
