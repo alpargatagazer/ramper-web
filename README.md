@@ -30,9 +30,9 @@ The entire local development environment is containerized. You do not need Node.
 ### Quick Start
 
 1. Clone the repository.
-2. Copy the `.env.example` file to create your local `.env.versions` (this defines node and caddy image versions).
+2. Copy the `.env.example` file to create your local `.env` (this defines environment variables used in local deployment).
    ```bash
-   cp .env.example .env.versions
+   cp .env.example .env
    ```
 3. Start the development environment:
    ```bash
