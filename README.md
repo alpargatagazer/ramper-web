@@ -22,6 +22,8 @@ The official website for **Ramper**, a Spanish slowcore / post-rock project.
 - **Versioning**: Automated SemVer with GitHub Releases and synchronized `package.json`.
 - **Dependency Management**: [Renovate](https://github.com/apps/renovate) (Automated dependency updates)
 - **CI/CD**: GitHub Actions (Containerized build, test, and publish to GHCR)
+- **Visual Effects**: Custom SVG Film Grain & Dynamic Typography (Reactive Tracking)
+- **Assets**: Optimized high-resolution image delivery with direct download support.
 
 ## Development Environment
 
@@ -42,6 +44,7 @@ The entire local development environment is containerized. You do not need Node.
 Once running:
 - The website is mapped to `http://localhost:4321`
 - The Keystatic Admin panel is at `http://localhost:4321/keystatic`
+- Form submissions are handled via **Web3Forms**.
 - The local filesystem is bind-mounted, so edits in VS Code instantly trigger a browser hot-reload.
 
 ### Automated Testing (Local)
@@ -93,3 +96,4 @@ The project is container-ready, thoroughly tested, and pushes its artifacts to G
 To run the full pipeline, including security scans and automated releases, the following GitHub Secrets are required:
 - `SONAR_TOKEN`: Authentication token for SonarQube Cloud.
 - `GH_PAT`: Personal Access Token with `Contents: Read & Write` permissions (used to bypass branch protection for automated versioning).
+- `PUBLIC_WEB3FORMS_ACCESS_KEY`: Access key for Web3Forms (required for the contact form).

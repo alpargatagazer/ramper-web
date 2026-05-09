@@ -26,12 +26,17 @@ const { Content } = await render(release);
     {/* Header: Cover + metadata side by side */}
     <header class="flex flex-col md:flex-row gap-8 mb-12 items-start">
       {release.data.coverImage ? (
-        <div class="relative w-full md:w-[280px] h-auto aspect-square flex-shrink-0 noise-overlay overflow-hidden">
+        <a 
+          href={release.data.coverImage.src} 
+          target="_blank" 
+          title="Ver arte a tamaño completo"
+          class="relative block w-full md:w-[280px] h-auto aspect-square flex-shrink-0 noise-overlay overflow-hidden cursor-zoom-in group"
+        >
           <Picture
             src={release.data.coverImage}
             alt={`Portada de ${release.data.title}`}
-            class="w-full h-full object-cover"
-            widths={[300, 600]}
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
+            widths={[300, 600, 1200]}
             sizes="(min-width: 768px) 280px, 100vw"
             loading="eager"
             decoding="sync"
@@ -40,7 +45,10 @@ const { Content } = await render(release);
             formats={['avif', 'webp']}
             transition:name={`release-cover-${release.id}`}
           />
-        </div>
+          <div class="absolute inset-0 bg-ramper-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+            <span class="text-ramper-white text-xs font-bold uppercase tracking-widest">Ver original</span>
+          </div>
+        </a>
       ) : (
         <div class="w-[280px] aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest flex-shrink-0">
           Cover

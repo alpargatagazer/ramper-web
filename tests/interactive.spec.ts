@@ -33,7 +33,11 @@ test.describe('Interactive Elements and Widgets', () => {
     const widgetLink = page.locator('a.songkick-widget');
     
     // Make sure your environment has PUBLIC_SONGKICK_ARTIST_ID configured
-    await expect(widgetLink).toBeAttached();
+    if (process.env.CI) {
+      await expect(widgetLink).toBeAttached({ timeout: 15000 });
+    } else {
+      await expect(widgetLink).toBeAttached();
+    }
   });
 
   test('Email copy to clipboard functionality on contact page', async ({ page }) => {
