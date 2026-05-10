@@ -121,22 +121,61 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
 
 <script>
   document.addEventListener('astro:page-load', () => {
-    // --- Mailto Form Logic ---
+    // --- Web3Forms Logic ---
     const form = document.getElementById('contact-form') as HTMLFormElement | null;
-    const submitBtn = document.getElementById('contact-submit');
+    const submitBtn = document.getElementById('contact-submit') as HTMLButtonElement | null;
+    
+    // Create a feedback message element for the form
+    const formFeedback = document.createElement('p');
+    formFeedback.className = 'text-sm mt-4 font-bold transition-opacity duration-300 opacity-0';
+    if (form) form.appendChild(formFeedback);
 
     if (form && submitBtn) {
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formEmail = submitBtn.getAttribute('data-form-email');
-        const name = (document.getElementById('contact-name') as HTMLInputElement)?.value || '';
-        const email = (document.getElementById('contact-email') as HTMLInputElement)?.value || '';
-        const message = (document.getElementById('contact-message') as HTMLTextAreaElement)?.value || '';
-
-        const subject = encodeURIComponent(`Mensaje de ${name}`);
-        const body = encodeURIComponent(`De: ${name}\nEmail: ${email}\n\n${message}`);
-
-        window.location.href = `mailto:${formEmail}?subject=${subject}&body=${body}`;
+        
+        // Visual feedback during submission
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Enviando...';
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50');
+        
+        const formData = new FormData(form);
+        // Web3Forms access key from environment variable
+        const accessKey = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY;
+        formData.append('access_key', accessKey);
+        
+        try {
+          const response = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: formData
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            formFeedback.textContent = 'Mensaje enviado correctamente. ¡Gracias!';
+            formFeedback.classList.remove('text-red-500');
+            formFeedback.classList.add('text-ramper-blue-deep', 'opacity-100');
+            form.reset();
+          } else {
+            throw new Error(data.message || 'Error al enviar');
+          }
+        } catch (error) {
+          formFeedback.textContent = 'Hubo un error al enviar. Por favor, intenta de nuevo o copia el email.';
+          formFeedback.classList.remove('text-ramper-blue-deep');
+          formFeedback.classList.add('text-red-500', 'opacity-100');
+        } finally {
+          // Restore button
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('opacity-50');
+          
+          // Hide feedback after 5 seconds
+          setTimeout(() => {
+            formFeedback.classList.remove('opacity-100');
+          }, 5000);
+        }
       });
     }
 

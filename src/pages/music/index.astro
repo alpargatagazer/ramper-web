@@ -52,6 +52,7 @@ const layoutStyles: Record<string, string> = {
                 loading={index < 2 ? "eager" : "lazy"}
                 fetchpriority={index < 2 ? "high" : "auto"}
                 formats={['avif', 'webp']}
+                quality={40}
                 transition:name={`release-cover-${release.id}`}
               />
             ) : (

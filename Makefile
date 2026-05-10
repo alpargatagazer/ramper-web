@@ -96,6 +96,7 @@ build-prod:
 		--build-arg PUBLIC_X_URL=${PUBLIC_X_URL} \
 		--build-arg PUBLIC_BLUESKY_URL=${PUBLIC_BLUESKY_URL} \
 		--build-arg PUBLIC_MERCH_URL=${PUBLIC_MERCH_URL} \
+		--build-arg PUBLIC_WEB3FORMS_ACCESS_KEY=${PUBLIC_WEB3FORMS_ACCESS_KEY} \
 		-t $(PROJECT_NAME)-prod:local \
 		-f docker/Dockerfile.prod .
 
