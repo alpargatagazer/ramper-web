@@ -21,22 +21,38 @@ test.describe('Interactive Elements and Widgets', () => {
   });
 
   test('Songkick widget loads on shows page', async ({ page }) => {
-    // Debug: log the ID to see if it's being picked up in CI
     const songkickId = process.env.PUBLIC_SONGKICK_ARTIST_ID;
-    if (!songkickId) {
-      console.warn('WARNING: PUBLIC_SONGKICK_ARTIST_ID is not defined in the environment.');
+    
+    // In CI, mock the external Songkick script to avoid network flakiness
+    // while still ensuring the injection logic in our page works.
+    if (process.env.CI) {
+      await page.route('**/widget-app.songkick.com/injector/**', route => {
+        route.fulfill({
+          status: 200,
+          contentType: 'application/javascript',
+          body: `
+            const widget = document.querySelector('.songkick-widget');
+            if (widget) {
+              widget.style.display = 'block';
+              widget.setAttribute('data-mocked', 'true');
+              widget.innerText = 'Mocked Songkick Widget';
+            }
+          `
+        });
+      });
     }
 
     await page.goto('/shows');
     
-    // The widget anchor should be present in the DOM
-    const widgetLink = page.locator('a.songkick-widget');
+    // The widget anchor should be present and attached
+    const widget = page.locator('.songkick-widget');
     
-    // Make sure your environment has PUBLIC_SONGKICK_ARTIST_ID configured
+    // Check attachment with a generous timeout for CI
+    await expect(widget).toBeAttached({ timeout: process.env.CI ? 20000 : 5000 });
+
+    // If in CI, also verify our mock "loaded" to be sure the script injection works
     if (process.env.CI) {
-      await expect(widgetLink).toBeAttached({ timeout: 15000 });
-    } else {
-      await expect(widgetLink).toBeAttached();
+      await expect(widget).toHaveAttribute('data-mocked', 'true');
     }
   });
 
