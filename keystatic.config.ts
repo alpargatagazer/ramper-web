@@ -7,7 +7,10 @@ export default config({
   // Perfect for getting started. Once you deploy, you can switch to `github`
   // mode to edit content directly on the production site.
   storage: {
-    kind: 'local',
+    kind: 'cloud',
+  },
+  cloud: {
+    project: 'ramper/ramper-web',
   },
 
   // Singletons: one-off data entries for the site
