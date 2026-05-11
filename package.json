@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@astrojs/markdoc": "^0.15.0",
+    "@astrojs/node": "^9.5.5",
     "@astrojs/react": "^4.0.0",
     "@astrojs/rss": "^4.0.0",
     "@astrojs/sitemap": "^3.0.0",
@@ -28,7 +29,7 @@
     "@astrojs/check": "^0.9.9",
     "@playwright/test": "1.59.1",
     "dotenv": "^17.4.2",
-    "lighthouse": "^13.1.0",
+    "lighthouse": "^13.3.0",
     "typescript": "^6.0.0"
   },
   "overrides": {

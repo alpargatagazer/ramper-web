@@ -3,12 +3,14 @@
 import { config, fields, collection, singleton } from '@keystatic/core';
 
 export default config({
-  // `local` mode saves files directly to the filesystem (src/content/*).
-  // Perfect for getting started. Once you deploy, you can switch to `github`
-  // mode to edit content directly on the production site.
-  storage: {
-    kind: 'cloud',
-  },
+
+  storage: process.env.NODE_ENV === 'production' 
+    ? {
+        kind: 'cloud',
+      }
+    : {
+        kind: 'local',
+      },
   cloud: {
     project: 'ramper/ramper-web',
   },

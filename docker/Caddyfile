@@ -1,14 +1,17 @@
 :80 {
-	root * /usr/share/caddy
+	root * /app/dist/client
 	
 	# Enable compression
 	encode zstd gzip
 
-	# Serve static files
+	# Serve static files if they exist
 	file_server
 
-	# Fallback for SPA/Astro routes
-	try_files {path} {path}/ /index.html
+	# Proxy dynamic requests to the Astro Node server (Hybrid mode)
+	@not_static {
+		not file
+	}
+	reverse_proxy @not_static localhost:4321
 
 	# Cache Astro static assets (hashed filenames)
 	@static {
