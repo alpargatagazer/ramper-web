@@ -21,8 +21,7 @@ test.describe('Interactive Elements and Widgets', () => {
   });
 
   test('Songkick widget loads on shows page', async ({ page }) => {
-    const songkickId = process.env.PUBLIC_SONGKICK_ARTIST_ID;
-    
+
     // In CI, mock the external Songkick script to avoid network flakiness
     // while still ensuring the injection logic in our page works.
     if (process.env.CI) {

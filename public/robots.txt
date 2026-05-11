@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://ramper.band/sitemap-index.xml

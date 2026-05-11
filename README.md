@@ -13,7 +13,7 @@ The official website for **Ramper**, a Spanish slowcore / post-rock project.
 ## Tech Stack
 - **Framework**: [Astro](https://astro.build) (Static mode for maximum performance)
 - **Design**: [Figma](https://www.figma.com) (For the UI design)
-- **CMS**: [Keystatic](https://keystatic.com/) (Local mode/Git-backed CMS)
+- **CMS**: [Keystatic](https://keystatic.com/) (Local and cloud mode)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (Utility-first CSS via Vite plugin)
 - **Infrastructure**: Docker & Docker Compose
 - **Quality Assurance**: Playwright (E2E Testing) & Lighthouse (Performance & Accessibility Audits)
@@ -94,6 +94,9 @@ The project is container-ready, thoroughly tested, and pushes its artifacts to G
 
 ### Required Secrets for CI/CD
 To run the full pipeline, including security scans and automated releases, the following GitHub Secrets are required:
-- `SONAR_TOKEN`: Authentication token for SonarQube Cloud.
 - `GH_PAT`: Personal Access Token with `Contents: Read & Write` permissions (used to bypass branch protection for automated versioning).
+- `PUBLIC_FORM_EMAIL`: Email address for the contact form.
 - `PUBLIC_WEB3FORMS_ACCESS_KEY`: Access key for Web3Forms (required for the contact form).
+- `SONAR_TOKEN`: Authentication token for SonarQube Cloud.
+
+The following variables are also required: `PUBLIC_SONGKICK_ARTIST_ID`, `PUBLIC_CONTACT_EMAIL`, `PUBLIC_INSTAGRAM_URL`, `PUBLIC_X_URL`, `PUBLIC_BLUESKY_URL`, `PUBLIC_MERCH_URL`, `SITE_URL`.

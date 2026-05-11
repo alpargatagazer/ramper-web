@@ -80,6 +80,7 @@ jobs:
             --build-arg PUBLIC_BLUESKY_URL="${{ vars.PUBLIC_BLUESKY_URL }}" \
             --build-arg PUBLIC_MERCH_URL="${{ vars.PUBLIC_MERCH_URL }}" \
             --build-arg PUBLIC_WEB3FORMS_ACCESS_KEY="${{ secrets.PUBLIC_WEB3FORMS_ACCESS_KEY }}" \
+            --build-arg SITE_URL="${{ vars.SITE_URL }}" \
             -t ${{ env.LOCAL_TAG }} \
             -f docker/Dockerfile.prod .
 
