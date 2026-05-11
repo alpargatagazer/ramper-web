@@ -36,12 +36,12 @@ const releases = defineCollection({
   }),
 });
 
-// 3. Singletons (About and Links)
+// 3. Singletons
 // In Astro 5, Singletons are also collections, but with just one entry
 const about = defineCollection({
   loader: glob({ pattern: 'index.mdoc', base: 'src/content/about' }),
   schema: z.object({
-    bio: z.string().optional(),
+    // Content is handled via the Markdoc body
   }),
 });
 
