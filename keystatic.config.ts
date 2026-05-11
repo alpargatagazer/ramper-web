@@ -7,6 +7,7 @@ export default config({
   storage: process.env.NODE_ENV === 'production' 
     ? {
         kind: 'cloud',
+        branchPrefix: 'keystatic/',
       }
     : {
         kind: 'local',
