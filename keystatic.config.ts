@@ -21,6 +21,7 @@ export default config({
     about: singleton({
       label: 'About Section',
       path: 'src/content/about/index',
+      format: { data: 'json', contentField: 'bio' },
       schema: {
         bio: fields.markdoc({
           label: 'Band Biography',
