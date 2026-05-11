@@ -75,5 +75,6 @@ HEALTHCHECK --interval=15s --timeout=3s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:80/api/health || exit 1
 
 # Start both Node and Caddy
-# We use the JSON exec form with sh -c to handle multiple processes and signals correctly
-CMD ["sh", "-c", "node dist/server/entry.mjs & caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"]
+# We use the JSON exec form with sh -c to handle multiple processes and signals correctly.
+# 'exec' for Caddy ensures it becomes the main process (PID 1) of the shell.
+CMD ["sh", "-c", "node dist/server/entry.mjs & exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"]

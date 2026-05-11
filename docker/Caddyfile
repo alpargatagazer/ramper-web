@@ -4,11 +4,16 @@
 	# Enable compression
 	encode zstd gzip
 
-	# Serve static files if they exist
+	# 1. ALWAYS proxy Keystatic and API to the Node server
+	# We do this first to ensure static placeholders in dist/ don't shadow the admin UI
+	reverse_proxy /keystatic* /api/* localhost:4321
+
+	# 2. Serve static files if they exist for other paths
 	file_server
 
-	# Proxy dynamic requests to the Astro Node server (Hybrid mode)
+	# 3. Fallback for SPA/SSR routes (if not a static file and not already proxied)
 	@not_static {
+		not path /keystatic* /api/*
 		not file
 	}
 	reverse_proxy @not_static localhost:4321
