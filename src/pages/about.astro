@@ -25,8 +25,8 @@ const { Content } = aboutEntry ? await render(aboutEntry) : { Content: null };
     </div>
 
     {/* Bio text — below the photo */}
-    <div class="px-8 py-6 max-w-4xl" id="about-bio">
-      <div class="text-xl leading-tight tracking-tight text-ramper-black">
+    <div class="px-8 pt-2 pb-8 max-w-4xl" id="about-bio">
+      <div class="prose-ramper text-xl leading-tight tracking-tight text-ramper-black">
         {Content && <Content />}
       </div>
     </div>
