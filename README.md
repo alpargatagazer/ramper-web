@@ -11,7 +11,7 @@ The official website for **Ramper**, a Spanish slowcore / post-rock project.
 *Built entirely independently by the band.*
 
 ## Tech Stack
-- **Framework**: [Astro](https://astro.build) (Static mode for maximum performance)
+- **Framework**: [Astro](https://astro.build) (Static by default, with dynamic API routing for newsletter subscriptions)
 - **Design**: [Figma](https://www.figma.com) (For the UI design)
 - **CMS**: [Keystatic](https://keystatic.com/) (Local and cloud mode)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (Utility-first CSS via Vite plugin)
@@ -76,6 +76,33 @@ The project includes an automated test suite matching the GitHub Actions pipelin
 - `scripts/` — Node.js utility scripts (like the Lighthouse auditor)
 - `.github/workflows/` — CI/CD Pipeline definition
   - `.github/actions/` — Shared composite actions for DRY CI execution
+
+## Newsletter Automation (Listmonk)
+
+The site integrates with **Listmonk** to manage newsletter subscriptions:
+- **Signup Form**: Users can subscribe using the form in the UI. Subscriptions are proxied through the server endpoint `/api/newsletter/subscribe` which routes requests internally to the Listmonk API using the `INTERNAL_LISTMONK_URL` (or falls back to `PUBLIC_NEWSLETTER_URL`).
+- **Automated Campaigns**: The script `scripts/send-newsletter.mjs` parses new posts in `src/content/posts`, compares the latest post slug against the tracking file, and dispatches an email campaign to Listmonk.
+  - This script is automatically run in the background when the production Docker container starts.
+  - State is tracked in `.last-newsletter.json` which is mapped to a persistent volume in production to prevent duplicate campaign dispatches.
+
+### Local Testing of Newsletter Script
+To test the newsletter script locally:
+1. Ensure you have the relevant variables in your local `.env` file:
+   ```ini
+   LISTMONK_URL=http://localhost:9000
+   LISTMONK_USERNAME=your-username
+   LISTMONK_PASSWORD=your-password
+   LISTMONK_LIST_ID=1
+   SITE_URL=http://localhost:4321
+   ```
+2. Run a dry run to verify the latest post is read correctly:
+   ```bash
+   npm run newsletter:test
+   ```
+3. Run the script normally to submit a campaign (if Listmonk is reachable):
+   ```bash
+   npm run newsletter:send
+   ```
 
 ## CI/CD Pipeline
 

@@ -10,7 +10,7 @@ export async function GET(context: any) {
 
     title: 'Ramper | Transmissions',
     description: 'News, announcements and releases from the Spanish post-rock project.',
-    site: context.site,
+    site: context.site || 'https://ramper.band',
 
     items: posts.map((post) => ({
       title: post.data.title,

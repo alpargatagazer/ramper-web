@@ -52,5 +52,16 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      watch: {
+        ignored: [
+          '**/.astro/**',
+          '**/dist/**',
+          '**/playwright-results/**',
+          '**/lighthouse-reports/**',
+          '**/secrets/**',
+        ],
+      },
+    },
   },
 });

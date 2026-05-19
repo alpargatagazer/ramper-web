@@ -7,7 +7,9 @@
     "dev": "astro dev --host 0.0.0.0",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "newsletter:send": "node scripts/send-newsletter.mjs",
+    "newsletter:test": "node scripts/send-newsletter.mjs --dry-run"
   },
   "dependencies": {
     "@astrojs/markdoc": "^0.15.0",
@@ -29,6 +31,7 @@
     "@astrojs/check": "^0.9.9",
     "@playwright/test": "1.60.0",
     "dotenv": "^17.4.2",
+    "gray-matter": "^4.0.3",
     "lighthouse": "^13.3.0",
     "typescript": "^6.0.0"
   },

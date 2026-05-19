@@ -2,6 +2,7 @@
 // src/pages/news/index.astro
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import NewsletterForm from '../../components/NewsletterForm.astro';
 
 const posts = await getCollection('posts');
 // Newest first
@@ -49,6 +50,10 @@ posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).val
             </article>
           ))
         )}
+      </div>
+
+      <div class="mt-12">
+        <NewsletterForm />
       </div>
     </div>
   </div>
