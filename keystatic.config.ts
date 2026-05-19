@@ -26,6 +26,12 @@ export default config({
         bio: fields.markdoc({
           label: 'Band Biography',
           description: 'The main "About Us" text.',
+          options: {
+            image: {
+              directory: 'public/images/about',
+              publicPath: '/images/about/'
+            }
+          }
         }),
       },
     }),
@@ -52,6 +58,12 @@ export default config({
         }),
         content: fields.markdoc({
           label: 'Post Content',
+          options: {
+            image: {
+              directory: 'public/images/posts',
+              publicPath: '/images/posts/'
+            }
+          }
         }),
       },
     }),
@@ -101,6 +113,12 @@ export default config({
         ),
         content: fields.markdoc({
           label: 'Description / Credits',
+          options: {
+            image: {
+              directory: 'public/images/releases',
+              publicPath: '/images/releases/'
+            }
+          }
         }),
       },
     }),

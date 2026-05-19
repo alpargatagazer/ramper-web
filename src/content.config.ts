@@ -8,7 +8,7 @@ const posts = defineCollection({
   loader: glob({ pattern: '**/*.mdoc', base: 'src/content/posts' }),
   schema: z.object({
     title: z.string(),
-    date: z.string(), // Keystatic saves dates as strings
+    date: z.union([z.string(), z.date()]).transform((val) => val instanceof Date ? val.toISOString().split('T')[0] : val),
     summary: z.string(),
   }),
 });
@@ -18,7 +18,7 @@ const releases = defineCollection({
   loader: glob({ pattern: '**/*.mdoc', base: 'src/content/releases' }),
   schema: ({ image }) => z.object({
     title: z.string(),
-    releaseDate: z.string(),
+    releaseDate: z.union([z.string(), z.date()]).transform((val) => val instanceof Date ? val.toISOString().split('T')[0] : val),
     type: z.enum(['album', 'ep', 'single', 'live', 'demo', 'session']),
     coverImage: image().optional(),
     bandcampUrl: z.string().url().optional(),

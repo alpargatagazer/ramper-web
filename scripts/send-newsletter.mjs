@@ -29,6 +29,28 @@ async function getSecret(envVar, fileVar) {
   return process.env[envVar];
 }
 
+// Helper to rewrite relative links in markdown/HTML to absolute URLs
+function makeLinksAbsolute(content, siteUrl) {
+  const cleanSiteUrl = siteUrl.replace(/\/$/, '');
+  
+  // 1. Rewrite Markdown links [text](/path) or [text](path)
+  let updated = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, url) => {
+    // Skip absolute URLs, mailto, hashes, etc.
+    if (/^(https?:\/\/|mailto:|#)/i.test(url)) {
+      return match;
+    }
+    const relativePath = url.startsWith('/') ? url : `/${url}`;
+    return `[${text}](${cleanSiteUrl}${relativePath})`;
+  });
+
+  // 2. Rewrite HTML src/href attributes like src="/path" or href="/path"
+  updated = updated.replace(/(src|href)=["']\/([^"']*)["']/g, (match, attr, path) => {
+    return `${attr}="${cleanSiteUrl}/${path}"`;
+  });
+
+  return updated;
+}
+
 // Helper to verify connection to Listmonk with retries
 async function checkListmonkConnection(url, auth, retries = 10, delay = 3000) {
   for (let i = 0; i < retries; i++) {
@@ -117,15 +139,26 @@ async function sendToListmonk(post) {
   // Verify listmonk connection first before sending campaign
   await checkListmonkConnection(LISTMONK_URL, auth);
 
+  const formattedDate = new Date(post.date).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const absoluteBody = makeLinksAbsolute(post.body, SITE_URL);
+
+  const fullMarkdownBody = `# ${post.title}\n\n*${formattedDate}*\n\n**${post.summary}**\n\n---\n\n${absoluteBody}\n\n---\n\n[Leer en la web](${SITE_URL}/news/${post.slug})`;
+  const fullPlainBody = `${post.title}\n${formattedDate}\n\n${post.summary}\n\n---\n\n${absoluteBody}\n\n---\nLeer en la web: ${SITE_URL}/news/${post.slug}`;
+
   // 1. Create a campaign
   const campaignPayload = {
     name: `Automated: ${post.title}`,
-    subject: `Nueva noticia de Ramper: ${post.title}`,
+    subject: `${post.title}`,
     lists: [parseInt(LIST_ID, 10)],
     type: 'regular',
     content_type: 'markdown', // Listmonk supports markdown out of the box!
-    body: `${post.body}\n\n---\n[Leer en la web](${SITE_URL}/news/${post.slug})`,
-    altbody: `${post.summary}\n\nLeer completo: ${SITE_URL}/news/${post.slug}`,
+    body: fullMarkdownBody,
+    altbody: fullPlainBody,
     send_at: new Date().toISOString() // Send immediately
   };
 
