@@ -1,6 +1,7 @@
 // src/content.config.ts
 
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 // 1. News Posts Collection
@@ -21,12 +22,12 @@ const releases = defineCollection({
     releaseDate: z.string(),
     type: z.enum(['album', 'ep', 'single', 'live', 'demo', 'session']),
     coverImage: image().optional(),
-    bandcampUrl: z.string().url().optional(),
-    spotifyUrl: z.string().url().optional(),
-    tidalUrl: z.string().url().optional(),
-    qobuzUrl: z.string().url().optional(),
-    appleMusicUrl: z.string().url().optional(),
-    storeUrl: z.string().url().optional(),
+    bandcampUrl: z.url().optional(),
+    spotifyUrl: z.url().optional(),
+    tidalUrl: z.url().optional(),
+    qobuzUrl: z.url().optional(),
+    appleMusicUrl: z.url().optional(),
+    storeUrl: z.url().optional(),
     tracks: z.array(
       z.object({
         title: z.string(),

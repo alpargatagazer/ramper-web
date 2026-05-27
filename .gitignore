@@ -17,5 +17,6 @@ dist/
 playwright-results/
 lighthouse-reports/
 
-# My own bitacora
-LEARNING.md
+# Markdown files (except README)
+*.md
+!README.md
