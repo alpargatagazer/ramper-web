@@ -9,7 +9,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "newsletter:send": "node scripts/send-newsletter.mjs",
-    "newsletter:test": "node scripts/send-newsletter.mjs --dry-run"
+    "newsletter:test": "node scripts/send-newsletter.mjs --dry-run",
+    "newsletter:test:local": "rm -f .last-newsletter.json && LISTMONK_URL=http://localhost:9000 LISTMONK_USERNAME_FILE=../ramper-web-deploy/secrets/listmonk_admin_username.txt LISTMONK_PASSWORD_FILE=../ramper-web-deploy/secrets/listmonk_admin_password.txt NEWSLETTER_TRACKING_FILE=.last-newsletter.json node scripts/send-newsletter.mjs"
   },
   "dependencies": {
     "@astrojs/markdoc": "^0.15.0",

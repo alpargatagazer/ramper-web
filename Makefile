@@ -157,11 +157,3 @@ scan: build-prod
 clean:
 	$(COMPOSE_DEV) down -v --rmi local
 	$(COMPOSE_PROD) down -v --rmi local || true
-
-# --- Newsletter ---
-
-newsletter-test:
-	node scripts/send-newsletter.mjs --dry-run
-
-newsletter-send:
-	node scripts/send-newsletter.mjs
