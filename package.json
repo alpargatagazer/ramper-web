@@ -9,8 +9,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "newsletter:send": "node scripts/send-newsletter.mjs",
-    "newsletter:test": "node scripts/send-newsletter.mjs --dry-run",
-    "newsletter:test:local": "rm -f .last-newsletter.json && LISTMONK_URL=http://localhost:9000 LISTMONK_USERNAME_FILE=../ramper-web-deploy/secrets/listmonk_admin_username.txt LISTMONK_PASSWORD_FILE=../ramper-web-deploy/secrets/listmonk_admin_password.txt NEWSLETTER_TRACKING_FILE=.last-newsletter.json node scripts/send-newsletter.mjs"
+    "newsletter:test:dry": "node scripts/send-newsletter.mjs --dry-run",
+    "newsletter:test:local": "rm -f .last-newsletter.json && node scripts/send-newsletter.mjs"
   },
   "dependencies": {
     "@astrojs/markdoc": "^1.0.5",
@@ -37,7 +37,13 @@
     "typescript": "^6.0.0"
   },
   "overrides": {
-    "yaml": "^2.3.0",
-    "js-yaml": "^4.2.0"
+    "yaml": "^2.3.0"
+  },
+  "allowScripts": {
+    "sharp@0.34.5": true,
+    "sharp@0.35.1": true,
+    "esbuild@0.27.7": true,
+    "fsevents@2.3.3": true,
+    "fsevents@2.3.2": true
   }
 }

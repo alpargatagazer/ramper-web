@@ -34,13 +34,20 @@ function makeLinksAbsolute(content, siteUrl) {
   const cleanSiteUrl = siteUrl.replace(/\/$/, '');
   
   // 1. Rewrite Markdown links [text](/path) or [text](path)
-  let updated = content.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, url) => {
+  // We use a more robust regex to handle parenthesis inside the URL (e.g. `\(1978\)`)
+  let updated = content.replace(/(!?)\[([^\]]*)\]\((.+?)\)/g, (match, isImage, text, url) => {
+    // Keystatic escapes parenthesis. Clean them up for the email!
+    let cleanUrl = url.replace(/\\([()])/g, '$1');
+    
     // Skip absolute URLs, mailto, hashes, etc.
-    if (/^(https?:\/\/|mailto:|#)/i.test(url)) {
-      return match;
+    if (/^(https?:\/\/|mailto:|#)/i.test(cleanUrl)) {
+      return `${isImage}[${text}](${cleanUrl})`;
     }
-    const relativePath = url.startsWith('/') ? url : `/${url}`;
-    return `[${text}](${cleanSiteUrl}${relativePath})`;
+    const relativePath = cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`;
+    
+    // Encode the URI properly (Listmonk markdown parser needs valid URIs for images with spaces)
+    const encodedPath = encodeURI(relativePath);
+    return `${isImage}[${text}](${cleanSiteUrl}${encodedPath})`;
   });
 
   // 2. Rewrite HTML src/href attributes like src="/path" or href="/path"
@@ -51,31 +58,55 @@ function makeLinksAbsolute(content, siteUrl) {
   return updated;
 }
 
-// Helper to verify connection to Listmonk with retries
-async function checkListmonkConnection(url, auth, retries = 10, delay = 3000) {
+// Authenticate with Listmonk via login API (v6+) and return session cookie.
+// Falls back to Basic Auth header for older versions.
+async function authenticateListmonk(url, username, password, retries = 10, delay = 3000) {
   for (let i = 0; i < retries; i++) {
     try {
-      const res = await fetch(`${url}/api/campaigns?limit=1`, {
-        headers: {
-          'Authorization': `Basic ${auth}`
-        }
+      // Try v6+ login endpoint first
+      const loginRes = await fetch(`${url}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+        redirect: 'manual',
       });
-      if (res.ok || res.status === 401) {
-        if (res.status === 401) {
-          console.warn(`[WARNING] Listmonk is reachable but returned 401 Unauthorized. Checking auth...`);
-        } else {
-          console.log('[INFO] Successfully connected to Listmonk.');
+
+      if (loginRes.ok || loginRes.status === 303) {
+        const setCookie = loginRes.headers.get('set-cookie');
+        if (setCookie) {
+          const cookie = setCookie.split(';')[0];
+          console.log('[INFO] Authenticated with Listmonk via login API (v6+).');
+          return { type: 'cookie', value: cookie };
         }
-        return;
       }
-      console.warn(`[WARNING] Listmonk returned status ${res.status}, retrying connection check...`);
+
+      // Fallback: try Basic Auth (older versions)
+      const basicAuth = Buffer.from(`${username}:${password}`).toString('base64');
+      const testRes = await fetch(`${url}/api/campaigns?limit=1`, {
+        headers: { 'Authorization': `Basic ${basicAuth}` },
+      });
+
+      if (testRes.ok) {
+        console.log('[INFO] Authenticated with Listmonk via Basic Auth.');
+        return { type: 'basic', value: basicAuth };
+      }
+
+      const body = await testRes.text();
+      console.warn(`[WARNING] Listmonk auth failed (status ${testRes.status}): ${body.trim()}`);
     } catch (err) {
       console.log(`[INFO] Waiting for Listmonk to start (attempt ${i + 1}/${retries})...`);
     }
     await new Promise((resolve) => setTimeout(resolve, delay));
   }
-  throw new Error('Could not connect to Listmonk after several retries.');
+  throw new Error('Could not authenticate with Listmonk after several retries.');
 }
+
+function authHeaders(auth) {
+  return auth.type === 'cookie'
+    ? { 'Cookie': auth.value }
+    : { 'Authorization': `Basic ${auth.value}` };
+}
+
 
 async function getLatestPost() {
   const files = await fs.readdir(POSTS_DIR);
@@ -134,10 +165,7 @@ async function sendToListmonk(post) {
     throw new Error('Listmonk credentials are not fully configured in environment or secrets.');
   }
 
-  const auth = Buffer.from(`${username}:${password}`).toString('base64');
-
-  // Verify listmonk connection first before sending campaign
-  await checkListmonkConnection(LISTMONK_URL, auth);
+  const auth = await authenticateListmonk(LISTMONK_URL, username, password);
 
   const formattedDate = new Date(post.date).toLocaleDateString('es-ES', {
     year: 'numeric',
@@ -156,17 +184,17 @@ async function sendToListmonk(post) {
     subject: `${post.title}`,
     lists: [parseInt(LIST_ID, 10)],
     type: 'regular',
-    content_type: 'markdown', // Listmonk supports markdown out of the box!
+    content_type: 'markdown',
     body: fullMarkdownBody,
     altbody: fullPlainBody,
-    send_at: new Date().toISOString() // Send immediately
+    send_at: new Date(Date.now() + 60000).toISOString()
   };
 
   const createRes = await fetch(`${LISTMONK_URL}/api/campaigns`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Basic ${auth}`
+      ...authHeaders(auth),
     },
     body: JSON.stringify(campaignPayload)
   });
@@ -185,7 +213,7 @@ async function sendToListmonk(post) {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Basic ${auth}`
+      ...authHeaders(auth),
     },
     body: JSON.stringify({ status: 'running' })
   });

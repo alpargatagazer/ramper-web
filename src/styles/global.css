@@ -88,7 +88,7 @@ h1, h2, h3, .nav-link-interactive {
 }
 
 h1:hover, h2:hover, h3:hover, .nav-link-interactive:hover {
-  @apply tracking-[0.001em];
+  @apply tracking-[0.0001em];
 }
 
 /* Section headings utility */

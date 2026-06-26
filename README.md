@@ -82,26 +82,22 @@ The project includes an automated test suite matching the GitHub Actions pipelin
 The site integrates with **Listmonk** to manage newsletter subscriptions:
 - **Signup Form**: Users can subscribe using the form in the UI. Subscriptions are proxied through the server endpoint `/api/newsletter/subscribe` which routes requests internally to the Listmonk API using the `INTERNAL_LISTMONK_URL` (or falls back to `PUBLIC_NEWSLETTER_URL`).
 - **Automated Campaigns**: The script `scripts/send-newsletter.mjs` parses new posts in `src/content/posts`, compares the latest post slug against the tracking file, and dispatches an email campaign to Listmonk.
+  - The script uses the Listmonk v6 API (cookie-based session login) to authenticate.
   - This script is automatically run in the background when the production Docker container starts.
   - State is tracked in `.last-newsletter.json` which is mapped to a persistent volume in production to prevent duplicate campaign dispatches.
+- **Docker Stack**: Listmonk (and its PostgreSQL database) are now fully integrated into both the `dev` and `prod` Docker Compose stacks. The initial superadmin user is automatically created upon first launch via environment variables.
 
 ### Local Testing of Newsletter Script
-To test the newsletter script locally:
-1. Ensure you have the relevant variables in your local `.env` file:
-   ```ini
-   LISTMONK_URL=http://localhost:9000
-   LISTMONK_USERNAME=your-username
-   LISTMONK_PASSWORD=your-password
-   LISTMONK_LIST_ID=1
-   SITE_URL=http://localhost:4321
-   ```
-2. Run a dry run to verify the latest post is read correctly:
+To test the newsletter script locally against the development Listmonk container:
+1. Ensure the development environment is running (`make dev-up`).
+2. Run the dedicated Makefile target, passing your Listmonk API credentials:
    ```bash
-   npm run newsletter:test
+   make test-newsletter USERNAME=apiuser PASSWORD=your_password
    ```
-3. Run the script normally to submit a campaign (if Listmonk is reachable):
+   *(This uses the `npm run newsletter:test:local` script under the hood, but injects the required environment variables securely).*
+3. To test a dry-run without connecting to Listmonk:
    ```bash
-   npm run newsletter:send
+   npm run newsletter:test:dry
    ```
 
 ## CI/CD Pipeline

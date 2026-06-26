@@ -125,6 +125,15 @@ test: dev-up
 	$(COMPOSE_DEV) --profile test rm -f playwright; \
 	exit $$EXIT_CODE
 
+# Use it like: make test-newsletter USERNAME=<name> PASSWORD=<pass>
+test-newsletter: dev-up
+	@echo "Testing newsletter with local Listmonk..."
+	LISTMONK_URL=http://localhost:9000 \
+	LISTMONK_USERNAME=$(USERNAME) \
+	LISTMONK_PASSWORD=$(PASSWORD) \
+	NEWSLETTER_TRACKING_FILE=.last-newsletter.json \
+	npm run newsletter:test:local
+
 _run-audit:
 	@echo "Starting production container for audit on $(AUDIT_URL)..."
 	docker run -d --name ramper-audit -p $(AUDIT_PORT):80 $(PROJECT_NAME)-prod:local

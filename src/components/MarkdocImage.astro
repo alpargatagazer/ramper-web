@@ -1,0 +1,9 @@
+---
+const { src, alt, title } = Astro.props;
+
+let resolvedSrc = src;
+if (typeof resolvedSrc === 'string') {
+  resolvedSrc = resolvedSrc.replace(/\\([()])/g, '$1');
+}
+---
+<img src={resolvedSrc} alt={alt || ''} title={title} />
