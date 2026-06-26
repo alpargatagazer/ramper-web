@@ -1,7 +1,9 @@
 ---
 // src/pages/news/[slug].astro
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
+import { formatDate } from '@/utils/dates';
+import BackLink from '@/components/BackLink.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -24,7 +26,7 @@ const { Content } = await render(post);
           datetime={post.data.date}
           class="text-sm text-ramper-blue-deep mb-2 block"
         >
-          {new Date(post.data.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+          {formatDate(post.data.date)}
         </time>
         <h1 class="text-4xl font-bold tracking-tight text-ramper-black mb-4">
           {post.data.title}
@@ -39,12 +41,7 @@ const { Content } = await render(post);
       </div>
 
       <footer class="pt-8 border-t border-ramper-black/10">
-        <a
-          href="/news"
-          class="link-secondary text-ramper-blue-deep hover:text-ramper-blue-mid"
-        >
-          ← volver a noticias
-        </a>
+        <BackLink href="/news">← volver a noticias</BackLink>
       </footer>
     </article>
   </div>

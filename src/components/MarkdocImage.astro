@@ -6,4 +6,11 @@ if (typeof resolvedSrc === 'string') {
   resolvedSrc = resolvedSrc.replace(/\\([()])/g, '$1');
 }
 ---
-<img src={resolvedSrc} alt={alt || ''} title={title} />
+<img
+  src={resolvedSrc}
+  alt={alt || ''}
+  title={title}
+  loading="lazy"
+  decoding="async"
+  class="w-full h-auto rounded-md shadow-sm my-4"
+/>

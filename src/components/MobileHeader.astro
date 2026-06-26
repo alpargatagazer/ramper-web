@@ -1,0 +1,40 @@
+---
+import { Image } from 'astro:assets';
+import logoImage from '@/assets/logo.webp';
+---
+
+<header class="absolute top-0 left-0 right-0 z-50 bg-ramper-white lg:hidden" id="mobile-header">
+  <div class="flex items-center justify-between px-5 pt-8 pb-3">
+    <a href="/" id="mobile-logo-link">
+      <Image
+        src={logoImage}
+        alt="Ramper"
+        class="h-[65px] w-auto"
+        width={250}
+        loading="eager"
+        decoding="sync"
+        fetchpriority="high"
+      />
+    </a>
+    <button
+      id="mobile-menu-toggle"
+      class="p-1 text-ramper-black cursor-pointer"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+    >
+      {/* Hamburger icon */}
+      <svg id="hamburger-icon" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <line x1="4" y1="6" x2="20" y2="6"></line>
+        <line x1="4" y1="12" x2="20" y2="12"></line>
+        <line x1="4" y1="18" x2="20" y2="18"></line>
+      </svg>
+      {/* Close icon (hidden by default) */}
+      <svg id="close-icon" class="w-10 h-10 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+        <line x1="6" y1="18" x2="18" y2="6"></line>
+      </svg>
+    </button>
+  </div>
+  {/* Thin divider line */}
+  <div class="mx-4 border-b border-ramper-black/20"></div>
+</header>

@@ -20,6 +20,6 @@ export async function GET(context: any) {
     })),
 
     // (optional) inject custom xml
-    customData: `<language>en-us</language>`,
+    customData: `<language>es</language>`,
   });
 }

@@ -1,9 +1,12 @@
 ---
 // src/pages/music/[slug].astro
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
 import { Picture } from 'astro:assets';
-import { typeLabels } from '../../constants';
+import { typeLabels } from '@/constants';
+import { formatDate } from '@/utils/dates';
+import ExternalLink from '@/components/ExternalLink.astro';
+import BackLink from '@/components/BackLink.astro';
 
 export async function getStaticPaths() {
   const releases = await getCollection('releases');
@@ -65,73 +68,43 @@ const { Content } = await render(release);
             {typeLabels[release.data.type]}
           </span>
           <time datetime={release.data.releaseDate}>
-            {new Date(release.data.releaseDate).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+            {formatDate(release.data.releaseDate)}
           </time>
         </p>
 
         <div class="flex gap-3 flex-wrap">
           {/* Main Actions */}
           {release.data.storeUrl && (
-            <a
-              href={release.data.storeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-primary"
-            >
+            <ExternalLink href={release.data.storeUrl} variant="primary">
               Comprar
-            </a>
+            </ExternalLink>
           )}
           {release.data.bandcampUrl && (
-            <a
-              href={release.data.bandcampUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-secondary"
-            >
+            <ExternalLink href={release.data.bandcampUrl} variant="secondary">
               Bandcamp
-            </a>
+            </ExternalLink>
           )}
 
           {/* Streaming Platforms */}
           {release.data.spotifyUrl && (
-            <a
-              href={release.data.spotifyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-outline"
-            >
+            <ExternalLink href={release.data.spotifyUrl} variant="outline">
               Spotify
-            </a>
+            </ExternalLink>
           )}
           {release.data.appleMusicUrl && (
-            <a
-              href={release.data.appleMusicUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-outline"
-            >
+            <ExternalLink href={release.data.appleMusicUrl} variant="outline">
               Apple Music
-            </a>
+            </ExternalLink>
           )}
           {release.data.tidalUrl && (
-            <a
-              href={release.data.tidalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-outline"
-            >
+            <ExternalLink href={release.data.tidalUrl} variant="outline">
               Tidal
-            </a>
+            </ExternalLink>
           )}
           {release.data.qobuzUrl && (
-            <a
-              href={release.data.qobuzUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-outline"
-            >
+            <ExternalLink href={release.data.qobuzUrl} variant="outline">
               Qobuz
-            </a>
+            </ExternalLink>
           )}
         </div>
       </div>
@@ -173,12 +146,7 @@ const { Content } = await render(release);
 
     {/* Footer: back link */}
     <footer class="pt-8 border-t border-ramper-black/10">
-      <a
-        href="/music"
-        class="link-secondary text-ramper-blue-deep hover:text-ramper-blue-mid"
-      >
-        ← volver a música
-      </a>
+      <BackLink href="/music">← volver a música</BackLink>
     </footer>
     </div>
   </div>

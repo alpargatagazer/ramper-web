@@ -88,9 +88,11 @@ export default config({
           ],
           defaultValue: 'album'
         }),
-        coverImage: fields.text({
-          label: 'Cover Image Filename',
-          description: 'Filename in public/images/covers/ (e.g. "postres.webp")',
+        coverImage: fields.image({
+          label: 'Cover Image',
+          description: 'Cover art for the release',
+          directory: 'public/images/covers',
+          publicPath: '/images/covers/',
         }),
         bandcampUrl: fields.url({ label: 'Bandcamp URL' }),
         spotifyUrl: fields.url({ label: 'Spotify URL' }),
