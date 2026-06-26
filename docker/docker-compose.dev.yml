@@ -46,15 +46,16 @@ services:
     networks:
       - ramper-net
 
+  # Newsletter testing
   listmonk-db:
-    image: postgres:15
+    image: postgres:18-alpine
     restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD=listmonk
       - POSTGRES_USER=listmonk
       - POSTGRES_DB=listmonk
     volumes:
-      - listmonk_db_data:/var/lib/postgresql/data
+      - listmonk_db_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U listmonk"]
       interval: 3s
@@ -64,7 +65,7 @@ services:
       - ramper-net
 
   listmonk:
-    image: listmonk/listmonk:latest
+    image: listmonk/listmonk:v6.1.0
     restart: unless-stopped
     depends_on:
       listmonk-db:
@@ -83,7 +84,6 @@ services:
     command: sh -c "yes | ./listmonk --install && ./listmonk"
     networks:
       - ramper-net
-
 
 networks:
   ramper-net:
