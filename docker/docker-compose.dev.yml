@@ -65,7 +65,7 @@ services:
       - ramper-net
 
   listmonk:
-    image: listmonk/listmonk:v6.1.0
+    image: listmonk/listmonk:v6.2.0
     restart: unless-stopped
     depends_on:
       listmonk-db:
@@ -92,4 +92,3 @@ networks:
 volumes:
   node_modules:
   listmonk_db_data:
-

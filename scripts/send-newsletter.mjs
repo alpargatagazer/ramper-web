@@ -9,9 +9,9 @@ const __dirname = path.dirname(__filename);
 
 // Environment variables
 const LISTMONK_URL = process.env.LISTMONK_URL || 'http://listmonk:9000'; // e.g. http://listmonk:9000
-const LIST_ID = process.env.LISTMONK_LIST_ID || '1'; // The ID of the list to send to
 const DRY_RUN = process.env.DRY_RUN === 'true' || process.argv.includes('--dry-run');
 const SITE_URL = process.env.SITE_URL || 'https://ramper.band';
+const LIST_ID = process.env.PUBLIC_NEWSLETTER_LIST_ID || '1';
 
 const TRACKING_FILE = process.env.NEWSLETTER_TRACKING_FILE || path.resolve(__dirname, '../.last-newsletter.json');
 const POSTS_DIR = path.resolve(__dirname, '../src/content/posts');
