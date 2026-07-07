@@ -27,7 +27,10 @@ env:
   LOCAL_TAG: local-ramper:latest
 
 jobs:
+
+  # Avoid running tests on docs and posts changes
   changes:
+    name: Detect and filter changes
     runs-on: ubuntu-latest
     outputs:
       code: ${{ steps.filter.outputs.code }}
@@ -41,8 +44,11 @@ jobs:
               - '**'
               - '!src/content/**'
               - '!.github/**'
-              - '!Makefile
-              - '!mise.toml
+              - '!Makefile'
+              - '!mise.toml'
+              - '!LICENSE'
+              - '!README.md'
+              - '!renovate.json'
 
   build:
     name: Build & Save Docker Image
@@ -321,9 +327,10 @@ jobs:
 
   push-registry:
     name: Publish to Registry
-    needs: [build, test-desktop, test-mobile, audit-desktop, audit-mobile, sonar, trivy]
+    needs: [build, changes, test-desktop, test-mobile, audit-desktop, audit-mobile, sonar, trivy]
     if: |
       always() &&
+      needs.changes.result == 'success' &&
       needs.build.result == 'success' &&
       (needs.test-desktop.result == 'success' || needs.test-desktop.result == 'skipped') &&
       (needs.test-mobile.result == 'success' || needs.test-mobile.result == 'skipped') &&
