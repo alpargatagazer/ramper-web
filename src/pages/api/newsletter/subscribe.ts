@@ -6,15 +6,16 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
     const email = data.email;
-    const list_uuids = data.list_uuids;
+    
+    // Read the UUID from the server environment (allows runtime configuration in Docker)
+    const listUuid = process.env.PUBLIC_NEWSLETTER_LIST_UUID || import.meta.env.PUBLIC_NEWSLETTER_LIST_UUID;
 
     if (!email) {
       return new Response(JSON.stringify({ error: 'Email is required' }), { status: 400 });
     }
 
-    // INTERNAL_LISTMONK_URL is meant to be a local docker network URL, e.g. http://listmonk:9000
-    // But we fall back to PUBLIC_NEWSLETTER_URL if running locally
-    const apiUrl = process.env.INTERNAL_LISTMONK_URL || import.meta.env.INTERNAL_LISTMONK_URL || import.meta.env.PUBLIC_NEWSLETTER_URL;
+    // LISTMONK_URL is meant to be a local docker network URL, e.g. http://listmonk:9000, or a public domain
+    const apiUrl = process.env.LISTMONK_URL || import.meta.env.LISTMONK_URL;
     
     if (!apiUrl) {
       // Dry-run / Development mode
@@ -30,7 +31,7 @@ export const POST: APIRoute = async ({ request }) => {
       body: JSON.stringify({
         email: email,
         name: email.split('@')[0],
-        list_uuids: list_uuids
+        list_uuids: listUuid ? [listUuid] : []
       }),
     });
 

@@ -80,7 +80,7 @@ The project includes an automated test suite matching the GitHub Actions pipelin
 ## Newsletter Automation (Listmonk)
 
 The site integrates with **Listmonk** to manage newsletter subscriptions:
-- **Signup Form**: Users can subscribe using the form in the UI. Subscriptions are proxied through the server endpoint `/api/newsletter/subscribe` which routes requests internally to the Listmonk API using the `INTERNAL_LISTMONK_URL` (or falls back to `PUBLIC_NEWSLETTER_URL`).
+- **Signup Form**: Users can subscribe using the form in the UI. Subscriptions are proxied through the server endpoint `/api/newsletter/subscribe` which routes requests internally to the Listmonk API using the `LISTMONK_URL`.
 - **Automated Campaigns**: The script `scripts/send-newsletter.mjs` parses new posts in `src/content/posts`, compares the latest post slug against the tracking file, and dispatches an email campaign to Listmonk.
   - The script uses the Listmonk v6 API (cookie-based session login) to authenticate.
   - This script is automatically run in the background when the production Docker container starts.

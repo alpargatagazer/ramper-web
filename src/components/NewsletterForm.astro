@@ -59,8 +59,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email: emailInput.value,
-            list_uuids: [import.meta.env.PUBLIC_NEWSLETTER_LIST_UUID || ''],
+            email: emailInput.value
           }),
         });
 
