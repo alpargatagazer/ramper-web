@@ -7,15 +7,15 @@ export const POST: APIRoute = async ({ request }) => {
     const data = await request.json();
     const email = data.email;
     
-    // Read the UUID from the server environment (allows runtime configuration in Docker)
-    const listUuid = process.env.PUBLIC_NEWSLETTER_LIST_UUID || import.meta.env.PUBLIC_NEWSLETTER_LIST_UUID;
+    // Bracket notation prevents Vite from statically inlining this at build time
+    const listUuid = process.env['PUBLIC_NEWSLETTER_LIST_UUID'] ?? import.meta.env.PUBLIC_NEWSLETTER_LIST_UUID;
 
     if (!email) {
       return new Response(JSON.stringify({ error: 'Email is required' }), { status: 400 });
     }
 
     // LISTMONK_URL is meant to be a local docker network URL, e.g. http://listmonk:9000, or a public domain
-    const apiUrl = process.env.LISTMONK_URL || import.meta.env.LISTMONK_URL;
+    const apiUrl = process.env['LISTMONK_URL'] ?? import.meta.env.LISTMONK_URL;
     
     if (!apiUrl) {
       // Dry-run / Development mode
