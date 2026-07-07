@@ -27,15 +27,16 @@
 /* Subtle noise filter for cover images */
 @utility noise-overlay {
   position: relative;
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.15;
-    mix-blend-mode: hard-light;
-    pointer-events: none;
-  }
+}
+
+.noise-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.15;
+  mix-blend-mode: hard-light;
+  pointer-events: none;
 }
 
 /* Global Animated Grain */
@@ -105,16 +106,15 @@ h1:hover, h2:hover, h3:hover, .nav-link-interactive:hover {
 @utility prose-ramper {
   @apply prose max-w-none;
   @apply prose-p:text-ramper-black/90 prose-p:my-3 prose-headings:text-ramper-black prose-strong:text-ramper-black;
-  
-  /* Link Styling */
-  & a {
-    @apply text-ramper-blue-deep underline underline-offset-4 decoration-1 decoration-ramper-blue-deep/30 transition-all duration-300;
-  }
-  & a:hover {
-    @apply text-ramper-blue-mid decoration-ramper-blue-mid;
-  }
-
   --tw-prose-bullets: var(--color-ramper-black);
+}
+
+/* Link Styling */
+.prose-ramper a {
+  @apply text-ramper-blue-deep underline underline-offset-4 decoration-1 decoration-ramper-blue-deep/30 transition-all duration-300;
+}
+.prose-ramper a:hover {
+  @apply text-ramper-blue-mid decoration-ramper-blue-mid;
 }
 
 /* Buttons */
