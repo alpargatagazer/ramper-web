@@ -18,6 +18,7 @@ services:
     environment:
       - NODE_ENV=development
       - LISTMONK_URL=http://listmonk:9000
+      - PUBLIC_NEWSLETTER_LIST_UUID=${PUBLIC_NEWSLETTER_LIST_UUID}
     # Enables colored terminal output in container logs
     tty: true
     networks:
