@@ -27,6 +27,23 @@ env:
   LOCAL_TAG: local-ramper:latest
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dorny/paths-filter@v4.0.2
+        id: filter
+        with:
+          filters: |
+            code:
+              - '**'
+              - '!src/content/**'
+              - '!.github/**'
+              - '!Makefile
+              - '!mise.toml
+
   build:
     name: Build & Save Docker Image
     runs-on: ubuntu-latest
@@ -94,7 +111,8 @@ jobs:
 
   test-desktop:
     name: Playwright E2E Tests (Desktop)
-    needs: build
+    needs: [build, changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -147,7 +165,8 @@ jobs:
 
   test-mobile:
     name: Playwright E2E Tests (Mobile)
-    needs: build
+    needs: [build, changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -199,7 +218,8 @@ jobs:
 
   audit-desktop:
     name: Lighthouse Audit (Desktop)
-    needs: build
+    needs: [build, changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -224,7 +244,8 @@ jobs:
 
   audit-mobile:
     name: Lighthouse Audit (Mobile)
-    needs: build
+    needs: [build, changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -249,7 +270,8 @@ jobs:
 
   sonar:
     name: SonarQube Analysis
-    needs: build
+    needs: [build, changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -277,7 +299,8 @@ jobs:
 
   trivy:
     name: Trivy Security Scan
-    needs: build
+    needs: [build, changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -299,6 +322,15 @@ jobs:
   push-registry:
     name: Publish to Registry
     needs: [build, test-desktop, test-mobile, audit-desktop, audit-mobile, sonar, trivy]
+    if: |
+      always() &&
+      needs.build.result == 'success' &&
+      (needs.test-desktop.result == 'success' || needs.test-desktop.result == 'skipped') &&
+      (needs.test-mobile.result == 'success' || needs.test-mobile.result == 'skipped') &&
+      (needs.audit-desktop.result == 'success' || needs.audit-desktop.result == 'skipped') &&
+      (needs.audit-mobile.result == 'success' || needs.audit-mobile.result == 'skipped') &&
+      (needs.sonar.result == 'success' || needs.sonar.result == 'skipped') &&
+      (needs.trivy.result == 'success' || needs.trivy.result == 'skipped')
     runs-on: ubuntu-latest
     permissions:
       contents: read

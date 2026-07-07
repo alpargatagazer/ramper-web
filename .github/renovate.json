@@ -7,8 +7,11 @@
   "packageRules": [
     {
       "description": "Group all Astro core and integration updates",
-      "matchPackagePatterns": ["^astro", "^@astrojs/"],
-      "groupName": "Astro suite"
+      "groupName": "Astro suite",
+      "matchPackageNames": [
+        "/^astro/",
+        "/^@astrojs//"
+      ]
     },
     {
       "description": "Group all non-major devDependency updates into a single weekly PR",
@@ -41,7 +44,9 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^\\.env\\.versions$"],
+      "managerFilePatterns": [
+        "/^\\.env\\.versions$/"
+      ],
       "matchStrings": [
         "datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s\\w+=(?<currentValue>.*)\\s"
       ],

@@ -36,7 +36,15 @@ docker/docker-compose*.yml
 Makefile
 image.tar.gz
 
-# Documentation
-README.md
-LEARNING.md
+# Documentation and Context
+*.md
 LICENSE
+
+# Testing
+tests
+playwright.config.ts
+
+# Misc tools & local state
+trivy.yaml
+mise.toml
+.last-newsletter.json
