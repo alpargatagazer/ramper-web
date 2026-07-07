@@ -59,4 +59,46 @@ test.describe('News Section', () => {
       }
     }
   });
+
+  test('Newsletter form allows subscription (mocked)', async ({ page }) => {
+    await page.goto('/news');
+
+    // Form elements should be visible
+    const formContainer = page.locator('#newsletter-container');
+    await expect(formContainer).toBeVisible();
+
+    const emailInput = page.locator('#newsletter-email');
+    await expect(emailInput).toBeVisible();
+
+    const submitBtn = page.locator('#newsletter-submit');
+    await expect(submitBtn).toBeVisible();
+
+    // Intercept the API call to avoid hitting the actual backend during tests
+    await page.route('**/api/newsletter/subscribe', async route => {
+      // Add a small delay to allow loading state verification
+      await new Promise(resolve => setTimeout(resolve, 500));
+      // Mock a successful subscription response
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Success' }),
+      });
+    });
+
+    // Fill and submit the form
+    await emailInput.fill('test@ramper.band');
+    await submitBtn.click();
+
+    // Verify loading state
+    await expect(submitBtn).toContainText('Enviando...');
+
+    // Verify success message
+    const messageDiv = page.locator('#newsletter-message');
+    await expect(messageDiv).toBeVisible();
+    await expect(messageDiv).toContainText('Gracias por suscribirte');
+    await expect(messageDiv).toHaveClass(/bg-green-50/);
+
+    // Verify button resets
+    await expect(submitBtn).toContainText('Suscrito ✓');
+  });
 });

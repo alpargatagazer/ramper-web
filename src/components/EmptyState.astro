@@ -1,0 +1,13 @@
+---
+interface Props {
+  message: string;
+  icon?: string;
+}
+
+const { message, icon } = Astro.props;
+---
+
+<div class="flex flex-col items-center justify-center p-12 text-center border border-dashed border-ramper-black/20 rounded-lg bg-ramper-black/5">
+  {icon && <span class="text-4xl mb-4 opacity-50">{icon}</span>}
+  <p class="text-ramper-black/60 italic">{message}</p>
+</div>

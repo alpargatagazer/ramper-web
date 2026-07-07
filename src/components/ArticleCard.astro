@@ -1,0 +1,31 @@
+---
+import { formatDate } from '@/utils/dates';
+
+interface Props {
+  id: string;
+  title: string;
+  date: string | Date;
+  summary: string;
+  href: string;
+  className?: string;
+}
+
+const { id, title, date, summary, href, className = '' } = Astro.props;
+---
+
+<article class:list={['group content-overlay p-8 md:p-6 transition-transform hover:scale-[1.01]', className]}>
+  <a href={href} class="block hover:opacity-80 transition-opacity">
+    <time
+      datetime={typeof date === 'string' ? date : date.toISOString()}
+      class="text-sm text-ramper-blue-deep mb-1 block"
+    >
+      {formatDate(date)}
+    </time>
+    <h2 class="section-title !mb-2 group-hover:text-ramper-blue-deep transition-colors">
+      {title}
+    </h2>
+    <p class="text-ramper-black/70 leading-relaxed max-w-2xl">
+      {summary}
+    </p>
+  </a>
+</article>

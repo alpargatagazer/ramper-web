@@ -1,0 +1,128 @@
+---
+import { Image } from 'astro:assets';
+import logoImage from '@/assets/logo.webp';
+import SocialLinks from '@/components/SocialLinks.astro';
+
+interface NavItem {
+  label: string;
+  href: string;
+  section: string;
+  external?: boolean;
+}
+
+interface Props {
+  navItems: NavItem[];
+  secondaryNavItems: NavItem[];
+  tertiaryNavItems: NavItem[];
+  activeSection?: string;
+  instagramUrl: string;
+  xUrl: string;
+  blueskyUrl: string;
+}
+
+const {
+  navItems,
+  secondaryNavItems,
+  tertiaryNavItems,
+  activeSection = '',
+  instagramUrl,
+  xUrl,
+  blueskyUrl,
+} = Astro.props;
+---
+
+<aside class="hidden lg:flex flex-col justify-start w-[42%] min-w-[500px] h-full px-12 py-10 gap-y-16 relative z-20" id="sidebar">
+
+  {/* Logo */}
+  <header class="flex justify-end pr-0">
+    <a href="/" class="inline-block" id="logo-link">
+      <Image
+        src={logoImage}
+        alt="Ramper"
+        class="w-[700px] h-auto"
+        width={800}
+        loading="eager"
+        decoding="sync"
+        fetchpriority="high"
+      />
+    </a>
+  </header>
+
+  {/* Navigation Container */}
+  <div class="flex flex-col items-end pr-8 mt-[-10px]" id="nav-container">
+    <nav id="main-nav">
+      <ul class="list-none space-y-0 text-[45px] leading-[1.1] font-normal">
+        {navItems.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                'block text-right transition-colors hover:text-ramper-blue-mid nav-link-interactive',
+                activeSection === item.section
+                  ? 'font-bold text-ramper-blue-deep'
+                  : 'text-ramper-black'
+              ]}
+              {...(item.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              {...(activeSection === item.section && !item.external ? { 'aria-current': 'page' } : {})}
+              id={`nav-${item.section}`}
+            >
+              {item.label.replace('↗', '')}
+              {item.label.includes('↗') && (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-8 h-8 ml-[-15px] mb-[4px]">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              )}
+            </a>
+          </li>
+        ))}
+
+        {/* About section */}
+        <li class="mt-12">
+          {secondaryNavItems.map((item) => (
+            <a
+              href={item.href}
+              class:list={[
+                'block text-right transition-colors hover:text-ramper-blue-mid nav-link-interactive',
+                activeSection === item.section
+                  ? 'font-bold text-ramper-blue-deep'
+                  : 'text-ramper-black'
+              ]}
+              {...(activeSection === item.section ? { 'aria-current': 'page' } : {})}
+              id={`nav-${item.section}`}
+            >
+              {item.label}
+            </a>
+          ))}
+        </li>
+
+        {/* Contact section */}
+        <li class="mt-12">
+          {tertiaryNavItems.map((item) => (
+            <a
+              href={item.href}
+              class:list={[
+                'block text-right transition-colors hover:text-ramper-blue-mid nav-link-interactive',
+                activeSection === item.section
+                  ? 'font-bold text-ramper-blue-deep'
+                  : 'text-ramper-black'
+              ]}
+              {...(activeSection === item.section ? { 'aria-current': 'page' } : {})}
+              id={`nav-${item.section}`}
+            >
+              {item.label}
+            </a>
+          ))}
+        </li>
+      </ul>
+    </nav>
+
+    <footer class="mt-18" id="social-links">
+      <SocialLinks
+        instagramUrl={instagramUrl}
+        xUrl={xUrl}
+        blueskyUrl={blueskyUrl}
+      />
+    </footer>
+  </div>
+</aside>

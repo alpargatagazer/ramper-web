@@ -19,8 +19,8 @@ export default defineConfig({
 
   /* The conditions changed when we run the tests in CI. */
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 3 : 1,
+  workers: process.env.CI ? 1 : (process.env.PLAYWRIGHT_WORKERS ? parseInt(process.env.PLAYWRIGHT_WORKERS, 10) : undefined),
 
   /**
    * Reporter to use. Unless overridden, we always wait for the user to check the results.

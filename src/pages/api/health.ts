@@ -1,7 +1,7 @@
 // src/pages/api/health.ts
 // Health endpoint for monitoring.
-// Prerendered as a static file to allow production builds in static mode.
-export const prerender = true;
+// Prerender is set to false so the timestamp represents the actual request time for monitoring
+export const prerender = false;
 
 export async function GET() {
   return new Response(

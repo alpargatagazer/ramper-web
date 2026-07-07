@@ -26,6 +26,12 @@ export default config({
         bio: fields.markdoc({
           label: 'Band Biography',
           description: 'The main "About Us" text.',
+          options: {
+            image: {
+              directory: 'public/images/about',
+              publicPath: '/images/about/'
+            }
+          }
         }),
       },
     }),
@@ -52,6 +58,12 @@ export default config({
         }),
         content: fields.markdoc({
           label: 'Post Content',
+          options: {
+            image: {
+              directory: 'public/images/posts',
+              publicPath: '/images/posts/'
+            }
+          }
         }),
       },
     }),
@@ -76,9 +88,11 @@ export default config({
           ],
           defaultValue: 'album'
         }),
-        coverImage: fields.text({
-          label: 'Cover Image Filename',
-          description: 'Filename in public/images/covers/ (e.g. "postres.webp")',
+        coverImage: fields.image({
+          label: 'Cover Image',
+          description: 'Cover art for the release',
+          directory: 'public/images/covers',
+          publicPath: '/images/covers/',
         }),
         bandcampUrl: fields.url({ label: 'Bandcamp URL' }),
         spotifyUrl: fields.url({ label: 'Spotify URL' }),
@@ -101,6 +115,12 @@ export default config({
         ),
         content: fields.markdoc({
           label: 'Description / Credits',
+          options: {
+            image: {
+              directory: 'public/images/releases',
+              publicPath: '/images/releases/'
+            }
+          }
         }),
       },
     }),

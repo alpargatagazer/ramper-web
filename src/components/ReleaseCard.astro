@@ -1,0 +1,63 @@
+---
+import { Picture } from 'astro:assets';
+
+interface Props {
+  id: string;
+  title: string;
+  year: number;
+  typeLabel?: string;
+  coverImage?: any; // The image object from Keystatic/Astro
+  className?: string;
+  href: string;
+  eagerLoad?: boolean;
+}
+
+const {
+  id,
+  title,
+  year,
+  typeLabel,
+  coverImage,
+  className = '',
+  href,
+  eagerLoad = false,
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    'block group transition-transform duration-300 hover:scale-[1.02] hover:z-50 relative z-10',
+    className
+  ]}
+  id={`release-${id}`}
+>
+  {coverImage ? (
+    <Picture
+      src={coverImage}
+      alt={`Portada de ${title}`}
+      class="w-full h-auto object-cover aspect-square noise-overlay shadow-sm"
+      widths={[200, 400, 800]}
+      sizes="(min-width: 1024px) 400px, 80vw"
+      loading={eagerLoad ? "eager" : "lazy"}
+      fetchpriority={eagerLoad ? "high" : "auto"}
+      formats={['avif', 'webp']}
+      quality={40}
+      transition:name={`release-cover-${id}`}
+    />
+  ) : (
+    <div class="w-full aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest shadow-sm">
+      Cover
+    </div>
+  )}
+  <div class="text-center mt-2 w-full">
+    <p class="font-bold text-ramper-black text-[13px] leading-tight">
+      {title} ({year})
+    </p>
+    {typeLabel && (
+      <p class="text-[11px] text-ramper-black/60 mt-1">
+        [{typeLabel}]
+      </p>
+    )}
+  </div>
+</a>

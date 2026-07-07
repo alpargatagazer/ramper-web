@@ -1,7 +1,10 @@
 ---
 // src/pages/news/index.astro
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import NewsletterForm from '@/components/NewsletterForm.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import EmptyState from '@/components/EmptyState.astro';
 
 const posts = await getCollection('posts');
 // Newest first
@@ -28,27 +31,22 @@ posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).val
       {/* News list - individual boxes */}
       <div class="space-y-8">
         {posts.length === 0 ? (
-          <p class="text-ramper-black/50 italic">No hay noticias publicadas todavía.</p>
+          <EmptyState message="No hay noticias publicadas todavía." icon="🗞️" />
         ) : (
           posts.map((post) => (
-            <article class="group content-overlay p-8 md:p-6 transition-transform hover:scale-[1.01]">
-              <a href={`/news/${post.id}`} class="block hover:opacity-80 transition-opacity">
-                <time
-                  datetime={post.data.date}
-                  class="text-sm text-ramper-blue-deep mb-1 block"
-                >
-                  {new Date(post.data.date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
-                </time>
-                <h2 class="section-title !mb-2 group-hover:text-ramper-blue-deep transition-colors">
-                  {post.data.title}
-                </h2>
-                <p class="text-ramper-black/70 leading-relaxed max-w-2xl">
-                  {post.data.summary}
-                </p>
-              </a>
-            </article>
+            <ArticleCard
+              id={post.id}
+              title={post.data.title}
+              date={post.data.date}
+              summary={post.data.summary}
+              href={`/news/${post.id}`}
+            />
           ))
         )}
+      </div>
+
+      <div class="mt-12">
+        <NewsletterForm />
       </div>
     </div>
   </div>

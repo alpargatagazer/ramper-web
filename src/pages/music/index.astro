@@ -1,9 +1,11 @@
 ---
 // src/pages/music/index.astro
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { Picture } from 'astro:assets';
-import { typeLabels } from '../../constants';
+import ReleaseCard from '@/components/ReleaseCard.astro';
+import EmptyState from '@/components/EmptyState.astro';
+import { typeLabels } from '@/constants';
+import { formatYear } from '@/utils/dates';
 
 const releases = await getCollection('releases');
 // Sort chronologically for mobile fallback
@@ -19,60 +21,32 @@ const layoutStyles: Record<string, string> = {
   '6-la-caja-del-diablo': 'md:absolute md:w-[16%] md:left-[52%] md:top-[74.25%]',
   '7-solo-postres-en-teatros-del-canal': 'md:absolute md:w-[25%] md:left-[75%] md:top-[42.5%]'
 };
-
-
 ---
 
 <BaseLayout title="Ramper | música" activeSection="music">
-  <div class="h-full overflow-y-auto overflow-x-hidden p-8 pt-section-top md:pt-[200px] max-w-[1000px] mx-auto" id="music-grid">
+  <div class="h-full overflow-y-auto overflow-x-hidden p-14 pt-section-top md:pt-[200px] max-w-[1000px] mx-auto" id="music-grid">
 
-    <div class="flex flex-col gap-8 md:gap-16 items-center md:block md:relative md:w-full md:aspect-[1000/800]">
-      {releases.map((release, index) => {
-        const year = new Date(release.data.releaseDate).getFullYear();
-        const typeLabel = typeLabels[release.data.type];
+    {releases.length === 0 ? (
+      <EmptyState message="No hay material publicado todavía." icon="💿" />
+    ) : (
+      <div class="flex flex-col gap-8 md:gap-16 items-center md:block md:relative md:w-full md:aspect-[1000/800]">
+        {releases.map((release, index) => {
         const desktopStyles = layoutStyles[release.id] || 'md:relative md:w-[200px]';
 
         return (
-          <a
+          <ReleaseCard
+            id={release.id}
+            title={release.data.title}
+            year={formatYear(release.data.releaseDate)}
+            typeLabel={typeLabels[release.data.type]}
+            coverImage={release.data.coverImage}
+            className={`w-[80%] max-w-[400px] ${desktopStyles}`}
             href={`/music/${release.id}`}
-            class:list={[
-              'block group transition-transform duration-300 hover:scale-[1.02] hover:z-50 relative z-10',
-              'w-[80%] max-w-[400px]', // Mobile default width
-              desktopStyles
-            ]}
-            id={`release-${release.id}`}
-          >
-            {release.data.coverImage ? (
-              <Picture
-                src={release.data.coverImage}
-                alt={`Portada de ${release.data.title}`}
-                class="w-full h-auto object-cover aspect-square noise-overlay shadow-sm"
-                widths={[200, 400, 800]}
-                sizes="(min-width: 1024px) 400px, 80vw"
-                loading={index < 2 ? "eager" : "lazy"}
-                fetchpriority={index < 2 ? "high" : "auto"}
-                formats={['avif', 'webp']}
-                quality={40}
-                transition:name={`release-cover-${release.id}`}
-              />
-            ) : (
-              <div class="w-full aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest shadow-sm">
-                Cover
-              </div>
-            )}
-            <div class="text-center mt-2 w-full">
-              <p class="font-bold text-ramper-black text-[13px] leading-tight">
-                {release.data.title} ({year})
-              </p>
-              {typeLabel && (
-                <p class="text-[11px] text-ramper-black/60 mt-1">
-                  [{typeLabel}]
-                </p>
-              )}
-            </div>
-          </a>
+            eagerLoad={index < 2}
+          />
         );
       })}
     </div>
+    )}
   </div>
 </BaseLayout>

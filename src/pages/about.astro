@@ -1,9 +1,10 @@
 ---
 // src/pages/about.astro
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
-import bandPhoto from '../assets/band.png';
+import bandPhoto from '@/assets/band.png';
 import { getEntry, render } from 'astro:content';
+import EmptyState from '@/components/EmptyState.astro';
 
 const aboutEntry = await getEntry('about', 'index');
 const { Content } = aboutEntry ? await render(aboutEntry) : { Content: null };
@@ -27,7 +28,7 @@ const { Content } = aboutEntry ? await render(aboutEntry) : { Content: null };
     {/* Bio text — below the photo */}
     <div class="px-8 pt-2 pb-8 max-w-4xl" id="about-bio">
       <div class="prose-ramper text-xl leading-tight tracking-tight text-ramper-black">
-        {Content && <Content />}
+        {Content ? <Content /> : <EmptyState message="Falta la biografía del grupo. Por favor, añádela en el CMS." icon="📝" />}
       </div>
     </div>
   </div>

@@ -71,7 +71,7 @@ test.describe('Music Section', () => {
             // Ensure no 404
             expect(response.status()).not.toBe(404);
           } catch (e) {
-            console.warn(`Could not verify external link ${href}`);
+            console.warn(`Could not verify external link ${href}: ${e}`);
           }
         }
       }

@@ -11,7 +11,7 @@ The official website for **Ramper**, a Spanish slowcore / post-rock project.
 *Built entirely independently by the band.*
 
 ## Tech Stack
-- **Framework**: [Astro](https://astro.build) (Static mode for maximum performance)
+- **Framework**: [Astro](https://astro.build) (Static by default, with dynamic API routing for newsletter subscriptions)
 - **Design**: [Figma](https://www.figma.com) (For the UI design)
 - **CMS**: [Keystatic](https://keystatic.com/) (Local and cloud mode)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (Utility-first CSS via Vite plugin)
@@ -77,6 +77,30 @@ The project includes an automated test suite matching the GitHub Actions pipelin
 - `.github/workflows/` — CI/CD Pipeline definition
   - `.github/actions/` — Shared composite actions for DRY CI execution
 
+## Newsletter Automation (Listmonk)
+
+The site integrates with **Listmonk** to manage newsletter subscriptions:
+- **Signup Form**: Users can subscribe using the form in the UI. Subscriptions are proxied through the server endpoint `/api/newsletter/subscribe` which routes requests internally to the Listmonk API using the `LISTMONK_URL`.
+- **Automated Campaigns**: The script `scripts/send-newsletter.mjs` parses new posts in `src/content/posts`, compares the latest post slug against the tracking file, and dispatches an email campaign to Listmonk.
+  - The script uses the Listmonk v6 API (cookie-based session login) to authenticate.
+  - This script is automatically run in the background when the production Docker container starts.
+  - State is tracked in `.last-newsletter.json` which is mapped to a persistent volume in production to prevent duplicate campaign dispatches.
+- **Docker Stack**: Listmonk (and its PostgreSQL database) are now fully integrated into both the `dev` and `prod` Docker Compose stacks. The initial superadmin user is automatically created upon first launch via environment variables.
+
+### Local Testing of Newsletter Script
+To test the newsletter script locally against the development Listmonk container:
+1. Ensure the development environment is running (`make dev-up`).
+2. Make sure `LISTMONK_USERNAME` and `LISTMONK_PASSWORD` are set in your `.env` file.
+3. Run the dedicated Makefile target:
+   ```bash
+   make test-newsletter
+   ```
+   *(This securely injects the required environment variables from your `.env` and runs the test script).*
+3. To test a dry-run without connecting to Listmonk:
+   ```bash
+   npm run newsletter:test:dry
+   ```
+
 ## CI/CD Pipeline
 
 The project uses GitHub Actions for a robust Smart Pipeline:
@@ -91,6 +115,8 @@ The project uses GitHub Actions for a robust Smart Pipeline:
 
 ## Deployment
 The project is container-ready, thoroughly tested, and pushes its artifacts to GHCR. Real-world continuous deployment to a VPS will be added in a future phase.
+
+All the deployment is managed by [Ramper Web Deploy](/Users/alpargatagazer/workspace/repos/ramper-web-deploy).
 
 ### Required Secrets for CI/CD
 To run the full pipeline, including security scans and automated releases, the following GitHub Secrets are required:

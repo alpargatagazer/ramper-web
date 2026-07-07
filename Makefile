@@ -125,6 +125,13 @@ test: dev-up
 	$(COMPOSE_DEV) --profile test rm -f playwright; \
 	exit $$EXIT_CODE
 
+# Ensure you have set LISTMONK_USERNAME and LISTMONK_PASSWORD in your .env file
+test-newsletter: dev-up
+	@echo "Testing newsletter with local Listmonk..."
+	LISTMONK_URL=http://localhost:9000 \
+	NEWSLETTER_TRACKING_FILE=.last-newsletter.json \
+	npm run newsletter:test:local
+
 _run-audit:
 	@echo "Starting production container for audit on $(AUDIT_URL)..."
 	docker run -d --name ramper-audit -p $(AUDIT_PORT):80 $(PROJECT_NAME)-prod:local

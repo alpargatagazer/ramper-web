@@ -27,6 +27,15 @@ export default defineConfig({
     mode: 'standalone',
   }),
 
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'viewport',
+  },
+
+  redirects: {
+    '/merch': 'https://humointernacional.com/tienda/artista-ramper/'
+  },
+
   // Integrations extend Astro's capabilities:
   integrations: [
     // React — required by Keystatic (its admin UI is a React app)
@@ -58,6 +67,17 @@ export default defineConfig({
         'react-dom',
         '@keystatic/core',
       ],
+    },
+    server: {
+      watch: {
+        ignored: [
+          '**/.astro/**',
+          '**/dist/**',
+          '**/playwright-results/**',
+          '**/lighthouse-reports/**',
+          '**/secrets/**',
+        ],
+      },
     },
   },
 });

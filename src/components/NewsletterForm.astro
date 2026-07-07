@@ -1,0 +1,86 @@
+---
+// src/components/NewsletterForm.astro
+---
+
+<div class="p-6 mb-8 max-w-md mx-auto" id="newsletter-container">
+  <div class="w-full">
+    <p class="text-xs text-ramper-black/70 mb-2">
+      Recibe cada nueva publicación directamente en tu correo.
+    </p>
+
+    <form 
+      id="newsletter-form" 
+      class="flex flex-col sm:flex-row gap-2"
+    >
+      <div class="flex-1 relative">
+        <label for="newsletter-email" class="sr-only">Correo electrónico</label>
+        <input 
+          type="email" 
+          id="newsletter-email" 
+          name="email" 
+          placeholder="tu@correo.com" 
+          required 
+          class="w-full bg-ramper-white/50 border border-ramper-black/20 text-ramper-black px-3 py-2 text-sm focus:outline-none focus:border-ramper-blue-deep focus:ring-1 focus:ring-ramper-blue-deep transition-colors placeholder:text-ramper-black/40"
+        />
+      </div>
+      <button 
+        type="submit" 
+        id="newsletter-submit"
+        class="bg-ramper-blue-deep text-ramper-white px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-ramper-blue-mid transition-colors flex items-center justify-center min-w-[110px]"
+      >
+        <span>Suscribirse</span>
+      </button>
+    </form>
+
+    <div id="newsletter-message" class="hidden mt-3 text-xs font-medium p-2"></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+    const emailInput = document.getElementById('newsletter-email') as HTMLInputElement | null;
+    const submitBtn = document.getElementById('newsletter-submit') as HTMLButtonElement | null;
+    const messageDiv = document.getElementById('newsletter-message') as HTMLDivElement | null;
+
+    if (!form || !emailInput || !submitBtn || !messageDiv) return;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+      submitBtn.innerHTML = '<span>Enviando...</span>';
+      messageDiv.classList.add('hidden');
+      messageDiv.classList.remove('bg-green-50', 'text-green-800', 'bg-red-50', 'text-red-800');
+
+      try {
+        const response = await fetch('/api/newsletter/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: emailInput.value
+          }),
+        });
+
+        if (response.ok) {
+          messageDiv.textContent = '¡Gracias por suscribirte! Revisa tu bandeja para confirmar.';
+          messageDiv.classList.add('bg-green-50', 'text-green-800', 'block');
+          messageDiv.classList.remove('hidden');
+          emailInput.value = '';
+          submitBtn.innerHTML = '<span>Suscrito ✓</span>';
+          setTimeout(() => { submitBtn.innerHTML = '<span>Suscribirse</span>'; }, 3000);
+        } else {
+          throw new Error('Error en el servidor');
+        }
+      } catch {
+        messageDiv.textContent = 'Hubo un error al procesar tu solicitud. Inténtalo de nuevo.';
+        messageDiv.classList.add('bg-red-50', 'text-red-800', 'block');
+        messageDiv.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+      }
+    });
+  });
+</script>

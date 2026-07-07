@@ -61,6 +61,8 @@ COPY docker/Caddyfile /etc/caddy/Caddyfile
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/src/content/posts ./src/content/posts
 
 # Environment variables for the Node server
 ENV HOST=0.0.0.0
@@ -74,6 +76,5 @@ EXPOSE 80
 HEALTHCHECK --interval=15s --timeout=3s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:80/api/health || exit 1
 
-# Start both Node and Caddy
-# We use the JSON exec form with sh -c to handle multiple processes and signals correctly
-CMD ["sh", "-c", "node dist/server/entry.mjs & caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"]
+# Start both Node, Caddy and trigger the newsletter run in the background (will exit early if no new posts)
+CMD ["sh", "-c", "(npm run newsletter:send || true) & node dist/server/entry.mjs & caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"]

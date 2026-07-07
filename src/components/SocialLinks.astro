@@ -1,0 +1,31 @@
+---
+interface Props {
+  instagramUrl: string;
+  xUrl: string;
+  blueskyUrl: string;
+  class?: string;
+  iconSize?: string;
+  gap?: string;
+}
+
+const {
+  instagramUrl,
+  xUrl,
+  blueskyUrl,
+  class: className = '',
+  iconSize = 'w-[28px] h-[28px]',
+  gap = 'gap-4',
+} = Astro.props;
+---
+
+<div class:list={['flex items-center', gap, className]}>
+  <a href={instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:opacity-60 transition-opacity">
+    <img src="/icons/instagram.svg" role="presentation" class={iconSize} />
+  </a>
+  <a href={xUrl} target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" class="hover:opacity-60 transition-opacity">
+    <img src="/icons/x.svg" role="presentation" class={iconSize} />
+  </a>
+  <a href={blueskyUrl} target="_blank" rel="noopener noreferrer" aria-label="Bluesky" class="hover:opacity-60 transition-opacity">
+    <img src="/icons/bluesky.svg" role="presentation" class={iconSize} />
+  </a>
+</div>

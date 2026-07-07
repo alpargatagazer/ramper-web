@@ -17,6 +17,7 @@ services:
       - node_modules:/app/node_modules
     environment:
       - NODE_ENV=development
+      - LISTMONK_URL=http://listmonk:9000
     # Enables colored terminal output in container logs
     tty: true
     networks:
@@ -24,7 +25,7 @@ services:
 
   playwright:
     # Testing service
-    image: mcr.microsoft.com/playwright:v1.60.0-noble # Make sure you use the same version as in package.json 
+    image: mcr.microsoft.com/playwright:v1.61.1-noble # Make sure you use the same version as in package.json 
     profiles: [ "test" ]
     restart: "no"
     ports:
@@ -45,9 +46,49 @@ services:
     networks:
       - ramper-net
 
+  # Newsletter testing
+  listmonk-db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=listmonk
+      - POSTGRES_USER=listmonk
+      - POSTGRES_DB=listmonk
+    volumes:
+      - listmonk_db_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U listmonk"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    networks:
+      - ramper-net
+
+  listmonk:
+    image: listmonk/listmonk:v6.2.0
+    restart: unless-stopped
+    depends_on:
+      listmonk-db:
+        condition: service_healthy
+    ports:
+      - "9000:9000"
+    environment:
+      - LISTMONK_db__host=listmonk-db
+      - LISTMONK_db__port=5432
+      - LISTMONK_db__user=listmonk
+      - LISTMONK_db__password=listmonk
+      - LISTMONK_db__database=listmonk
+      - LISTMONK_app__address=0.0.0.0:9000
+      - LISTMONK_ADMIN_USER=admin
+      - LISTMONK_ADMIN_PASSWORD=password
+    command: sh -c "yes | ./listmonk --install && ./listmonk"
+    networks:
+      - ramper-net
+
 networks:
   ramper-net:
     driver: bridge
 
 volumes:
   node_modules:
+  listmonk_db_data:
