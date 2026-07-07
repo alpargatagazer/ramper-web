@@ -90,11 +90,12 @@ The site integrates with **Listmonk** to manage newsletter subscriptions:
 ### Local Testing of Newsletter Script
 To test the newsletter script locally against the development Listmonk container:
 1. Ensure the development environment is running (`make dev-up`).
-2. Run the dedicated Makefile target, passing your Listmonk API credentials:
+2. Make sure `LISTMONK_USERNAME` and `LISTMONK_PASSWORD` are set in your `.env` file.
+3. Run the dedicated Makefile target:
    ```bash
-   make test-newsletter USERNAME=apiuser PASSWORD=your_password
+   make test-newsletter
    ```
-   *(This uses the `npm run newsletter:test:local` script under the hood, but injects the required environment variables securely).*
+   *(This securely injects the required environment variables from your `.env` and runs the test script).*
 3. To test a dry-run without connecting to Listmonk:
    ```bash
    npm run newsletter:test:dry
@@ -114,6 +115,8 @@ The project uses GitHub Actions for a robust Smart Pipeline:
 
 ## Deployment
 The project is container-ready, thoroughly tested, and pushes its artifacts to GHCR. Real-world continuous deployment to a VPS will be added in a future phase.
+
+All the deployment is managed by [Ramper Web Deploy](/Users/alpargatagazer/workspace/repos/ramper-web-deploy).
 
 ### Required Secrets for CI/CD
 To run the full pipeline, including security scans and automated releases, the following GitHub Secrets are required:

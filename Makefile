@@ -125,12 +125,10 @@ test: dev-up
 	$(COMPOSE_DEV) --profile test rm -f playwright; \
 	exit $$EXIT_CODE
 
-# Use it like: make test-newsletter USERNAME=<name> PASSWORD=<pass>
+# Ensure you have set LISTMONK_USERNAME and LISTMONK_PASSWORD in your .env file
 test-newsletter: dev-up
 	@echo "Testing newsletter with local Listmonk..."
 	LISTMONK_URL=http://localhost:9000 \
-	LISTMONK_USERNAME=$(USERNAME) \
-	LISTMONK_PASSWORD=$(PASSWORD) \
 	NEWSLETTER_TRACKING_FILE=.last-newsletter.json \
 	npm run newsletter:test:local
 
