@@ -12,7 +12,7 @@
   --color-ramper-white: #BFB8AA;
 
   /* Layout & Hygiene */
-  --spacing-section-top: 285px;
+  --spacing-section-top: clamp(80px, 25vh, 285px);
   --color-ramper-overlay: color-mix(in srgb, var(--color-ramper-white) 40%, transparent);
 }
 
@@ -140,7 +140,7 @@ h1:hover, h2:hover, h3:hover, .nav-link-interactive:hover {
   }
   @media (min-width: 1024px) {
     :root {
-      --spacing-section-top: 285px;
+      --spacing-section-top: clamp(80px, 25vh, 285px);
     }
   }
   body {

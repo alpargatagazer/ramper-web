@@ -31,7 +31,7 @@ const {
 } = Astro.props;
 ---
 
-<aside class="hidden lg:flex flex-col justify-start w-[42%] min-w-[500px] h-full px-12 py-10 gap-y-16 relative z-20" id="sidebar">
+<aside class="hidden lg:flex flex-col justify-start w-[42%] min-w-[500px] h-full overflow-y-auto px-12 py-[clamp(1.5rem,4.5vh,2.5rem)] gap-y-[clamp(1.5rem,6.5vh,4rem)] relative z-20" id="sidebar">
 
   {/* Logo */}
   <header class="flex justify-end pr-0">
@@ -39,7 +39,7 @@ const {
       <Image
         src={logoImage}
         alt="Ramper"
-        class="w-[700px] h-auto"
+        class="w-[clamp(300px,74vh,700px)] h-auto"
         width={800}
         loading="eager"
         decoding="sync"
@@ -51,7 +51,7 @@ const {
   {/* Navigation Container */}
   <div class="flex flex-col items-end pr-8 mt-[-10px]" id="nav-container">
     <nav id="main-nav">
-      <ul class="list-none space-y-0 text-[45px] leading-[1.1] font-normal">
+      <ul class="list-none space-y-0 text-[clamp(24px,4.2vh,45px)] leading-[1.1] font-normal">
         {navItems.map((item) => (
           <li>
             <a
@@ -78,7 +78,7 @@ const {
         ))}
 
         {/* About section */}
-        <li class="mt-12">
+        <li class="mt-[clamp(1rem,4.8vh,3rem)]">
           {secondaryNavItems.map((item) => (
             <a
               href={item.href}
@@ -97,7 +97,7 @@ const {
         </li>
 
         {/* Contact section */}
-        <li class="mt-12">
+        <li class="mt-[clamp(1rem,4.8vh,3rem)]">
           {tertiaryNavItems.map((item) => (
             <a
               href={item.href}
@@ -117,7 +117,7 @@ const {
       </ul>
     </nav>
 
-    <footer class="mt-18" id="social-links">
+    <footer class="mt-[clamp(1.5rem,6.5vh,4.5rem)]" id="social-links">
       <SocialLinks
         instagramUrl={instagramUrl}
         xUrl={xUrl}
