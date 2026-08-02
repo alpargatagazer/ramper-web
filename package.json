@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
-    "@playwright/test": "1.61.1",
+    "@playwright/test": "1.62.1",
     "dotenv": "^17.4.2",
     "gray-matter": "^4.0.3",
     "lighthouse": "^13.3.0",
