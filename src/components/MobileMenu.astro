@@ -15,7 +15,7 @@ interface Props {
 
 const { navItems, secondaryNavItems, tertiaryNavItems, activeSection = '' } = Astro.props;
 
-const externalArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-6 h-6 ml-[-10px] mb-[3px]"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>`;
+const externalArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-6 h-6 ml-1 mb-[3px]"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>`;
 ---
 
 <div
@@ -40,7 +40,7 @@ const externalArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" hei
           >
             {item.label.replace('↗', '')}
             {item.label.includes('↗') && (
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-6 h-6 ml-[-10px] mb-[3px]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-6 h-6 ml-1 mb-[3px]">
                 <line x1="7" y1="17" x2="17" y2="7"></line>
                 <polyline points="7 7 17 7 17 17"></polyline>
               </svg>

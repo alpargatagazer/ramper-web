@@ -7,3 +7,4 @@ _.file = ".env.versions"
 
 [tools]
 node = "{{env.NODE_NATIVE_VERSION}}"
+npm = "{{env.NPM_NATIVE_VERSION}}"
