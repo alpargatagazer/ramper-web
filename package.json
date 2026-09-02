@@ -34,7 +34,7 @@
     "dotenv": "^17.4.2",
     "gray-matter": "^4.0.3",
     "lighthouse": "^13.3.0",
-    "typescript": "^6.0.0"
+    "typescript": "^7.0.0"
   },
   "overrides": {
     "yaml": "^2.3.0"
