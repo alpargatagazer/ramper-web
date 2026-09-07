@@ -26,7 +26,7 @@ services:
 
   playwright:
     # Testing service
-    image: mcr.microsoft.com/playwright:v1.62.1-noble # Make sure you use the same version as in package.json 
+    image: mcr.microsoft.com/playwright:v1.63.0-noble # Make sure you use the same version as in package.json 
     profiles: [ "test" ]
     restart: "no"
     ports:
