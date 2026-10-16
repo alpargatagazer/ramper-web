@@ -111,7 +111,8 @@ The project uses GitHub Actions for a robust Smart Pipeline:
    - **SonarQube Cloud** static analysis for bugs, smells and duplication
    - **Trivy** security scan for CVEs in the production Docker image
 3. Automatically pushes the signed Docker image to **GHCR** upon success.
-4. **Renovate** bot monitors dependencies (npm, Docker, GitHub Actions) and opens grouped PRs.
+4. **Renovate** bot monitors dependencies (npm, Docker, GitHub Actions) and opens grouped PRs against the `develop` branch with automerge enabled.
+5. Every Monday at 08:00 UTC, the **Promote Renovate Updates** workflow checks if `develop` is ahead of `main` and auto-creates a single promotion PR aggregating all weekly dependency changes.
 
 ## Deployment
 The project is container-ready, thoroughly tested, and pushes its artifacts to GHCR. Real-world continuous deployment to a VPS will be added in a future phase.

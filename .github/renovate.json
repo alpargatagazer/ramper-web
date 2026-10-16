@@ -1,8 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "baseBranches": ["develop"],
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
+  "automerge": true,
+  "automergeType": "pr",
   "postUpdateOptions": ["npmInstall"],
   "packageRules": [
     {
@@ -17,12 +20,11 @@
       "description": "Group all non-major devDependency updates into a single weekly PR",
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "devDependencies (non-major)",
-      "schedule": ["before 9am on monday"]
+      "groupName": "devDependencies (non-major)"
     },
     {
       "description": "Group Docker image version updates",
-      "matchManagers": ["dockerfile", "custom.regex"],
+      "matchManagers": ["dockerfile"],
       "groupName": "Docker base images"
     },
     {
@@ -39,6 +41,11 @@
       "description": "Group Playwright test runner and its Docker image",
       "matchPackageNames": ["@playwright/test", "mcr.microsoft.com/playwright"],
       "groupName": "Playwright"
+    },
+    {
+      "description": "Group Node runtime and Docker image updates",
+      "matchPackageNames": ["node"],
+      "groupName": "Node.js"
     }
   ],
   "customManagers": [
