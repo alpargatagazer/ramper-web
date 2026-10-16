@@ -129,7 +129,7 @@ jobs:
   test-desktop:
     name: Playwright E2E Tests (Desktop)
     needs: [build, changes]
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'pull_request' && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -183,7 +183,7 @@ jobs:
   test-mobile:
     name: Playwright E2E Tests (Mobile)
     needs: [build, changes]
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'pull_request' && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -236,7 +236,7 @@ jobs:
   audit-desktop:
     name: Lighthouse Audit (Desktop)
     needs: [build, changes]
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'pull_request' && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -262,7 +262,7 @@ jobs:
   audit-mobile:
     name: Lighthouse Audit (Mobile)
     needs: [build, changes]
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'pull_request' && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -288,7 +288,7 @@ jobs:
   sonar:
     name: SonarQube Analysis
     needs: [build, changes]
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'pull_request' && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -317,7 +317,7 @@ jobs:
   trivy:
     name: Trivy Security Scan
     needs: [build, changes]
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'pull_request' && needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
