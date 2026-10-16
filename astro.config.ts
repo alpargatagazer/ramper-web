@@ -70,6 +70,7 @@ export default defineConfig({
     },
     server: {
       watch: {
+        usePolling: true,
         ignored: [
           '**/.astro/**',
           '**/dist/**',
