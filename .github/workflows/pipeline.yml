@@ -11,7 +11,7 @@ on:
       - '.gitignore'
       - '.env.example'
   pull_request:
-    branches: [main]
+    branches: [main, develop]
     paths-ignore:
       - 'Makefile'
       - 'LICENSE'
@@ -27,6 +27,16 @@ env:
   LOCAL_TAG: local-ramper:latest
 
 jobs:
+
+  check-branch:
+    name: Validate PR Source Branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify PR to main originates from develop
+        if: github.event_name == 'pull_request' && github.base_ref == 'main' && github.head_ref != 'develop'
+        run: |
+          echo "::error::Only PRs from 'develop' are allowed into 'main' (received: '${{ github.head_ref }}')."
+          exit 1
 
   # Avoid running tests on docs and posts changes
   changes:
@@ -52,6 +62,7 @@ jobs:
 
   build:
     name: Build & Save Docker Image
+    needs: [check-branch]
     runs-on: ubuntu-latest
     outputs:
       new_version: ${{ steps.versioning.outputs.new_version }}
