@@ -1,0 +1,44 @@
+name: Promote Renovate Updates
+
+on:
+  schedule:
+    # Every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  promote:
+    name: Create PR from develop → main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git fetch origin main develop
+          DIFF=$(git rev-list --count origin/main..origin/develop)
+          echo "ahead=$DIFF" >> "$GITHUB_OUTPUT"
+
+      - name: Create Pull Request
+        if: steps.diff.outputs.ahead != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          EXISTING=$(gh pr list --base main --head develop --state open --json number -q '.[0].number')
+          if [ -n "$EXISTING" ]; then
+            echo "PR #$EXISTING already exists, skipping."
+          else
+            gh pr create \
+              --base main \
+              --head develop \
+              --title "chore(deps): weekly dependency updates" \
+              --body "Automated weekly promotion of Renovate dependency updates from \`develop\` to \`main\`." \
+              --label "dependencies"
+          fi

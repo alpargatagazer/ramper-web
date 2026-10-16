@@ -33,14 +33,7 @@ FROM caddy:${CADDY_VERSION}-builder-alpine AS caddy-builder
 
 # Build Caddy with patched versions of vulnerable dependencies
 RUN xcaddy build \
-    --replace github.com/smallstep/certificates=github.com/smallstep/certificates@v0.30.0 \
-    --replace google.golang.org/grpc=google.golang.org/grpc@v1.79.3 \
-    --replace github.com/go-jose/go-jose/v3=github.com/go-jose/go-jose/v3@v3.0.5 \
-    --replace github.com/go-jose/go-jose/v4=github.com/go-jose/go-jose/v4@v4.1.4 \
-    --replace go.opentelemetry.io/otel/sdk=go.opentelemetry.io/otel/sdk@v1.43.0 \
-    --replace go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp=go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp@v0.19.0 \
-    --replace go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp=go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp@v1.43.0 \
-    --replace go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp=go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp@v1.43.0
+    --replace golang.org/x/net=golang.org/x/net@v0.60.0
 
 # Stage 3: Serve with custom Caddy + Node for Hybrid SSR
 FROM node:${NODE_VERSION} AS runner
@@ -48,8 +41,10 @@ FROM node:${NODE_VERSION} AS runner
 WORKDIR /app
 
 # Update all packages and install Caddy dependencies (ca-certificates)
+# Remove unused npm/npx to eliminate bundled vulnerabilities flagged by security scanners (Trivy)
 RUN apk update && apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates
+    apk add --no-cache ca-certificates && \
+    rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 # Copy custom Caddy binary from builder
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
@@ -77,4 +72,4 @@ HEALTHCHECK --interval=15s --timeout=3s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://127.0.0.1:80/api/health || exit 1
 
 # Start both Node, Caddy and trigger the newsletter run in the background (will exit early if no new posts)
-CMD ["sh", "-c", "(npm run newsletter:send || true) & node dist/server/entry.mjs & caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"]
+CMD ["sh", "-c", "(node scripts/send-newsletter.mjs || true) & node dist/server/entry.mjs & caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"]
