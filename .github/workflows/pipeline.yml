@@ -10,6 +10,7 @@ on:
       - '.mise.toml'
       - '.gitignore'
       - '.env.example'
+      - '.github/renovate.json'
   pull_request:
     branches: [main, develop]
     paths-ignore:
@@ -19,6 +20,7 @@ on:
       - '.mise.toml'
       - '.gitignore'
       - '.env.example'
+      - '.github/renovate.json'
 
 env:
   REGISTRY: ghcr.io
