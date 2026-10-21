@@ -9,6 +9,8 @@ import MobileMenu from '@/components/MobileMenu.astro';
 import DesktopSidebar from '@/components/DesktopSidebar.astro';
 import SocialLinks from '@/components/SocialLinks.astro';
 
+import { ACTIVE_THEME } from '@/constants';
+
 import '../styles/global.css';
 import '../styles/fonts.css';
 
@@ -55,7 +57,7 @@ const tertiaryNavItems = [
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme={ACTIVE_THEME}>
   <head>
     <Head
       title={title}
@@ -68,12 +70,14 @@ const tertiaryNavItems = [
   </head>
   <body class="overflow-hidden">
     {/* Global noise layer */}
-    <div class="animated-grain" aria-hidden="true"></div>
+    <div class="animated-grain" id="animated-grain" transition:persist="animated-grain" aria-hidden="true"></div>
 
     {/* Full-screen wrapper */}
     <div class="relative w-screen h-screen overflow-hidden" id="site-wrapper">
 
-      <TextureBackground />
+      <div id="texture-bg-persistent" class="absolute inset-0 z-0 pointer-events-none overflow-hidden" transition:persist="texture-bg">
+        <TextureBackground />
+      </div>
 
       <MobileHeader />
 

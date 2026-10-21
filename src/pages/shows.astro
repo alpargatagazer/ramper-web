@@ -1,9 +1,28 @@
 ---
 // src/pages/shows.astro
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { ACTIVE_THEME } from "../constants";
 
 // 1. Env Var (Config)
 const songkickId = import.meta.env.PUBLIC_SONGKICK_ARTIST_ID;
+
+// Theme configs: new 'dos-criaturas' + preserved legacy 'solo-postres'
+const songkickConfigs = {
+  'dos-criaturas': {
+    backgroundColor: 'rgba(217,217,217,0.92)',
+    fontColor: 'rgb(13,13,13)',
+    buttonBgColor: 'rgb(2,8,115)',
+    buttonTextColor: 'rgb(217,217,217)',
+  },
+  'solo-postres': {
+    backgroundColor: 'rgba(191,184,170,0.85)',
+    fontColor: 'rgb(38,36,37)',
+    buttonBgColor: 'rgb(38,36,37)',
+    buttonTextColor: 'rgb(191,184,170)',
+  },
+};
+
+const currentSongkick = songkickConfigs[ACTIVE_THEME];
 ---
 
 <BaseLayout title="Ramper | conciertos" activeSection="shows">
@@ -17,10 +36,10 @@ const songkickId = import.meta.env.PUBLIC_SONGKICK_ARTIST_ID;
           data-theme="light"
           data-track-button="on"
           data-detect-style="off"
-          data-background-color="rgba(191,184,170,0.85)"
-          data-font-color="rgb(38,36,37)"
-          data-button-bg-color="rgb(38,36,37)"
-          data-button-text-color="rgb(191,184,170)"
+          data-background-color={currentSongkick.backgroundColor}
+          data-font-color={currentSongkick.fontColor}
+          data-button-bg-color={currentSongkick.buttonBgColor}
+          data-button-text-color={currentSongkick.buttonTextColor}
           data-locale="es"
           data-other-artists="on"
           data-share-button="on"

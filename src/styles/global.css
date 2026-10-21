@@ -4,22 +4,43 @@
 @theme {
   --font-sans: 'Host Grotesk', sans-serif;
 
-  /* Ramper Palette */
-  --color-ramper-black: #262425;
-  --color-ramper-blue-deep: #1F438C;
-  --color-ramper-blue-mid: #204F8C;
-  --color-ramper-blue-light: #35648C;
-  --color-ramper-white: #BFB8AA;
+  /* ═══ "Dos criaturas" Palette (default) ═══ */
+  --color-ramper-light-grey: #D9D9D9;
+  --color-ramper-dark-grey: #A6A6A6;
+  --color-ramper-black: #0D0D0D;
+  --color-ramper-blue-deep: #020873;
+  --color-ramper-blue-mid: #5397A6;
+  --color-ramper-blue-light: #5397A6;
+  --color-ramper-red-deep: #D94E41;
+  --color-ramper-red-mid: #D96F66;
+  --color-ramper-white: #D9D9D9;
 
   /* Layout & Hygiene */
   --spacing-section-top: clamp(80px, 25vh, 285px);
-  --color-ramper-overlay: color-mix(in srgb, var(--color-ramper-white) 40%, transparent);
+  --color-ramper-overlay: color-mix(in srgb, var(--color-ramper-white) 75%, transparent);
+}
+
+/* ═══ "Solo postres" Legacy Overrides (fully preserved) ═══
+   Activate by setting ACTIVE_THEME = 'solo-postres' in src/constants.ts */
+@layer base {
+  html[data-theme="solo-postres"] {
+    --color-ramper-black: #262425;
+    --color-ramper-blue-deep: #1F438C;
+    --color-ramper-blue-mid: #204F8C;
+    --color-ramper-blue-light: #35648C;
+    --color-ramper-white: #BFB8AA;
+    --color-ramper-overlay: color-mix(in srgb, #BFB8AA 40%, transparent);
+  }
+
+  html[data-theme="solo-postres"] .content-overlay {
+    backdrop-filter: blur(3px);
+  }
 }
 
 /* Semi-transparent frosted glass overlay used for content cards */
 @utility content-overlay {
   background-color: var(--color-ramper-overlay);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(6px);
   border-radius: var(--radius-xs);
   box-shadow: var(--shadow-xs);
 }
