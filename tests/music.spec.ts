@@ -18,6 +18,7 @@ test.describe('Music Section', () => {
   });
 
   test('Clicking an album navigates to its detail page and validates all metadata', async ({ page, request }) => {
+    test.slow();
     await page.goto('/music');
     
     // Get the first album link

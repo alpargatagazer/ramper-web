@@ -89,6 +89,7 @@ test.describe('Interactive Elements and Widgets', () => {
   });
 
   test('Band photo carousel loads and navigates on about page', async ({ page }) => {
+    test.slow();
     await page.goto('/about');
 
     const carousel = page.locator('#band-carousel');

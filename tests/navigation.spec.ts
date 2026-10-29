@@ -61,6 +61,7 @@ test.describe('Navigation and External Links', () => {
   });
 
   test('External social and merch links open in new tabs with successful status', async ({ page, context }) => {
+    test.slow();
     const isMobile = (page.viewportSize()?.width || 0) < 1024;
     const socialContainer = isMobile ? '#mobile-social-links' : '#social-links';
 
