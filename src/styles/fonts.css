@@ -15,3 +15,27 @@
   font-display: swap;
   src: url('/fonts/host-grotesk/host-grotesk-italic.woff2') format('woff2');
 }
+
+@font-face {
+  font-family: 'Ivar Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ivar/IvarDisplay-Regular.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Ivar Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/ivar/IvarDisplay-RegularItalic.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'PP Neue Montreal';
+  font-style: bold;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/neue-montreal/PPNeueMontreal-Bold.otf') format('opentype');
+}

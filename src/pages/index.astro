@@ -1,7 +1,12 @@
 ---
-// src/pages/index.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
+import { ACTIVE_THEME } from '@/constants';
+
+import coverVinyl from '../assets/index/cover+vinyl.webp';
+import covers from '../assets/index/covers.webp';
+import vinyl from '../assets/index/vinyl.webp';
+
 import hand1 from '../assets/hands/hand-1.webp';
 import hand2 from '../assets/hands/hand-2.webp';
 import hand3 from '../assets/hands/hand-3.webp';
@@ -9,50 +14,75 @@ import hand4 from '../assets/hands/hand-4.webp';
 ---
 
 <BaseLayout>
-  {/* Asymmetric hand art grid - matching the Figma layout */}
-  <div class="flex flex-col justify-start md:justify-center items-center p-8 md:p-12 pt-16 md:pt-12 gap-8 md:h-full" id="index-grid">
-    {/* Top row: large hand-1 (fist) + medium hand-2 (drooping) */}
-    <div class="flex gap-[4vw] md:gap-12 items-start translate-x-[-2vw] md:translate-x-[-40px] w-full max-w-[800px] justify-center">
-      <Image
-        src={hand1}
-        alt="Hand illustration — fist"
-        class="w-[45%] max-w-[min(360px,38vh)] h-auto object-contain"
-        widths={[240, 360, 720]}
-        sizes="(min-width: 1024px) 360px, 45vw"
-        loading="eager"
-        quality={50}
-      />
-      <Image
-        src={hand2}
-        alt="Hand illustration — drooping hand"
-        class="w-[40%] max-w-[min(320px,34vh)] h-auto object-contain mt-[5%]"
-        widths={[200, 320, 640]}
-        sizes="(min-width: 1024px) 320px, 40vw"
-        loading="eager"
-        quality={50}
-      />
-    </div>
-    {/* Bottom row: large hand-3 (bird/flying) + small hand-4 (thumbs) */}
-    <div class="flex gap-[5vw] md:gap-16 items-start translate-x-[2vw] md:translate-x-[40px] w-full max-w-[800px] justify-center">
-      <Image
-        src={hand3}
-        alt="Hand illustration — flying hand"
-        class="w-[50%] max-w-[min(380px,40vh)] h-auto object-contain"
-        widths={[280, 380, 760]}
-        sizes="(min-width: 1024px) 380px, 50vw"
-        loading="eager"
-        quality={50}
-      />
-      <Image
-        src={hand4}
-        alt="Hand illustration — pointing hand"
-        class="w-[30%] max-w-[min(220px,24vh)] h-auto object-contain mt-[3%]"
-        widths={[150, 220, 440]}
-        sizes="(min-width: 1024px) 220px, 30vw"
-        loading="eager"
-        quality={50}
-      />
-    </div>
-  </div>
-</BaseLayout>
+  {ACTIVE_THEME === 'dos-criaturas' ? (
+    <a href="/music/8-dos-criaturas" class="block relative h-full w-full overflow-hidden cursor-pointer" id="home-link">
+      {/* Desktop layout */}
+      <div class="hidden lg:block relative h-full w-full">
+        {/* Cover+Vinyl — left-center anchor */}
+        <div class="absolute top-[56%] left-[1%] -translate-y-1/2 z-10" id="home-centerpiece">
+          <Image
+            src={coverVinyl}
+            alt="Dos criaturas — vinyl and cover"
+            class="w-[min(54vh,30vw)] max-w-[560px] min-w-[260px] h-auto object-contain"
+            widths={[260, 420, 560, 900]}
+            sizes="30vw"
+            loading="eager"
+            quality={85}
+          />
+          <div class="text-right mt-2 pr-[30%]">
+            <span class="block font-['Ivar_Display'] italic text-[clamp(1.2rem,2.8vh,2.2rem)] text-ramper-black leading-none">Dos criaturas</span>
+            <span class="block font-['PP_Neue_Montreal'] text-[clamp(0.7rem,1.2vh,0.9rem)] text-ramper-black/70 tracking-wide mt-1">nuevo disco</span>
+          </div>
+        </div>
+        {/* Vinyl disc — right margin, vertically centered-low */}
+        <Image
+          src={vinyl}
+          alt="Vinyl disc B-side"
+          class="absolute bottom-[-10%] right-0 w-[min(44vh,24vw)] max-w-[420px] h-auto object-contain z-[5] pointer-events-none"
+          widths={[260, 380, 700]}
+          sizes="24vw"
+          loading="eager"
+          quality={75}
+        />
+        {/* Covers — top-right corner flush, cropped at top (top half visible), ON TOP of vinyl */}
+        <Image
+          src={covers}
+          alt="Dos criaturas — album covers"
+          class="absolute -top-[25%] -right-[1%] w-[min(65vh,28vw)] max-w-[460px] h-auto object-contain z-[15] pointer-events-none"
+          widths={[300, 460, 800]}
+          sizes="28vw"
+          loading="eager"
+          quality={85}
+        />
+      </div>
 
+      {/* Mobile/Tablet layout — just cover+vinyl centered + text */}
+      <div class="flex lg:hidden flex-col items-center justify-center h-full px-6 pb-12">
+        <Image
+          src={coverVinyl}
+          alt="Dos criaturas — vinyl and cover"
+          class="w-[90%] max-w-[500px] h-auto object-contain"
+          widths={[280, 500, 800]}
+          sizes="100vw"
+          loading="eager"
+          quality={85}
+        />
+        <div class="text-right self-center mt-3 w-[70%] max-w-[360px]">
+          <span class="block font-['Ivar_Display'] italic text-2xl text-ramper-black leading-none">Dos criaturas</span>
+          <span class="block font-['PP_Neue_Montreal'] text-sm text-ramper-black/70 tracking-wide">nuevo disco</span>
+        </div>
+      </div>
+    </a>
+  ) : (
+    <div class="flex flex-col justify-start md:justify-center items-center p-8 md:p-12 pt-16 md:pt-12 gap-8 md:h-full" id="index-grid">
+      <div class="flex gap-[4vw] md:gap-12 items-start translate-x-[-2vw] md:translate-x-[-40px] w-full max-w-[800px] justify-center">
+        <Image src={hand1} alt="Hand illustration — fist" class="w-[45%] max-w-[min(360px,38vh)] h-auto object-contain" widths={[240, 360, 720]} sizes="(min-width: 1024px) 360px, 45vw" loading="eager" quality={50} />
+        <Image src={hand2} alt="Hand illustration — drooping hand" class="w-[40%] max-w-[min(320px,34vh)] h-auto object-contain mt-[5%]" widths={[200, 320, 640]} sizes="(min-width: 1024px) 320px, 40vw" loading="eager" quality={50} />
+      </div>
+      <div class="flex gap-[5vw] md:gap-16 items-start translate-x-[2vw] md:translate-x-[40px] w-full max-w-[800px] justify-center">
+        <Image src={hand3} alt="Hand illustration — flying hand" class="w-[50%] max-w-[min(380px,40vh)] h-auto object-contain" widths={[280, 380, 760]} sizes="(min-width: 1024px) 380px, 50vw" loading="eager" quality={50} />
+        <Image src={hand4} alt="Hand illustration — pointing hand" class="w-[30%] max-w-[min(220px,24vh)] h-auto object-contain mt-[3%]" widths={[150, 220, 440]} sizes="(min-width: 1024px) 220px, 30vw" loading="eager" quality={50} />
+      </div>
+    </div>
+  )}
+</BaseLayout>
