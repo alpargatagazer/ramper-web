@@ -87,4 +87,42 @@ test.describe('Interactive Elements and Widgets', () => {
     await expect(feedbackText).toHaveClass(/opacity-100/);
     await expect(feedbackText).toHaveText('Copiado al portapapeles');
   });
+
+  test('Band photo carousel loads and navigates on about page', async ({ page }) => {
+    await page.goto('/about');
+
+    const carousel = page.locator('#band-carousel');
+    await expect(carousel).toBeVisible();
+
+    const slides = carousel.locator('.band-slide');
+    await expect(slides).toHaveCount(7);
+
+    // Initial state: first slide visible, second hidden
+    await expect(slides.nth(0)).toHaveClass(/opacity-100/);
+    await expect(slides.nth(1)).toHaveClass(/opacity-0/);
+
+    // Next arrow navigation
+    const nextBtn = carousel.locator('.band-nav-next');
+    await nextBtn.click();
+    await expect(slides.nth(1)).toHaveClass(/opacity-100/);
+    await expect(slides.nth(0)).toHaveClass(/opacity-0/);
+
+    // Previous arrow navigation
+    const prevBtn = carousel.locator('.band-nav-prev');
+    await prevBtn.click();
+    await expect(slides.nth(0)).toHaveClass(/opacity-100/);
+    await expect(slides.nth(1)).toHaveClass(/opacity-0/);
+
+    // Dot navigation
+    const dots = carousel.locator('.band-dot');
+    await expect(dots).toHaveCount(7);
+    await dots.nth(3).click();
+    await expect(slides.nth(3)).toHaveClass(/opacity-100/);
+    await expect(slides.nth(0)).toHaveClass(/opacity-0/);
+
+    // Bio content is present below carousel
+    const bio = page.locator('#about-bio');
+    await expect(bio).toBeVisible();
+    await expect(bio.locator('.prose-ramper')).toBeVisible();
+  });
 });

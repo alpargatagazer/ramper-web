@@ -33,7 +33,8 @@ FROM caddy:${CADDY_VERSION}-builder-alpine AS caddy-builder
 
 # Build Caddy with patched versions of vulnerable dependencies
 RUN xcaddy build \
-    --replace golang.org/x/net=golang.org/x/net@v0.60.0
+    --replace golang.org/x/net=golang.org/x/net@v0.60.0 \
+    --replace github.com/go-jose/go-jose/v4=github.com/go-jose/go-jose/v4@v4.1.6
 
 # Stage 3: Serve with custom Caddy + Node for Hybrid SSR
 FROM node:${NODE_VERSION} AS runner
