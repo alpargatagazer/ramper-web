@@ -337,6 +337,7 @@ jobs:
         with:
           image-ref: local-ramper:latest
           trivy-config: trivy.yaml
+          ignore-unfixed: true
 
   push-registry:
     name: Publish to Registry

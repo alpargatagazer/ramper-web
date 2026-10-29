@@ -1,5 +1,5 @@
 ---
-import { Picture } from 'astro:assets';
+import { Image } from 'astro:assets';
 
 import band1 from '@/assets/band/1.webp';
 import band2 from '@/assets/band/2.webp';
@@ -21,14 +21,13 @@ const photos = [band1, band2, band3, band4, band5, band6, band7];
       ]}
       data-slide={i}
     >
-      <Picture
+      <Image
         src={photo}
         alt={`Ramper - foto ${i + 1}`}
         class="w-full h-full object-cover"
-        widths={[640, 1000, 1600]}
+        widths={[640, 1024]}
         sizes="(min-width: 1024px) 1000px, 100vw"
         loading={i === 0 ? 'eager' : 'lazy'}
-        formats={['avif', 'webp']}
         quality={70}
       />
     </div>
@@ -103,7 +102,6 @@ const photos = [band1, band2, band3, band4, band5, band6, band7];
     });
   }
 
-  initCarousel();
-  document.addEventListener('astro:after-swap', initCarousel);
+  document.addEventListener('astro:page-load', initCarousel);
 </script>
 

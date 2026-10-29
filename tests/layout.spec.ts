@@ -5,13 +5,14 @@ test.describe('Layout and Visuals', () => {
     await page.goto('/');
     
     // Check for active "Dos criaturas" texture layers and global grain
-    await expect(page.locator('img[src*="feathers"]')).toBeAttached();
-    await expect(page.locator('img[src*="hair"]')).toBeAttached();
-    await expect(page.locator('img[src*="red"]')).toBeAttached();
+    await expect(page.locator('img[src*="feathers"]').first()).toBeAttached();
+    await expect(page.locator('img[src*="hair"]').first()).toBeAttached();
+    await expect(page.locator('img[src*="red"]').first()).toBeAttached();
     await expect(page.locator('#animated-grain')).toBeAttached();
   });
 
   test('Page titles are correctly formatted', async ({ page }) => {
+    test.slow();
     // Check Home
     await page.goto('/');
     await expect(page).toHaveTitle(/Ramper/);

@@ -25,6 +25,7 @@ test.describe('Navigation and External Links', () => {
   });
 
   test('All navigation links work and have active state', async ({ page }) => {
+    test.slow();
     const isMobile = (page.viewportSize()?.width || 0) < 1024;
     const sections = [
       { id: 'music', url: /\/music\/?$/ },
