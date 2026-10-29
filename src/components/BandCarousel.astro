@@ -1,0 +1,111 @@
+---
+import { Image } from 'astro:assets';
+
+import band1 from '@/assets/band/1.webp';
+import band2 from '@/assets/band/2.webp';
+import band3 from '@/assets/band/3.webp';
+import band4 from '@/assets/band/4.webp';
+import band5 from '@/assets/band/5.webp';
+import band6 from '@/assets/band/6.webp';
+import band7 from '@/assets/band/7.webp';
+
+const photos = [band1, band2, band3, band4, band5, band6, band7];
+---
+
+<div class="relative w-full h-[65vh] max-h-[700px] overflow-hidden select-none" id="band-carousel">
+  {photos.map((photo, i) => (
+    <div
+      class:list={[
+        'band-slide absolute inset-0 transition-opacity duration-500',
+        i === 0 ? 'opacity-100' : 'opacity-0 pointer-events-none',
+      ]}
+      data-slide={i}
+    >
+      <Image
+        src={photo}
+        alt={`Ramper - foto ${i + 1}`}
+        class="w-full h-full object-cover"
+        widths={[640, 1024]}
+        sizes="(min-width: 1024px) 1000px, 100vw"
+        loading={i === 0 ? 'eager' : 'lazy'}
+      />
+    </div>
+  ))}
+
+  {/* Navigation arrows */}
+  <button
+    class="band-nav band-nav-prev absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-ramper-black/30 hover:bg-ramper-black/60 text-ramper-white transition-all cursor-pointer rounded-full backdrop-blur-sm"
+    aria-label="Foto anterior"
+    data-dir="-1"
+  >
+    <span class="text-lg leading-none">←</span>
+  </button>
+  <button
+    class="band-nav band-nav-next absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center bg-ramper-black/30 hover:bg-ramper-black/60 text-ramper-white transition-all cursor-pointer rounded-full backdrop-blur-sm"
+    aria-label="Siguiente foto"
+    data-dir="1"
+  >
+    <span class="text-lg leading-none">→</span>
+  </button>
+
+  {/* Dots indicator */}
+  <div class="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-1">
+    {photos.map((_, i) => (
+      <button
+        class="band-dot p-1.5 cursor-pointer flex items-center justify-center"
+        data-dot={i}
+        aria-label={`Foto ${i + 1}`}
+      >
+        <span
+          class:list={[
+            'band-dot-inner block w-2 h-2 rounded-full transition-colors duration-200',
+            i === 0 ? 'bg-ramper-white scale-125' : 'bg-ramper-white/40',
+          ]}
+        />
+      </button>
+    ))}
+  </div>
+</div>
+
+<script>
+  function initCarousel() {
+    const carousel = document.getElementById('band-carousel');
+    if (!carousel) return;
+
+    const slides = carousel.querySelectorAll<HTMLElement>('.band-slide');
+    const dots = carousel.querySelectorAll<HTMLElement>('.band-dot');
+    const total = slides.length;
+    let current = 0;
+
+    function goTo(idx: number) {
+      current = ((idx % total) + total) % total;
+      slides.forEach((s, i) => {
+        s.classList.toggle('opacity-100', i === current);
+        s.classList.toggle('opacity-0', i !== current);
+        s.classList.toggle('pointer-events-none', i !== current);
+      });
+      dots.forEach((d, i) => {
+        const dotInner = d.querySelector('.band-dot-inner') || d;
+        dotInner.classList.toggle('bg-ramper-white', i === current);
+        dotInner.classList.toggle('scale-125', i === current);
+        dotInner.classList.toggle('bg-ramper-white/40', i !== current);
+      });
+    }
+
+    carousel.querySelectorAll<HTMLElement>('.band-nav').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dir = parseInt(btn.dataset.dir || '1', 10);
+        goTo(current + dir);
+      });
+    });
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        goTo(parseInt(dot.dataset.dot || '0', 10));
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initCarousel);
+</script>
+

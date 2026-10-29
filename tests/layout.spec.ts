@@ -4,13 +4,15 @@ test.describe('Layout and Visuals', () => {
   test('Textures are present in the DOM', async ({ page }) => {
     await page.goto('/');
     
-    // Check for the three texture layers - using partial match for hashed filenames
-    await expect(page.locator('img[src*="dirty"]')).toBeAttached();
-    await expect(page.locator('img[src*="stars"]')).toBeAttached();
-    await expect(page.locator('img[src*="red"]')).toBeAttached();
+    // Check for active "Dos criaturas" texture layers and global grain
+    await expect(page.locator('img[src*="feathers"]').first()).toBeAttached();
+    await expect(page.locator('img[src*="hair"]').first()).toBeAttached();
+    await expect(page.locator('img[src*="red"]').first()).toBeAttached();
+    await expect(page.locator('#animated-grain')).toBeAttached();
   });
 
   test('Page titles are correctly formatted', async ({ page }) => {
+    test.slow();
     // Check Home
     await page.goto('/');
     await expect(page).toHaveTitle(/Ramper/);

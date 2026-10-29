@@ -13,3 +13,10 @@ export const typeLabels: Record<string, string> = {
   demo: 'Demo en directo',
   session: 'Sesión en directo',
 };
+
+/**
+ * Active website theme/era:
+ * - 'dos-criaturas': New album style (default)
+ * - 'solo-postres': Legacy style (fully preserved)
+ */
+export const ACTIVE_THEME: 'dos-criaturas' | 'solo-postres' = 'dos-criaturas';
