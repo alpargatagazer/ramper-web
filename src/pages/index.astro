@@ -15,7 +15,7 @@ import hand4 from '../assets/hands/hand-4.webp';
 
 <BaseLayout>
   {ACTIVE_THEME === 'dos-criaturas' ? (
-    <a href="/music/8-dos-criaturas" class="block relative h-full w-full overflow-hidden cursor-pointer" id="home-link">
+    <a href="/music/8-dos-criaturas" class="block relative min-h-[calc(100vh-var(--mobile-header-h)-120px)] lg:h-full w-full overflow-hidden cursor-pointer" id="home-link">
       {/* Desktop layout */}
       <div class="hidden lg:block relative h-full w-full">
         {/* Cover+Vinyl — left-center anchor */}
@@ -57,7 +57,7 @@ import hand4 from '../assets/hands/hand-4.webp';
       </div>
 
       {/* Mobile/Tablet layout — just cover+vinyl centered + text */}
-      <div class="flex lg:hidden flex-col items-center justify-center h-full px-6 pb-12">
+      <div class="flex lg:hidden flex-col items-center justify-center min-h-[calc(100vh-var(--mobile-header-h)-120px)] px-6 py-6">
         <Image
           src={coverVinyl}
           alt="Dos criaturas — vinyl and cover"
