@@ -36,8 +36,8 @@ const externalArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" hei
   class="absolute inset-0 z-40 bg-ramper-white opacity-0 pointer-events-none invisible transition-opacity duration-300 lg:hidden"
   aria-hidden="true"
 >
-  <nav class="flex flex-col items-end pr-8 pt-[160px] h-full overflow-y-auto">
-    <ul class="list-none space-y-6 text-[36px] leading-[1.2] font-normal text-right">
+  <nav class="flex flex-col items-end pr-8 md:pr-16 pt-[160px] md:pt-[190px] h-full overflow-y-auto">
+    <ul class="list-none space-y-6 md:space-y-8 text-[36px] md:text-[54px] leading-[1.2] font-normal text-right">
       {navItems.map((item) => (
         <li>
           <a
@@ -53,7 +53,7 @@ const externalArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" hei
           >
             {item.label.replace('↗', '')}
             {item.label.includes('↗') && (
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-6 h-6 ml-1 mb-[3px]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="inline-block w-6 h-6 md:w-9 md:h-9 ml-1 mb-[3px] md:mb-[5px]">
                 <line x1="7" y1="17" x2="17" y2="7"></line>
                 <polyline points="7 7 17 7 17 17"></polyline>
               </svg>
@@ -63,7 +63,7 @@ const externalArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" hei
       ))}
 
       {/* About section */}
-      <li class="mt-10">
+      <li class="mt-10 md:mt-14">
         {secondaryNavItems.map((item) => (
           <a
             href={item.href}
@@ -81,7 +81,7 @@ const externalArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" hei
       </li>
 
       {/* Contact section */}
-      <li class="mt-10">
+      <li class="mt-10 md:mt-14">
         {tertiaryNavItems.map((item) => (
           <a
             href={item.href}
@@ -100,12 +100,13 @@ const externalArrowSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" hei
 
       {/* Social links */}
       {(instagramUrl || xUrl || blueskyUrl) && (
-        <li class="mt-10 flex justify-end">
+        <li class="mt-10 md:mt-14 flex justify-end">
           <SocialLinks
             instagramUrl={instagramUrl}
             xUrl={xUrl}
             blueskyUrl={blueskyUrl}
-            gap="gap-5"
+            gap="gap-5 md:gap-7"
+            iconSize="w-[28px] h-[28px] md:w-[38px] md:h-[38px]"
           />
         </li>
       )}

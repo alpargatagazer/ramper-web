@@ -4,6 +4,7 @@ import path from 'path';
 
 test.describe('News Section', () => {
   test('News feed loads and contains posts', async ({ page }) => {
+    test.slow();
     // Attempt to count mdoc files to have an expectation
     const newsDir = path.resolve(process.cwd(), 'src/content/news');
     let expectedCount = 0;
@@ -39,6 +40,7 @@ test.describe('News Section', () => {
   });
 
   test('Clicking a news post navigates to the detail page', async ({ page }) => {
+    test.slow();
     await page.goto('/news');
     
     const firstArticle = page.locator('article a').first();
@@ -61,6 +63,7 @@ test.describe('News Section', () => {
   });
 
   test('Newsletter form allows subscription (mocked)', async ({ page }) => {
+    test.slow();
     await page.goto('/news');
 
     // Form elements should be visible

@@ -34,26 +34,29 @@ import hand4 from '../assets/hands/hand-4.webp';
             <span class="block font-['PP_Neue_Montreal'] text-[clamp(0.7rem,1.2vh,0.9rem)] text-ramper-black/70 tracking-wide mt-1">nuevo disco</span>
           </div>
         </div>
-        {/* Vinyl disc — right margin, vertically centered-low */}
-        <Image
-          src={vinyl}
-          alt="Vinyl disc B-side"
-          class="absolute bottom-[-10%] right-0 w-[min(44vh,24vw)] max-w-[460px] h-auto object-contain z-[5] pointer-events-none"
-          widths={[260, 460, 700]}
-          sizes="24vw"
-          loading="eager"
-          quality={85}
-        />
-        {/* Covers — top-right corner flush, cropped at top (top half visible), ON TOP of vinyl */}
-        <Image
-          src={covers}
-          alt="Dos criaturas — album covers"
-          class="absolute -top-[25%] -right-[1%] w-[min(65vh,28vw)] max-w-[460px] h-auto object-contain z-[15] pointer-events-none"
-          widths={[300, 460, 800]}
-          sizes="28vw"
-          loading="eager"
-          quality={85}
-        />
+        {/* Right Stack: Covers + Vinyl anchored together */}
+        <div class="absolute -top-[25%] -right-[1%] w-[min(65vh,27vw)] max-w-[460px] pointer-events-none z-[15]">
+          {/* Vinyl disc — anchored to covers */}
+          <Image
+            src={vinyl}
+            alt="Vinyl disc B-side"
+            class="absolute top-[90%] -right-[22%] w-[122%] max-w-none h-auto object-contain z-[5]"
+            widths={[300, 500, 750, 1000]}
+            sizes="(min-width: 1024px) 35vw, 45vw"
+            loading="eager"
+            quality={85}
+          />
+          {/* Covers — top-right corner flush, cropped at top (top half visible), ON TOP of vinyl */}
+          <Image
+            src={covers}
+            alt="Dos criaturas — album covers"
+            class="relative w-full h-auto object-contain z-[15]"
+            widths={[300, 470, 800]}
+            sizes="27vw"
+            loading="eager"
+            quality={85}
+          />
+        </div>
       </div>
 
       {/* Mobile/Tablet layout — just cover+vinyl centered + text */}
