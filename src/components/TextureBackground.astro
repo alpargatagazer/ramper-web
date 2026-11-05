@@ -2,20 +2,28 @@
 // src/components/TextureBackground.astro
 // Active album: "Dos criaturas" (feathers + hair continuous digital dissolve, rotating animal drawings).
 // Previous album: "Solo postres" (dirt, stars, red scribble).
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 
 // "Dos criaturas" textures
 import feathersTexture from '../assets/textures/feathers.webp';
 import hairTexture from '../assets/textures/hair.webp';
 
-// Animal drawings (replaces red scribble for "Dos criaturas")
+// Animal drawings (optimized via Astro pipeline)
 import catImg from '../assets/textures/animals/cat.webp';
 import catlionImg from '../assets/textures/animals/catlion.webp';
 import pidgiesImg from '../assets/textures/animals/pidgies.webp';
 import shadowpidgeonImg from '../assets/textures/animals/shadowpidgeon.webp';
 import zumiImg from '../assets/textures/animals/zumi.webp';
 
-const animalSources = [catImg.src, catlionImg.src, pidgiesImg.src, shadowpidgeonImg.src, zumiImg.src];
+const [catOpt, catlionOpt, pidgiesOpt, shadowpidgeonOpt, zumiOpt] = await Promise.all([
+  getImage({ src: catImg, width: 550, quality: 75, format: 'webp' }),
+  getImage({ src: catlionImg, width: 550, quality: 75, format: 'webp' }),
+  getImage({ src: pidgiesImg, width: 550, quality: 75, format: 'webp' }),
+  getImage({ src: shadowpidgeonImg, width: 550, quality: 75, format: 'webp' }),
+  getImage({ src: zumiImg, width: 550, quality: 75, format: 'webp' }),
+]);
+
+const animalSources = [catOpt.src, catlionOpt.src, pidgiesOpt.src, shadowpidgeonOpt.src, zumiOpt.src];
 
 // Shared / "Solo postres" textures
 import redTexture from '../assets/textures/red.webp';
@@ -65,18 +73,11 @@ import starsTexture from '../assets/textures/stars.webp';
 
   {/* Layer 2B: Mobile static animal drawings (full-screen, non-overlapping) */}
   <div class="animal-stage-mobile block lg:hidden absolute inset-0 pointer-events-none z-[2] overflow-hidden" aria-hidden="true">
-    <img src={catImg.src} alt="" class="animal-mobile-item animal-mobile-cat" loading="eager" decoding="sync" />
-    <img src={catlionImg.src} alt="" class="animal-mobile-item animal-mobile-catlion" loading="eager" decoding="sync" />
-    <img src={shadowpidgeonImg.src} alt="" class="animal-mobile-item animal-mobile-shadowpidgeon" loading="eager" decoding="sync" />
-    <img src={pidgiesImg.src} alt="" class="animal-mobile-item animal-mobile-pidgies" loading="eager" decoding="sync" />
-    <img src={zumiImg.src} alt="" class="animal-mobile-item animal-mobile-zumi" loading="eager" decoding="sync" />
-  </div>
-
-  {/* Preload animal images so Vite bundles them and browser caches them */}
-  <div class="hidden" aria-hidden="true">
-    {animalSources.map((src) => (
-      <img src={src} alt="" loading="eager" decoding="sync" />
-    ))}
+    <img src={catOpt.src} width={catOpt.attributes.width} height={catOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-cat" loading="lazy" decoding="async" fetchpriority="low" />
+    <img src={catlionOpt.src} width={catlionOpt.attributes.width} height={catlionOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-catlion" loading="lazy" decoding="async" fetchpriority="low" />
+    <img src={shadowpidgeonOpt.src} width={shadowpidgeonOpt.attributes.width} height={shadowpidgeonOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-shadowpidgeon" loading="lazy" decoding="async" fetchpriority="low" />
+    <img src={pidgiesOpt.src} width={pidgiesOpt.attributes.width} height={pidgiesOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-pidgies" loading="lazy" decoding="async" fetchpriority="low" />
+    <img src={zumiOpt.src} width={zumiOpt.attributes.width} height={zumiOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-zumi" loading="lazy" decoding="async" fetchpriority="low" />
   </div>
 
   <script type="application/json" id="animal-manifest" set:html={JSON.stringify(animalSources)} />
@@ -306,6 +307,25 @@ import starsTexture from '../assets/textures/stars.webp';
     let lastAnimalIndex = -1;
     let lastTriggerTime = 0;
     let animalUrls = [];
+    let remainingBag = [];
+
+    function refillBag() {
+      const indices = [];
+      for (let i = 0; i < animalUrls.length; i++) indices.push(i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = indices[i];
+        indices[i] = indices[j];
+        indices[j] = temp;
+      }
+      if (indices.length > 1 && indices[0] === lastAnimalIndex) {
+        const swapIdx = Math.floor(Math.random() * (indices.length - 1)) + 1;
+        const temp = indices[0];
+        indices[0] = indices[swapIdx];
+        indices[swapIdx] = temp;
+      }
+      remainingBag = indices;
+    }
 
     function parseManifest() {
       if (animalUrls.length > 0) return true;
@@ -313,6 +333,14 @@ import starsTexture from '../assets/textures/stars.webp';
       if (manifestEl && manifestEl.textContent) {
         try {
           animalUrls = JSON.parse(manifestEl.textContent);
+          if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+            window.requestIdleCallback(() => {
+              animalUrls.forEach((url) => {
+                const img = new Image();
+                img.src = url;
+              });
+            });
+          }
         } catch (e) {}
       }
       return animalUrls.length > 0;
@@ -341,17 +369,11 @@ import starsTexture from '../assets/textures/stars.webp';
       if (now - lastTriggerTime < 80) return;
       lastTriggerTime = now;
 
-      // Select random animal, preferring different from previous
-      let nextIdx;
-      if (animalUrls.length > 1) {
-        const pool = [];
-        for (let i = 0; i < animalUrls.length; i++) {
-          if (i !== lastAnimalIndex) pool.push(i);
-        }
-        nextIdx = pool[Math.floor(Math.random() * pool.length)];
-      } else {
-        nextIdx = 0;
+      // Shuffle bag: show every animal once before repeating
+      if (remainingBag.length === 0) {
+        refillBag();
       }
+      const nextIdx = remainingBag.shift() ?? 0;
       lastAnimalIndex = nextIdx;
 
       // Select incoming and outgoing slots
@@ -361,7 +383,7 @@ import starsTexture from '../assets/textures/stars.webp';
       // Random placement within bounded stage below logo (<= 40vw)
       const top = Math.floor(Math.random() * 50 + 25);
       const left = Math.floor(Math.random() * 45 + 30);
-      const scale = Number((0.95 + Math.random() * 0.35).toFixed(2));
+      const scale = Number((0.95 + Math.random() * 0.50).toFixed(2));
       const rot = Number((Math.random() * 14 - 7).toFixed(1));
       const opacity = Number((0.50 + Math.random() * 0.12).toFixed(2));
 
