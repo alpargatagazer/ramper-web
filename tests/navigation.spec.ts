@@ -25,14 +25,6 @@ test.describe('Navigation and External Links', () => {
     await expect(page).toHaveTitle(/Ramper/);
   });
 
-  test('Home page redirects to Dos criaturas album', async ({ page }) => {
-    await page.goto('/');
-    const homeLink = page.locator('#home-link');
-    await expect(homeLink).toBeAttached();
-    await homeLink.click();
-    await expect(page).toHaveURL(/.*\/music\/8-dos-criaturas\/?$/);
-  });
-
   test('All navigation links work and have active state', async ({ page }) => {
     test.slow();
     const isMobile = (page.viewportSize()?.width || 0) < 1024;

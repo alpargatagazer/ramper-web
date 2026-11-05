@@ -8,7 +8,6 @@
   "prHourlyLimit": 2,
   "automerge": true,
   "automergeType": "pr",
-  "postUpdateOptions": ["npmInstall"],
   "packageRules": [
     {
       "description": "Group all Astro core and integration updates",
