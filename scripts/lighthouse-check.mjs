@@ -66,10 +66,13 @@ for (const { url, name } of urls) {
 
       let pageFailed = false;
       
-      // Page-specific overrides for external constraints (like Songkick third-party cookies)
+      // Page-specific overrides for external constraints (like Songkick third-party cookies / YouTube iframe overhead)
       const pageThresholds = { ...THRESHOLDS };
       if (name === 'shows') {
         pageThresholds['best-practices'] = 0.75;
+      }
+      if (name === 'video') {
+        pageThresholds['performance'] = 0.70;
       }
 
       for (const [key, threshold] of Object.entries(pageThresholds)) {

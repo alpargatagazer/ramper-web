@@ -34,6 +34,7 @@ const { Content } = await render(release);
           target="_blank" 
           title="Ver arte a tamaño completo"
           class="relative block w-full md:w-[280px] h-auto aspect-square flex-shrink-0 noise-overlay overflow-hidden cursor-zoom-in group"
+          transition:name={`release-cover-${release.id}`}
         >
           <Picture
             src={release.data.coverImage}
@@ -46,7 +47,6 @@ const { Content } = await render(release);
             fetchpriority="high"
             quality={40}
             formats={['avif', 'webp']}
-            transition:name={`release-cover-${release.id}`}
           />
           <div class="absolute inset-0 bg-ramper-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
             <span class="text-ramper-white text-xs font-bold uppercase tracking-widest">Ver original</span>

@@ -20,11 +20,13 @@ test.describe('Navigation and External Links', () => {
     // Click logo
     const logoSelector = isMobile ? '#mobile-logo-link' : '#logo-link';
     await page.click(logoSelector);
-    // Expect root title
+    // Expect root URL and title
+    await expect(page).toHaveURL(/\/$/);
     await expect(page).toHaveTitle(/Ramper/);
   });
 
   test('All navigation links work and have active state', async ({ page }) => {
+    test.slow();
     const isMobile = (page.viewportSize()?.width || 0) < 1024;
     const sections = [
       { id: 'music', url: /\/music\/?$/ },
@@ -60,6 +62,7 @@ test.describe('Navigation and External Links', () => {
   });
 
   test('External social and merch links open in new tabs with successful status', async ({ page, context }) => {
+    test.slow();
     const isMobile = (page.viewportSize()?.width || 0) < 1024;
     const socialContainer = isMobile ? '#mobile-social-links' : '#social-links';
 

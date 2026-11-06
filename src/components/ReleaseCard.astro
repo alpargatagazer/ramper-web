@@ -31,6 +31,7 @@ const {
     className
   ]}
   id={`release-${id}`}
+  transition:name={`release-cover-${id}`}
 >
   {coverImage ? (
     <Picture
@@ -43,7 +44,6 @@ const {
       fetchpriority={eagerLoad ? "high" : "auto"}
       formats={['avif', 'webp']}
       quality={40}
-      transition:name={`release-cover-${id}`}
     />
   ) : (
     <div class="w-full aspect-square bg-ramper-black/10 flex items-center justify-center text-xs text-ramper-black/40 uppercase tracking-widest shadow-sm">
