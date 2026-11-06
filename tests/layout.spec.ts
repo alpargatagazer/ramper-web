@@ -4,9 +4,10 @@ test.describe('Layout and Visuals', () => {
   test('Textures are present in the DOM', async ({ page }) => {
     await page.goto('/');
     
-    // Check for active "Dos criaturas" texture layers and global grain
+    // Check for active "Dos criaturas" texture layers, animal drawings stage, and global grain
     await expect(page.locator('img[src*="feathers"]').first()).toBeAttached();
     await expect(page.locator('img[src*="hair"]').first()).toBeAttached();
+    await expect(page.locator('#animal-stage')).toBeAttached();
     await expect(page.locator('img[src*="red"]').first()).toBeAttached();
     await expect(page.locator('#animated-grain')).toBeAttached();
   });

@@ -12,7 +12,7 @@ import band7 from '@/assets/band/7.webp';
 const photos = [band1, band2, band3, band4, band5, band6, band7];
 ---
 
-<div class="relative w-full h-[65vh] max-h-[700px] overflow-hidden select-none" id="band-carousel">
+<div class="relative w-full aspect-[14/10] sm:aspect-auto sm:h-[65vh] sm:max-h-[700px] overflow-hidden select-none bg-ramper-black/10" id="band-carousel">
   {photos.map((photo, i) => (
     <div
       class:list={[
@@ -24,7 +24,7 @@ const photos = [band1, band2, band3, band4, band5, band6, band7];
       <Image
         src={photo}
         alt={`Ramper - foto ${i + 1}`}
-        class="w-full h-full object-cover"
+        class="w-full h-full object-contain sm:object-cover"
         widths={[640, 1024]}
         sizes="(min-width: 1024px) 1000px, 100vw"
         loading={i === 0 ? 'eager' : 'lazy'}

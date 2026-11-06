@@ -20,7 +20,8 @@ test.describe('Navigation and External Links', () => {
     // Click logo
     const logoSelector = isMobile ? '#mobile-logo-link' : '#logo-link';
     await page.click(logoSelector);
-    // Expect root title
+    // Expect root URL and title
+    await expect(page).toHaveURL(/\/$/);
     await expect(page).toHaveTitle(/Ramper/);
   });
 

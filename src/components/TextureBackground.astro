@@ -1,12 +1,29 @@
 ---
 // src/components/TextureBackground.astro
-// Active album: "Dos criaturas" (feathers + hair continuous digital dissolve, stars & red scribble).
+// Active album: "Dos criaturas" (feathers + hair continuous digital dissolve, rotating animal drawings).
 // Previous album: "Solo postres" (dirt, stars, red scribble).
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 
 // "Dos criaturas" textures
 import feathersTexture from '../assets/textures/feathers.webp';
 import hairTexture from '../assets/textures/hair.webp';
+
+// Animal drawings (optimized via Astro pipeline)
+import catImg from '../assets/textures/animals/cat.webp';
+import catlionImg from '../assets/textures/animals/catlion.webp';
+import pidgiesImg from '../assets/textures/animals/pidgies.webp';
+import shadowpidgeonImg from '../assets/textures/animals/shadowpidgeon.webp';
+import zumiImg from '../assets/textures/animals/zumi.webp';
+
+const [catOpt, catlionOpt, pidgiesOpt, shadowpidgeonOpt, zumiOpt] = await Promise.all([
+  getImage({ src: catImg, width: 550, quality: 75, format: 'webp' }),
+  getImage({ src: catlionImg, width: 550, quality: 75, format: 'webp' }),
+  getImage({ src: pidgiesImg, width: 550, quality: 75, format: 'webp' }),
+  getImage({ src: shadowpidgeonImg, width: 550, quality: 75, format: 'webp' }),
+  getImage({ src: zumiImg, width: 550, quality: 75, format: 'webp' }),
+]);
+
+const animalSources = [catOpt.src, catlionOpt.src, pidgiesOpt.src, shadowpidgeonOpt.src, zumiOpt.src];
 
 // Shared / "Solo postres" textures
 import redTexture from '../assets/textures/red.webp';
@@ -48,19 +65,22 @@ import starsTexture from '../assets/textures/stars.webp';
     </div>
   </div>
 
-  {/* Layer 2: Red scribble */}
-  <Picture
-    src={redTexture}
-    alt=""
-    class="absolute inset-0 h-full w-auto object-contain top-100 opacity-50 scale-[2.2] -translate-x-[150px] origin-left"
-    widths={[640, 1200]}
-    sizes="(min-width: 1024px) 1200px, 100vw"
-    fetchpriority="high"
-    loading="eager"
-    decoding="sync"
-    quality={60}
-    formats={['avif', 'webp']}
-  />
+  {/* Layer 2A: Desktop rotating animal drawing */}
+  <div id="animal-stage" class="animal-stage hidden lg:block pointer-events-none z-[2]" aria-hidden="true">
+    <img id="animal-slot-a" class="animal-slot" alt="" />
+    <img id="animal-slot-b" class="animal-slot" alt="" />
+  </div>
+
+  {/* Layer 2B: Mobile static animal drawings (full-screen, non-overlapping) */}
+  <div class="animal-stage-mobile block lg:hidden absolute inset-0 pointer-events-none z-[2] overflow-hidden" aria-hidden="true">
+    <img src={catOpt.src} width={catOpt.attributes.width} height={catOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-cat" loading="lazy" decoding="async" fetchpriority="low" />
+    <img src={catlionOpt.src} width={catlionOpt.attributes.width} height={catlionOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-catlion" loading="lazy" decoding="async" fetchpriority="low" />
+    <img src={shadowpidgeonOpt.src} width={shadowpidgeonOpt.attributes.width} height={shadowpidgeonOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-shadowpidgeon" loading="lazy" decoding="async" fetchpriority="low" />
+    <img src={pidgiesOpt.src} width={pidgiesOpt.attributes.width} height={pidgiesOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-pidgies" loading="lazy" decoding="async" fetchpriority="low" />
+    <img src={zumiOpt.src} width={zumiOpt.attributes.width} height={zumiOpt.attributes.height} alt="" class="animal-mobile-item animal-mobile-zumi" loading="lazy" decoding="async" fetchpriority="low" />
+  </div>
+
+  <script type="application/json" id="animal-manifest" set:html={JSON.stringify(animalSources)} />
 </div>
 
 {/* ═══════ "SOLO POSTRES" BACKGROUND ═══════ */}
@@ -110,6 +130,99 @@ import starsTexture from '../assets/textures/stars.webp';
   :global(html[data-theme="solo-postres"]) .texture-bg--solo-postres   { display: block; }
   :global(html[data-theme="solo-postres"]) .texture-bg--dos-criaturas  { display: none; }
 
+  /* ── Desktop Animal stage & slots (below logo, up to 40% screen width) ── */
+  .animal-stage {
+    display: none;
+    position: absolute;
+    top: 25%;
+    left: 0;
+    width: 40vw;
+    height: 73%;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  @media (min-width: 1024px) {
+    .animal-stage {
+      display: block;
+    }
+  }
+
+  .animal-slot {
+    position: absolute;
+    width: clamp(340px, 48vh, 560px);
+    height: auto;
+    object-fit: contain;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+    transition: opacity 380ms cubic-bezier(0.2, 0.8, 0.4, 1),
+                transform 420ms cubic-bezier(0.2, 0.8, 0.4, 1);
+    mix-blend-mode: multiply;
+    will-change: opacity, transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animal-slot {
+      transition: opacity 150ms ease;
+    }
+  }
+
+  /* ── Mobile Animal static layer (full screen, non-overlapping) ── */
+  .animal-stage-mobile {
+    display: block;
+  }
+
+  @media (min-width: 1024px) {
+    .animal-stage-mobile {
+      display: none;
+    }
+  }
+
+  .animal-mobile-item {
+    position: absolute;
+    height: auto;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    opacity: 0.42;
+    pointer-events: none;
+  }
+
+  .animal-mobile-pidgies {
+    top: 8%;
+    left: 3%;
+    width: clamp(160px, 44vw, 360px);
+    transform: rotate(-6deg);
+  }
+
+  .animal-mobile-catlion {
+    top: 24%;
+    right: 3%;
+    width: clamp(170px, 46vw, 380px);
+    transform: rotate(4deg);
+  }
+
+  .animal-mobile-shadowpidgeon {
+    top: 42%;
+    left: 4%;
+    width: clamp(150px, 40vw, 340px);
+    transform: rotate(-3deg);
+  }
+
+  .animal-mobile-cat {
+    top: 61%;
+    right: 4%;
+    width: clamp(160px, 43vw, 350px);
+    transform: rotate(5deg);
+  }
+
+  .animal-mobile-zumi {
+    top: 80%;
+    left: 6%;
+    width: clamp(170px, 45vw, 370px);
+    transform: rotate(-4deg);
+  }
+
   /* ── Continuous digital crossfade animation ──
      Constant slow dissolve back and forth using steps for digital quantization.
      Lower opacity for subtle transparent blend. */
@@ -152,8 +265,9 @@ import starsTexture from '../assets/textures/stars.webp';
 </style>
 
 <script is:inline>
-  (function initTextureRandomizer() {
-    function setup() {
+  (function initTextureAndAnimalRandomizer() {
+    // ── Feathers / Hair Offset Randomizer ──
+    function setupTextureOffsets() {
       const feathersLayer = document.querySelector('.texture-layer--feathers');
       const hairLayer = document.querySelector('.texture-layer--hair');
       const feathersCanvas = document.querySelector('#feathers-canvas');
@@ -164,7 +278,6 @@ import starsTexture from '../assets/textures/stars.webp';
       feathersLayer.dataset.randomizerInit = 'true';
 
       function getRandomOffset() {
-        // Discrete small offsets close to origin (e.g. 5,2 / -4,1 / 4,-3 / -1,3)
         const x = (Math.random() * 10 - 10).toFixed(1);
         const y = (Math.random() * 8 - 8).toFixed(1);
         return { x, y };
@@ -173,7 +286,6 @@ import starsTexture from '../assets/textures/stars.webp';
       let feathersCount = 0;
       feathersLayer.addEventListener('animationiteration', () => {
         feathersCount++;
-        // Odd iteration (1, 3, 5...) is when feathers reaches opacity 0 (invisible)
         if (feathersCount % 2 === 1) {
           const { x, y } = getRandomOffset();
           feathersCanvas.style.transform = `scale(1.25) translate(${x}%, ${y}%)`;
@@ -183,7 +295,6 @@ import starsTexture from '../assets/textures/stars.webp';
       let hairCount = 0;
       hairLayer.addEventListener('animationiteration', () => {
         hairCount++;
-        // Even iteration (2, 4, 6...) is when hair reaches opacity 0 (invisible)
         if (hairCount % 2 === 0) {
           const { x, y } = getRandomOffset();
           hairCanvas.style.transform = `scale(1.25) translate(${x}%, ${y}%)`;
@@ -191,11 +302,139 @@ import starsTexture from '../assets/textures/stars.webp';
       });
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', setup);
-    } else {
-      setup();
+    // ── Rotating Animal Drawings (Left Section Only) ──
+    let activeSlot = null;
+    let lastAnimalIndex = -1;
+    let lastTriggerTime = 0;
+    let animalUrls = [];
+    let remainingBag = [];
+
+    function refillBag() {
+      const indices = [];
+      for (let i = 0; i < animalUrls.length; i++) indices.push(i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = indices[i];
+        indices[i] = indices[j];
+        indices[j] = temp;
+      }
+      if (indices.length > 1 && indices[0] === lastAnimalIndex) {
+        const swapIdx = Math.floor(Math.random() * (indices.length - 1)) + 1;
+        const temp = indices[0];
+        indices[0] = indices[swapIdx];
+        indices[swapIdx] = temp;
+      }
+      remainingBag = indices;
     }
-    document.addEventListener('astro:page-load', setup);
+
+    function parseManifest() {
+      if (animalUrls.length > 0) return true;
+      const manifestEl = document.getElementById('animal-manifest');
+      if (manifestEl && manifestEl.textContent) {
+        try {
+          animalUrls = JSON.parse(manifestEl.textContent);
+          if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+            window.requestIdleCallback(() => {
+              animalUrls.forEach((url) => {
+                const img = new Image();
+                img.src = url;
+              });
+            });
+          }
+        } catch (e) {}
+      }
+      return animalUrls.length > 0;
+    }
+
+    function triggerAnimal() {
+      if (window.innerWidth < 1024) return; // Mobile uses static full-screen layer
+
+      const html = document.documentElement;
+      if (html.getAttribute('data-theme') === 'solo-postres') {
+        const slotA = document.getElementById('animal-slot-a');
+        const slotB = document.getElementById('animal-slot-b');
+        if (slotA) slotA.style.opacity = '0';
+        if (slotB) slotB.style.opacity = '0';
+        return;
+      }
+
+      if (!parseManifest()) return;
+
+      const stage = document.getElementById('animal-stage');
+      const slotA = document.getElementById('animal-slot-a');
+      const slotB = document.getElementById('animal-slot-b');
+      if (!stage || !slotA || !slotB) return;
+
+      const now = Date.now();
+      if (now - lastTriggerTime < 80) return;
+      lastTriggerTime = now;
+
+      // Shuffle bag: show every animal once before repeating
+      if (remainingBag.length === 0) {
+        refillBag();
+      }
+      const nextIdx = remainingBag.shift() ?? 0;
+      lastAnimalIndex = nextIdx;
+
+      // Select incoming and outgoing slots
+      const incoming = (activeSlot === slotA) ? slotB : slotA;
+      const outgoing = activeSlot;
+
+      // Random placement within bounded stage below logo (<= 40vw)
+      const top = Math.floor(Math.random() * 50 + 25);
+      const left = Math.floor(Math.random() * 45 + 30);
+      const scale = Number((0.95 + Math.random() * 0.50).toFixed(2));
+      const rot = Number((Math.random() * 14 - 7).toFixed(1));
+      const opacity = Number((0.50 + Math.random() * 0.12).toFixed(2));
+
+      // Fade out outgoing slot smoothly
+      if (outgoing) {
+        outgoing.style.opacity = '0';
+        const outRot = outgoing.dataset.rot || '0';
+        const outScale = Number(outgoing.dataset.scale || 1) * 1.05;
+        outgoing.style.transform = `translate(-50%, -50%) rotate(${outRot}deg) scale(${outScale})`;
+      }
+
+      // Configure incoming slot
+      incoming.src = animalUrls[nextIdx];
+      incoming.style.top = top + '%';
+      incoming.style.left = left + '%';
+      incoming.dataset.scale = String(scale);
+      incoming.dataset.rot = String(rot);
+
+      // Reset incoming to start state without transition
+      incoming.style.transition = 'none';
+      incoming.style.opacity = '0';
+      incoming.style.transform = `translate(-50%, -50%) rotate(${rot}deg) scale(${scale * 0.9})`;
+
+      // Force reflow
+      void incoming.offsetHeight;
+
+      // Restore transition and trigger fade in
+      incoming.style.transition = '';
+      requestAnimationFrame(() => {
+        incoming.style.opacity = String(opacity);
+        incoming.style.transform = `translate(-50%, -50%) rotate(${rot}deg) scale(${scale})`;
+      });
+
+      activeSlot = incoming;
+    }
+
+    let currentPath = null;
+
+    function onNavigation() {
+      setupTextureOffsets();
+      const normPath = window.location.pathname.replace(/\/$/, '') || '/';
+      if (activeSlot && currentPath === normPath) return; // Keep same animal on same section
+      currentPath = normPath;
+      triggerAnimal();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', onNavigation);
+    } else {
+      onNavigation();
+    }
+    document.addEventListener('astro:page-load', onNavigation);
   })();
 </script>
