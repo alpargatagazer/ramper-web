@@ -392,7 +392,12 @@ jobs:
 
   release:
     name: GitHub Release & Version Sync
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: |
+      always() &&
+      needs.build.result == 'success' &&
+      needs.push-registry.result == 'success' &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/main'
     needs: [build, push-registry]
     runs-on: ubuntu-latest
     permissions:
@@ -429,7 +434,7 @@ jobs:
           git push origin main --tags
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3.0.3
+        uses: softprops/action-gh-release@v3.0.4
         with:
           tag_name: ${{ needs.build.outputs.new_version }}
           name: Ramper web ${{ needs.build.outputs.new_version }}
