@@ -51,7 +51,7 @@ export async function generateCompositedOg(
   targetHeight: number = 500,
   textureFile: string = 'feathers.webp'
 ): Promise<string> {
-  const outName = `${key}.webp`;
+  const outName = `${key}.jpg`;
   const outPath = join(OG_DIR, outName);
 
   if (existsSync(outPath)) {
@@ -77,7 +77,7 @@ export async function generateCompositedOg(
 
   const result = await sharp(bg)
     .composite([{ input: subject, left, top }])
-    .webp({ quality: 85 })
+    .jpeg({ quality: 85, mozjpeg: true })
     .toBuffer();
 
   writeFileSync(outPath, result);

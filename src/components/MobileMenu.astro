@@ -33,6 +33,7 @@ const {
   id="mobile-menu-overlay"
   class="absolute inset-0 z-40 bg-ramper-white opacity-0 pointer-events-none invisible transition-opacity duration-300 lg:hidden"
   aria-hidden="true"
+  inert
 >
   <nav class="flex flex-col items-end pr-8 md:pr-16 pt-[160px] md:pt-[190px] h-full overflow-y-auto">
     <ul class="list-none space-y-6 md:space-y-8 text-[36px] md:text-[54px] leading-[1.2] font-normal text-right">
@@ -125,6 +126,7 @@ const {
       overlay!.classList.remove('opacity-0', 'pointer-events-none', 'invisible');
       overlay!.classList.add('opacity-100');
       overlay!.setAttribute('aria-hidden', 'false');
+      overlay!.removeAttribute('inert');
       hamburger!.classList.add('hidden');
       closeIcon!.classList.remove('hidden');
       toggle!.setAttribute('aria-expanded', 'true');
@@ -132,9 +134,13 @@ const {
     }
 
     function closeMenu() {
+      if (overlay!.contains(document.activeElement)) {
+        (document.activeElement as HTMLElement)?.blur();
+      }
       overlay!.classList.add('opacity-0', 'pointer-events-none', 'invisible');
       overlay!.classList.remove('opacity-100');
       overlay!.setAttribute('aria-hidden', 'true');
+      overlay!.setAttribute('inert', '');
       hamburger!.classList.remove('hidden');
       closeIcon!.classList.add('hidden');
       toggle!.setAttribute('aria-expanded', 'false');

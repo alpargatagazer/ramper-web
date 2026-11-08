@@ -21,7 +21,7 @@
 
 	# Cache fonts and static images in /public
 	@static_public {
-		path /fonts/* /icons/* /favicon.webp
+		path /fonts/* /icons/* /favicon.webp /og/*
 	}
 	header @static_public Cache-Control "public, max-age=31536000, immutable"
 
