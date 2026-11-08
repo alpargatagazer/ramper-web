@@ -5,7 +5,7 @@ import VideoEmbed from '@/components/VideoEmbed.astro';
 import videos from '@/data/videos.json';
 ---
 
-<BaseLayout title="Ramper | vídeo" activeSection="video">
+<BaseLayout title="Ramper | vídeo" description="Videoclips y directos" activeSection="video" ogImage={`https://i.ytimg.com/vi/${videos[0].youtubeId}/maxresdefault.jpg`}>
   <div class="page-container">
     <div class="space-y-12 max-w-5xl">
       {videos.map((video) => (

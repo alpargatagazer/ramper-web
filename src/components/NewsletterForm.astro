@@ -45,7 +45,7 @@
 
     if (!form || !emailInput || !submitBtn || !messageDiv) return;
 
-    form.addEventListener('submit', async (e) => {
+    form.onsubmit = async (e) => {
       e.preventDefault();
 
       submitBtn.disabled = true;
@@ -81,6 +81,6 @@
         submitBtn.disabled = false;
         submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
       }
-    });
+    };
   });
 </script>

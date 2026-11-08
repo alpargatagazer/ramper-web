@@ -7,6 +7,9 @@ import { typeLabels } from '@/constants';
 import { formatDate } from '@/utils/dates';
 import ExternalLink from '@/components/ExternalLink.astro';
 import BackLink from '@/components/BackLink.astro';
+import { generateReleaseOgImage } from '@/utils/og-image';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 export async function getStaticPaths() {
   const releases = await getCollection('releases');
@@ -19,9 +22,21 @@ export async function getStaticPaths() {
 const { release } = Astro.props;
 const { Content } = await render(release);
 
+// Generate OG image: cover composited on texture background
+let ogImage: string | undefined;
+if (release.data.coverImage) {
+  const mdocPath = resolve(`src/content/releases/${release.id}.mdoc`);
+  const mdocRaw = readFileSync(mdocPath, 'utf-8');
+  const coverMatch = mdocRaw.match(/coverImage:\s*["']?.*?covers\/(.+?)["']?\s*$/m);
+  if (coverMatch) {
+    ogImage = await generateReleaseOgImage(release.id, coverMatch[1]);
+  }
+}
+
+const description = `${release.data.title} — ${typeLabels[release.data.type]} de Ramper (${release.data.releaseDate.slice(0, 4)})`;
 ---
 
-<BaseLayout title={`${release.data.title} — Ramper`} activeSection="music">
+<BaseLayout title={`${release.data.title} — Ramper`} description={description} activeSection="music" ogImage={ogImage}>
   <div class="page-container">
 
     <div class="content-overlay p-8 md:p-12">

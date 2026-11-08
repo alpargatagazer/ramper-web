@@ -11,9 +11,12 @@ import hand1 from '../assets/hands/hand-1.webp';
 import hand2 from '../assets/hands/hand-2.webp';
 import hand3 from '../assets/hands/hand-3.webp';
 import hand4 from '../assets/hands/hand-4.webp';
+import { generateCompositedOg } from '@/utils/og-image';
+
+const ogImage = await generateCompositedOg('home', 'src/assets/index/cover+vinyl.webp', 460);
 ---
 
-<BaseLayout>
+<BaseLayout title="Ramper" description="Dos criaturas — nuevo disco" ogImage={ogImage}>
   {ACTIVE_THEME === 'dos-criaturas' ? (
     <a href="/music/8-dos-criaturas" class="block relative min-h-[calc(100vh-var(--mobile-header-h)-120px)] lg:h-full w-full overflow-hidden cursor-pointer" id="home-link">
       {/* Desktop layout */}

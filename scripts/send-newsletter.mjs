@@ -35,7 +35,7 @@ function makeLinksAbsolute(content, siteUrl) {
   
   // 1. Rewrite Markdown links [text](/path) or [text](path)
   // We use a more robust regex to handle parenthesis inside the URL (e.g. `\(1978\)`)
-  let updated = content.replace(/(!?)\[([^\]]*)\]\((.+?)\)/g, (match, isImage, text, url) => {
+  let updated = content.replace(/(!?)\[([^\]]*)\]\((.+?)\)/g, (_match, isImage, text, url) => {
     // Keystatic escapes parenthesis. Clean them up for the email!
     let cleanUrl = url.replace(/\\([()])/g, '$1');
     
@@ -51,7 +51,7 @@ function makeLinksAbsolute(content, siteUrl) {
   });
 
   // 2. Rewrite HTML src/href attributes like src="/path" or href="/path"
-  updated = updated.replace(/(src|href)=["']\/([^"']*)["']/g, (match, attr, path) => {
+  updated = updated.replace(/(src|href)=["']\/([^"']*)["']/g, (_match, attr, path) => {
     return `${attr}="${cleanSiteUrl}/${path}"`;
   });
 

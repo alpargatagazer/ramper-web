@@ -25,7 +25,16 @@ runs:
 
     - name: Verify server readiness (Safety check)
       run: |
-        while ! curl -s http://127.0.0.1:80/api/health > /dev/null; do sleep 1; done
+        for i in {1..30}; do
+          if curl -s http://127.0.0.1:80/api/health > /dev/null; then
+            echo "Server ready after ${i}s."
+            exit 0
+          fi
+          sleep 1
+        done
+        echo "Error: Server failed to become ready within 30s."
+        docker compose -f docker/docker-compose.prod.yml logs
+        exit 1
       shell: bash
 
     - name: Setup Node runtime

@@ -8,8 +8,8 @@ export async function GET(context: any) {
 
   return rss({
 
-    title: 'Ramper | Transmissions',
-    description: 'News, announcements and releases from the Spanish post-rock project.',
+    title: 'Ramper | Noticias',
+    description: 'Actualidad, comunicados y novedades de Ramper.',
     site: context.site || 'https://ramper.band',
 
     items: posts.map((post) => ({

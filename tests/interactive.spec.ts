@@ -43,15 +43,15 @@ test.describe('Interactive Elements and Widgets', () => {
 
     await page.goto('/shows');
     
-    // The widget anchor should be present and attached
-    const widget = page.locator('.songkick-widget');
+    // The widget anchor or injected iframe should be present and attached
+    const widget = page.locator('.songkick-widget, iframe[src*="songkick"]');
     
     // Check attachment with a generous timeout for CI
-    await expect(widget).toBeAttached({ timeout: process.env.CI ? 20000 : 5000 });
+    await expect(widget.first()).toBeAttached({ timeout: process.env.CI ? 20000 : 5000 });
 
     // If in CI, also verify our mock "loaded" to be sure the script injection works
     if (process.env.CI) {
-      await expect(widget).toHaveAttribute('data-mocked', 'true');
+      await expect(page.locator('.songkick-widget')).toHaveAttribute('data-mocked', 'true');
     }
   });
 

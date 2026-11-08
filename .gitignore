@@ -17,6 +17,7 @@ dist/
 .last-newsletter.json
 playwright-results/
 lighthouse-reports/
+public/og/
 
 # Markdown files (except README)
 *.md

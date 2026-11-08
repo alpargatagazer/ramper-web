@@ -3,6 +3,7 @@
 #
 # --- COMMANDS ---
 # local-setup       → (Host) Install tools (Mise) and dependencies (npm)
+# local-update-deps → (Host) Update packages to latest versions (npm update)
 # local-update-lock → (Host) Sync package-lock.json after manual package.json edits
 # dev-up            → Build and start dev server in background
 # dev-down          → Stop development environment
@@ -31,8 +32,8 @@ AUDIT_PORT = 8084
 AUDIT_URL = http://127.0.0.1:$(AUDIT_PORT)
 
 # Load and export versions as environment variables end envs for all commands
-include .env
-include .env.versions
+-include .env
+-include .env.versions
 export
 
 # Compose Commands (Explicitly loading versions file for interpolation)
@@ -40,7 +41,7 @@ COMPOSE_DEV  = docker compose --env-file .env.versions -p $(PROJECT_NAME)-dev -f
 COMPOSE_PROD = docker compose --env-file .env.versions -p $(PROJECT_NAME)-prod -f docker/docker-compose.prod.yml
 
 # --- Phony Targets ---
-.PHONY: local-setup local-update-lock \
+.PHONY: local-setup local-update-deps local-update-lock \
         dev-up dev-down dev-logs dev-shell dev-rebuild dev-reset-deps \
         build-prod prod-up prod-down prod-logs prod-shell test audit scan clean
 
@@ -55,9 +56,14 @@ local-setup:
 	mise x -- npm install
 	@echo "Local environment is ready!"
 
+local-update-deps:
+	@echo "Updating npm dependencies..."
+	mise x -- npm update
+
 local-update-lock:
 	@echo "Updating package-lock.json (metadata only)..."
 	mise x -- npm install --package-lock-only
+	
 
 # --- Development (Docker) ---
 

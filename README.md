@@ -57,7 +57,7 @@ The project includes an automated test suite matching the GitHub Actions pipelin
   ```
 - **Lighthouse Audit**: Run a strict Lighthouse test against a production-like build (thresholds at 85-95%):
   ```bash
-  make audit
+  make audit-desktop
   ```
 
 ### Helpful `make` Commands
@@ -66,6 +66,10 @@ The project includes an automated test suite matching the GitHub Actions pipelin
 - `make dev-shell` — Open an interactive terminal (`sh`) inside the container
 - `make dev-down` — Stop the development containers gracefully
 - `make dev-reset-deps` — Stop containers, remove the cached `node_modules` volume, and rebuild
+- `make audit-desktop` — Run Lighthouse audit (desktop preset)
+- `make audit-mobile` — Run Lighthouse audit (mobile preset)
+- `make scan` — Run local Trivy security scan on production build
+- `make clean` — Stop everything and remove local Docker volumes/images
 
 ## Project Structure
 
@@ -85,7 +89,7 @@ The site integrates with **Listmonk** to manage newsletter subscriptions:
   - The script uses the Listmonk v6 API (cookie-based session login) to authenticate.
   - This script is automatically run in the background when the production Docker container starts.
   - State is tracked in `.last-newsletter.json` which is mapped to a persistent volume in production to prevent duplicate campaign dispatches.
-- **Docker Stack**: Listmonk (and its PostgreSQL database) are now fully integrated into both the `dev` and `prod` Docker Compose stacks. The initial superadmin user is automatically created upon first launch via environment variables.
+- **Docker Stack**: Listmonk (and its PostgreSQL database) are integrated into the `dev` Docker Compose stack. In production, Listmonk is orchestrated via the deployment stack, and state is preserved across container rebuilds.
 
 ### Local Testing of Newsletter Script
 To test the newsletter script locally against the development Listmonk container:
@@ -96,7 +100,7 @@ To test the newsletter script locally against the development Listmonk container
    make test-newsletter
    ```
    *(This securely injects the required environment variables from your `.env` and runs the test script).*
-3. To test a dry-run without connecting to Listmonk:
+4. To test a dry-run without connecting to Listmonk:
    ```bash
    npm run newsletter:test:dry
    ```
@@ -117,7 +121,7 @@ The project uses GitHub Actions for a robust Smart Pipeline:
 ## Deployment
 The project is container-ready, thoroughly tested, and pushes its artifacts to GHCR. Real-world continuous deployment to a VPS will be added in a future phase.
 
-All the deployment is managed by [Ramper Web Deploy](/Users/alpargatagazer/workspace/repos/ramper-web-deploy).
+All deployment orchestration is managed by [Ramper Web Deploy](https://github.com/alpargatagazer/ramper-web-deploy).
 
 ### Required Secrets for CI/CD
 To run the full pipeline, including security scans and automated releases, the following GitHub Secrets are required:
@@ -126,4 +130,4 @@ To run the full pipeline, including security scans and automated releases, the f
 - `PUBLIC_WEB3FORMS_ACCESS_KEY`: Access key for Web3Forms (required for the contact form).
 - `SONAR_TOKEN`: Authentication token for SonarQube Cloud.
 
-The following variables are also required: `PUBLIC_SONGKICK_ARTIST_ID`, `PUBLIC_CONTACT_EMAIL`, `PUBLIC_INSTAGRAM_URL`, `PUBLIC_X_URL`, `PUBLIC_BLUESKY_URL`, `PUBLIC_MERCH_URL`, `SITE_URL`.
+The following variables are also required: `PUBLIC_SONGKICK_ARTIST_ID`, `PUBLIC_CONTACT_EMAIL`, `PUBLIC_INSTAGRAM_URL`, `PUBLIC_X_URL`, `PUBLIC_BLUESKY_URL`, `PUBLIC_MERCH_URL`, `PUBLIC_NEWSLETTER_LIST_UUID`, `PUBLIC_NEWSLETTER_LIST_ID`, `SITE_URL`.

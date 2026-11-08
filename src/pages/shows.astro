@@ -2,6 +2,10 @@
 // src/pages/shows.astro
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { ACTIVE_THEME } from "../constants";
+import { getImage } from "astro:assets";
+import bandLivePhoto from "@/assets/band/5.webp";
+
+const ogImg = await getImage({ src: bandLivePhoto, width: 1200, height: 630, format: 'webp', fit: 'cover', position: 'center' });
 
 // 1. Env Var (Config)
 const songkickId = import.meta.env.PUBLIC_SONGKICK_ARTIST_ID;
@@ -25,7 +29,7 @@ const songkickConfigs = {
 const currentSongkick = songkickConfigs[ACTIVE_THEME];
 ---
 
-<BaseLayout title="Ramper | conciertos" activeSection="shows">
+<BaseLayout title="Ramper | conciertos" description="Próximas fechas y directos" activeSection="shows" ogImage={ogImg.src}>
   <div class="page-container">
 
     {songkickId ? (

@@ -3,12 +3,14 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import humoLogo from '../assets/logo-humo.webp';
+import { generateCompositedOg } from '@/utils/og-image';
+
+const ogImage = await generateCompositedOg('contact', 'src/assets/textures/animals/cat.webp', 460);
 
 const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernacional.com';
-const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
 ---
 
-<BaseLayout title="Ramper | escribe" activeSection="contact">
+<BaseLayout title="Ramper | escribe" description="Contacto directo y contratación" activeSection="contact" ogImage={ogImage}>
   <div class="page-container pt-section-top mt-[-25px] w-full max-w-6xl" id="contact-page">
     <div class="w-full">
 
@@ -65,10 +67,10 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
               type="submit"
               id="contact-submit"
               class="btn-primary cursor-pointer"
-              data-form-email={formEmail}
             >
               enviar mensaje
             </button>
+            <p id="contact-form-feedback" class="text-sm mt-4 font-bold transition-opacity duration-300 opacity-0" aria-live="polite"></p>
           </form>
         </div>
 
@@ -119,14 +121,10 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
     // --- Web3Forms Logic ---
     const form = document.getElementById('contact-form') as HTMLFormElement | null;
     const submitBtn = document.getElementById('contact-submit') as HTMLButtonElement | null;
-    
-    // Create a feedback message element for the form
-    const formFeedback = document.createElement('p');
-    formFeedback.className = 'text-sm mt-4 font-bold transition-opacity duration-300 opacity-0';
-    if (form) form.appendChild(formFeedback);
+    const formFeedback = document.getElementById('contact-form-feedback') as HTMLParagraphElement | null;
 
-    if (form && submitBtn) {
-      form.addEventListener('submit', async (e) => {
+    if (form && submitBtn && formFeedback) {
+      form.onsubmit = async (e) => {
         e.preventDefault();
         
         // Visual feedback during submission
@@ -171,7 +169,7 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
             formFeedback.classList.remove('opacity-100');
           }, 5000);
         }
-      });
+      };
     }
 
     // --- Copy Email Logic ---
@@ -179,7 +177,7 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
     const feedback = document.getElementById('copy-feedback');
 
     if (btn && feedback) {
-      btn.addEventListener('click', async () => {
+      btn.onclick = async () => {
         const email = btn.getAttribute('data-email');
         if (email) {
           try {
@@ -197,7 +195,7 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
             window.location.href = `mailto:${email}`;
           }
         }
-      });
+      };
     }
   });
 </script>

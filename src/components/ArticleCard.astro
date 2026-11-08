@@ -13,7 +13,7 @@ interface Props {
 const { id, title, date, summary, href, className = '' } = Astro.props;
 ---
 
-<article class:list={['group content-overlay p-8 md:p-6 transition-transform hover:scale-[1.01]', className]}>
+<article id={id} class:list={['group content-overlay p-8 md:p-6 transition-transform hover:scale-[1.01]', className]}>
   <a href={href} class="block hover:opacity-80 transition-opacity">
     <time
       datetime={typeof date === 'string' ? date : date.toISOString()}

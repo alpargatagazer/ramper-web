@@ -12,9 +12,9 @@
     {
       "description": "Group all Astro core and integration updates",
       "groupName": "Astro suite",
-      "matchPackageNames": [
-        "/^astro/",
-        "/^@astrojs//"
+      "matchPackagePrefixes": [
+        "astro",
+        "@astrojs/"
       ]
     },
     {

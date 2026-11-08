@@ -3,6 +3,7 @@
 // Active album: "Dos criaturas" (feathers + hair continuous digital dissolve, rotating animal drawings).
 // Previous album: "Solo postres" (dirt, stars, red scribble).
 import { Picture, getImage } from 'astro:assets';
+import { ACTIVE_THEME } from '@/constants';
 
 // "Dos criaturas" textures
 import feathersTexture from '../assets/textures/feathers.webp';
@@ -32,6 +33,7 @@ import starsTexture from '../assets/textures/stars.webp';
 ---
 
 {/* ═══════ "DOS CRIATURAS" BACKGROUND (active default) ═══════ */}
+{ACTIVE_THEME === 'dos-criaturas' ? (
 <div class="texture-bg texture-bg--dos-criaturas absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
   {/* Layer 1A: Feathers (pigeon) - scaled to crop blank borders */}
   <div class="texture-layer texture-layer--feathers absolute inset-0 overflow-hidden">
@@ -82,8 +84,8 @@ import starsTexture from '../assets/textures/stars.webp';
 
   <script type="application/json" id="animal-manifest" set:html={JSON.stringify(animalSources)} />
 </div>
-
-{/* ═══════ "SOLO POSTRES" BACKGROUND ═══════ */}
+) : (
+/* ═══════ "SOLO POSTRES" BACKGROUND ═══════ */
 <div class="texture-bg texture-bg--solo-postres absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
   {/* Layer 1: Paper/dirt texture */}
   <Picture
@@ -121,6 +123,7 @@ import starsTexture from '../assets/textures/stars.webp';
     formats={['avif', 'webp']}
   />
 </div>
+)}
 
 <style>
   /* ── Theme visibility ── */

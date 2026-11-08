@@ -6,6 +6,9 @@ import ReleaseCard from '@/components/ReleaseCard.astro';
 import EmptyState from '@/components/EmptyState.astro';
 import { typeLabels } from '@/constants';
 import { formatYear } from '@/utils/dates';
+import { generateCompositedOg } from '@/utils/og-image';
+
+const ogImage = await generateCompositedOg('music-index', 'src/assets/index/covers.webp', 460);
 
 const releases = await getCollection('releases');
 // Sort chronologically for mobile fallback
@@ -16,7 +19,7 @@ const layoutStyles: Record<string, string> = {
   '1-el-hoyo': 'md:absolute md:w-[19%] md:left-[8%] md:top-[-3%]',
   '2-nuestros-mejores-deseos': 'md:absolute md:w-[32%] md:left-[35%] md:top-[-14%]',
   '3-sesiones-bravas': 'md:absolute md:w-[19%] md:left-[75%] md:top-[8%]',
-  '4-solo-postres': 'md:absolute md:w-[32%] md:left-[%] md:top-[36%]',
+  '4-solo-postres': 'md:absolute md:w-[32%] md:left-[7%] md:top-[36%]',
   '5-el-tamborilero': 'md:absolute md:w-[16%] md:left-[44%] md:top-[38.75%]',
   '6-la-caja-del-diablo': 'md:absolute md:w-[16%] md:left-[72%] md:top-[45%]',
   '7-solo-postres-en-teatros-del-canal': 'md:absolute md:w-[25%] md:left-[22%] md:top-[88%]',
@@ -24,7 +27,7 @@ const layoutStyles: Record<string, string> = {
 };
 ---
 
-<BaseLayout title="Ramper | música" activeSection="music">
+<BaseLayout title="Ramper | música" description="Discografía, lanzamientos y letras" activeSection="music" ogImage={ogImage}>
   <div class="h-full overflow-y-auto overflow-x-hidden p-14 pt-section-top md:pt-[140px] max-w-[1000px] mx-auto" id="music-grid">
 
     {releases.length === 0 ? (

@@ -33,7 +33,7 @@ export default defineConfig({
   },
 
   redirects: {
-    '/merch': 'https://humointernacional.com/tienda/artista-ramper/'
+    '/merch': process.env.PUBLIC_MERCH_URL || 'https://humointernacional.com/tienda/artista-ramper/'
   },
 
   // Integrations extend Astro's capabilities:

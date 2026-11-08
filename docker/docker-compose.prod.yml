@@ -11,3 +11,11 @@ services:
       - "443:443"
     environment:
       - NODE_ENV=production
+      - LISTMONK_URL=${LISTMONK_URL:-http://listmonk:9000}
+      - PUBLIC_NEWSLETTER_LIST_UUID=${PUBLIC_NEWSLETTER_LIST_UUID}
+      - NEWSLETTER_TRACKING_FILE=/app/tracking/.last-newsletter.json
+    volumes:
+      - newsletter_tracking:/app/tracking
+
+volumes:
+  newsletter_tracking:
