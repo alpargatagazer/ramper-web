@@ -227,31 +227,21 @@ import starsTexture from '../assets/textures/stars.webp';
   }
 
   /* ── Continuous digital crossfade animation ──
-     Constant slow dissolve back and forth using steps for digital quantization.
-     Lower opacity for subtle transparent blend. */
+     Single keyframe drives both layers via delay offset to prevent drift. */
   .texture-layer--feathers {
-    animation: digital-dissolve-a 5s steps(100) infinite alternate;
+    animation: digital-dissolve 5s steps(100) infinite alternate;
   }
 
   .texture-layer--hair {
-    animation: digital-dissolve-b 5s steps(100) infinite alternate;
+    animation: digital-dissolve 5s steps(100) infinite alternate-reverse;
   }
 
-  @keyframes digital-dissolve-a {
+  @keyframes digital-dissolve {
     0% {
       opacity: 0.35;
     }
     100% {
       opacity: 0;
-    }
-  }
-
-  @keyframes digital-dissolve-b {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 0.35;
     }
   }
 
