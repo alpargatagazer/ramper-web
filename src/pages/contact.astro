@@ -8,7 +8,6 @@ import { generateCompositedOg } from '@/utils/og-image';
 const ogImage = await generateCompositedOg('contact', 'src/assets/textures/animals/cat.webp', 460);
 
 const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernacional.com';
-const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
 ---
 
 <BaseLayout title="Ramper | escribe" description="Contacto directo y contratación" activeSection="contact" ogImage={ogImage}>
@@ -170,7 +169,7 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
             formFeedback.classList.remove('opacity-100');
           }, 5000);
         }
-      });
+      };
     }
 
     // --- Copy Email Logic ---
@@ -196,7 +195,7 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
             window.location.href = `mailto:${email}`;
           }
         }
-      });
+      };
     }
   });
 </script>
