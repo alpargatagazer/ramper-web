@@ -125,7 +125,7 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
     const formFeedback = document.getElementById('contact-form-feedback') as HTMLParagraphElement | null;
 
     if (form && submitBtn && formFeedback) {
-      form.addEventListener('submit', async (e) => {
+      form.onsubmit = async (e) => {
         e.preventDefault();
         
         // Visual feedback during submission
@@ -178,7 +178,7 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
     const feedback = document.getElementById('copy-feedback');
 
     if (btn && feedback) {
-      btn.addEventListener('click', async () => {
+      btn.onclick = async () => {
         const email = btn.getAttribute('data-email');
         if (email) {
           try {

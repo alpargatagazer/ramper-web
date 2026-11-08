@@ -60,7 +60,6 @@ jobs:
               - '!mise.toml'
               - '!LICENSE'
               - '!README.md'
-              - '!renovate.json'
 
   build:
     name: Build & Save Docker Image
@@ -432,6 +431,12 @@ jobs:
           git commit -m "chore(release): $VERSION [skip ci]"
           git tag $VERSION
           git push origin main --tags
+
+          # Sync release commit to develop to keep branches aligned
+          git fetch origin develop
+          git checkout develop
+          git merge main -m "chore(release): sync $VERSION to develop [skip ci]" || git merge --abort
+          git push origin develop || true
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3.0.4
