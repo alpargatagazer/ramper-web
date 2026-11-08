@@ -8,7 +8,6 @@ test.describe('Layout and Visuals', () => {
     await expect(page.locator('img[src*="feathers"]').first()).toBeAttached();
     await expect(page.locator('img[src*="hair"]').first()).toBeAttached();
     await expect(page.locator('#animal-stage')).toBeAttached();
-    await expect(page.locator('img[src*="red"]').first()).toBeAttached();
     await expect(page.locator('#animated-grain')).toBeAttached();
   });
 

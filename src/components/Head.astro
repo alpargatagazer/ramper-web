@@ -1,6 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 import faviconAsset from '@/assets/favicon.webp';
+import ogBaseAsset from '@/assets/og-base.webp';
 
 interface Props {
   title?: string;
@@ -18,12 +19,12 @@ const {
 } = Astro.props;
 
 const optimizedOgImage = await getImage({
-  src: faviconAsset,
+  src: ogBaseAsset,
   width: 1200,
-  height: 600,
+  height: 630,
   format: 'webp',
   fit: 'cover',
-  position: 'top'
+  position: 'center'
 });
 
 const favicon = await getImage({

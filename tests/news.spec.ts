@@ -6,7 +6,7 @@ test.describe('News Section', () => {
   test('News feed loads and contains posts', async ({ page }) => {
     test.slow();
     // Attempt to count mdoc files to have an expectation
-    const newsDir = path.resolve(process.cwd(), 'src/content/news');
+    const newsDir = path.resolve(process.cwd(), 'src/content/posts');
     let expectedCount = 0;
     try {
       if (fs.existsSync(newsDir)) {

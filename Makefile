@@ -32,8 +32,8 @@ AUDIT_PORT = 8084
 AUDIT_URL = http://127.0.0.1:$(AUDIT_PORT)
 
 # Load and export versions as environment variables end envs for all commands
-include .env
-include .env.versions
+-include .env
+-include .env.versions
 export
 
 # Compose Commands (Explicitly loading versions file for interpolation)

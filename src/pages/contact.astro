@@ -68,10 +68,10 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
               type="submit"
               id="contact-submit"
               class="btn-primary cursor-pointer"
-              data-form-email={formEmail}
             >
               enviar mensaje
             </button>
+            <p id="contact-form-feedback" class="text-sm mt-4 font-bold transition-opacity duration-300 opacity-0" aria-live="polite"></p>
           </form>
         </div>
 
@@ -122,13 +122,9 @@ const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
     // --- Web3Forms Logic ---
     const form = document.getElementById('contact-form') as HTMLFormElement | null;
     const submitBtn = document.getElementById('contact-submit') as HTMLButtonElement | null;
-    
-    // Create a feedback message element for the form
-    const formFeedback = document.createElement('p');
-    formFeedback.className = 'text-sm mt-4 font-bold transition-opacity duration-300 opacity-0';
-    if (form) form.appendChild(formFeedback);
+    const formFeedback = document.getElementById('contact-form-feedback') as HTMLParagraphElement | null;
 
-    if (form && submitBtn) {
+    if (form && submitBtn && formFeedback) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
