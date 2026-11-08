@@ -11,7 +11,7 @@ import bandPhoto from '@/assets/band/1.webp';
 const aboutEntry = await getEntry('about', 'index');
 const { Content } = aboutEntry ? await render(aboutEntry) : { Content: null };
 
-const ogImg = await getImage({ src: bandPhoto, width: 1200, height: 630, format: 'webp', fit: 'cover', position: 'top' });
+const ogImg = await getImage({ src: bandPhoto, width: 1200, height: 630, format: 'jpg', quality: 85 });
 ---
 
 <BaseLayout title="Ramper | ¿...quién?" description="El grupo" activeSection="about" ogImage={ogImg.src}>

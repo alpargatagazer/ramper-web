@@ -9,7 +9,7 @@ export async function GET(context: any) {
   return rss({
 
     title: 'Ramper | Noticias',
-    description: 'Actualidad, comunicados y novedades de Ramper.',
+    description: 'Novedades y noticias de Ramper.',
     site: context.site || 'https://ramper.band',
 
     items: posts.map((post) => ({

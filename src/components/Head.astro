@@ -22,9 +22,8 @@ const optimizedOgImage = await getImage({
   src: ogBaseAsset,
   width: 1200,
   height: 630,
-  format: 'webp',
-  fit: 'cover',
-  position: 'center'
+  format: 'jpg',
+  quality: 85,
 });
 
 const favicon = await getImage({
@@ -51,6 +50,9 @@ const ogImage = Astro.props.ogImage ?? optimizedOgImage.src;
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(ogImage, siteUrl)} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content={ogImage.endsWith('.png') ? 'image/png' : 'image/jpeg'} />
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:locale" content="es_ES" />
 

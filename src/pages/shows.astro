@@ -5,7 +5,7 @@ import { ACTIVE_THEME } from "../constants";
 import { getImage } from "astro:assets";
 import bandLivePhoto from "@/assets/band/5.webp";
 
-const ogImg = await getImage({ src: bandLivePhoto, width: 1200, height: 630, format: 'webp', fit: 'cover', position: 'center' });
+const ogImg = await getImage({ src: bandLivePhoto, width: 1200, height: 630, format: 'jpg', quality: 85 });
 
 // 1. Env Var (Config)
 const songkickId = import.meta.env.PUBLIC_SONGKICK_ARTIST_ID;

@@ -14,7 +14,7 @@ const posts = await getCollection('posts');
 posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 ---
 
-<BaseLayout title="Ramper | noticias" description="Actualidad, comunicados y novedades" activeSection="news" ogImage={ogImage}>
+<BaseLayout title="Ramper | noticias" description="Novedades y noticias de Ramper" activeSection="news" ogImage={ogImage}>
   <div class="page-container pt-section-top">
 
     <div class="w-full">
