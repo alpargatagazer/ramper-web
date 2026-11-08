@@ -3,8 +3,8 @@
 // Composites artworks/drawings centered on a zoomed, transparent texture background at 1200×630.
 
 import sharp from 'sharp';
-import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import { join } from 'path';
+import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
 
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
@@ -96,7 +96,7 @@ export async function generateReleaseOgImage(
   slug: string,
   coverFilename: string,
 ): Promise<string> {
-  const textureIdx = slug.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) % TEXTURE_FILES.length;
+  const textureIdx = slug.split('').reduce((acc, c) => acc + (c.codePointAt(0) ?? 0), 0) % TEXTURE_FILES.length;
   return generateCompositedOg(slug, `src/assets/covers/${coverFilename}`, COVER_HEIGHT, TEXTURE_FILES[textureIdx]);
 }
 
@@ -105,7 +105,7 @@ export async function generateReleaseOgImage(
  * Returns `undefined` if no image is found.
  */
 export function extractFirstImage(body: string): string | undefined {
-  const mdMatch = body.match(/!\[.*?\]\((.+?)\)/);
+  const mdMatch = /!\[.*?\]\((.+?)\)/.exec(body);
   if (mdMatch) return mdMatch[1];
   return undefined;
 }
