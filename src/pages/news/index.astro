@@ -5,13 +5,16 @@ import { getCollection } from 'astro:content';
 import NewsletterForm from '@/components/NewsletterForm.astro';
 import ArticleCard from '@/components/ArticleCard.astro';
 import EmptyState from '@/components/EmptyState.astro';
+import { generateCompositedOg } from '@/utils/og-image';
+
+const ogImage = await generateCompositedOg('news-index', 'src/assets/textures/animals/catlion.webp', 460);
 
 const posts = await getCollection('posts');
 // Newest first
 posts.sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf());
 ---
 
-<BaseLayout title="Ramper | noticias" activeSection="news">
+<BaseLayout title="Ramper | noticias" description="Actualidad, comunicados y novedades" activeSection="news" ogImage={ogImage}>
   <div class="page-container pt-section-top">
 
     <div class="w-full">

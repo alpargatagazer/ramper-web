@@ -3,13 +3,18 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import BandCarousel from '@/components/BandCarousel.astro';
 import { getEntry, render } from 'astro:content';
+import { getImage } from 'astro:assets';
 import EmptyState from '@/components/EmptyState.astro';
+
+import bandPhoto from '@/assets/band/1.webp';
 
 const aboutEntry = await getEntry('about', 'index');
 const { Content } = aboutEntry ? await render(aboutEntry) : { Content: null };
+
+const ogImg = await getImage({ src: bandPhoto, width: 1200, height: 630, format: 'webp', fit: 'cover', position: 'top' });
 ---
 
-<BaseLayout title="Ramper | ¿...quién?" activeSection="about">
+<BaseLayout title="Ramper | ¿...quién?" description="El grupo" activeSection="about" ogImage={ogImg.src}>
   <div class="flex flex-col h-full overflow-y-auto" id="about-content">
     {/* Band photos carousel */}
     <div class="flex-shrink-0">

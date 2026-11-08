@@ -3,12 +3,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import humoLogo from '../assets/logo-humo.webp';
+import { generateCompositedOg } from '@/utils/og-image';
+
+const ogImage = await generateCompositedOg('contact', 'src/assets/textures/animals/cat.webp', 460);
 
 const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernacional.com';
 const formEmail = import.meta.env.PUBLIC_FORM_EMAIL || contactEmail;
 ---
 
-<BaseLayout title="Ramper | escribe" activeSection="contact">
+<BaseLayout title="Ramper | escribe" description="Contacto directo y contratación" activeSection="contact" ogImage={ogImage}>
   <div class="page-container pt-section-top mt-[-25px] w-full max-w-6xl" id="contact-page">
     <div class="w-full">
 
