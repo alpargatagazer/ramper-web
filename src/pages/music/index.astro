@@ -6,9 +6,9 @@ import ReleaseCard from '@/components/ReleaseCard.astro';
 import EmptyState from '@/components/EmptyState.astro';
 import { typeLabels } from '@/constants';
 import { formatYear } from '@/utils/dates';
-import { generateCompositedOg } from '@/utils/og-image';
+import { ogPath } from '@/utils/og-config';
 
-const ogImage = await generateCompositedOg('music-index', 'src/assets/index/covers.webp', 460);
+const ogImage = ogPath('music-index');
 
 const releases = await getCollection('releases');
 // Sort chronologically for mobile fallback

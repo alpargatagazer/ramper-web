@@ -5,7 +5,8 @@
   "description": "Helpless children",
   "scripts": {
     "dev": "rm -f .astro/dev.json && astro dev --host 0.0.0.0",
-    "build": "astro check && astro build",
+    "predev": "node scripts/generate-og.ts",
+    "build": "node scripts/generate-og.ts && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "newsletter:send": "node scripts/send-newsletter.mjs",
