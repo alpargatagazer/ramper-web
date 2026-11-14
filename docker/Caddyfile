@@ -21,9 +21,13 @@
 
 	# Cache fonts and static images in /public
 	@static_public {
-		path /fonts/* /icons/* /favicon.webp /og/*
+		path /fonts/* /icons/* /favicon.webp
 	}
 	header @static_public Cache-Control "public, max-age=31536000, immutable"
+
+	# Cache pre-rendered Open Graph images (non-immutable; revalidated every 24h as images can change between deploys)
+	@og path /og/*
+	header @og Cache-Control "public, max-age=86400"
 
 	# Basic security headers
 	header {

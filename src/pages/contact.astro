@@ -3,9 +3,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import humoLogo from '../assets/logo-humo.webp';
-import { generateCompositedOg } from '@/utils/og-image';
+import { ogPath } from '@/utils/og-config';
 
-const ogImage = await generateCompositedOg('contact', 'src/assets/textures/animals/cat.webp', 460);
+const ogImage = ogPath('contact');
 
 const contactEmail = import.meta.env.PUBLIC_CONTACT_EMAIL || 'pablo@humointernacional.com';
 ---

@@ -1,111 +1,119 @@
-// src/utils/og-image.ts
-// Build-time OG image generation using Sharp.
-// Composites artworks/drawings centered on a zoomed, transparent texture background at 1200×630.
-
 import sharp from 'sharp';
-import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import type { OgSpec } from './og-config.ts';
 
+/** Standard Open Graph canvas dimensions */
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
-const COVER_HEIGHT = 500;
 
-// Resolve against process.cwd() instead of import.meta.url (which resolves to dist/server/.prerender/chunks/ during build)
-const PROJECT_ROOT = process.cwd();
-const OG_DIR = join(PROJECT_ROOT, 'public/og');
-const TEXTURES_DIR = join(PROJECT_ROOT, 'src/assets/textures');
-
-/** Available texture backgrounds for OG images (one is randomly assigned per release) */
+/** Default pool of texture backgrounds randomly/deterministically assigned */
 const TEXTURE_FILES = ['feathers.webp', 'hair.webp'];
 
+/** Base directory for resolving relative asset paths */
+const PROJECT_ROOT = process.cwd();
+
+/** In-memory cache for pre-rendered washed-out texture background buffers */
+const textureCache = new Map<string, Promise<Buffer>>();
+
 /**
- * Builds the washed-out texture background buffer (zoomed 1.25x with 82% white overlay).
+ * Deterministically selects a texture from the default pool based on the key's character codes.
+ *
+ * @param key - Identifier key (e.g. release slug or post key)
+ * @returns Filename of the selected texture
  */
-async function createWashedTextureBackground(texturePath: string): Promise<Buffer> {
-  const ZOOM = 1.25;
-  const textureCrop = await sharp(texturePath)
-    .resize(Math.round(OG_WIDTH * ZOOM), Math.round(OG_HEIGHT * ZOOM), { fit: 'cover', position: 'center' })
-    .extract({
-      left: Math.round((OG_WIDTH * ZOOM - OG_WIDTH) / 2),
-      top: Math.round((OG_HEIGHT * ZOOM - OG_HEIGHT) / 2),
-      width: OG_WIDTH,
-      height: OG_HEIGHT,
-    })
-    .toBuffer();
-
-  const whiteOverlay = Buffer.from(
-    `<svg width="${OG_WIDTH}" height="${OG_HEIGHT}"><rect width="100%" height="100%" fill="white" fill-opacity="0.82" /></svg>`
-  );
-
-  return sharp(textureCrop)
-    .composite([{ input: whiteOverlay, blend: 'over' }])
-    .toBuffer();
+function pickTexture(key: string): string {
+  const sum = key.split('').reduce((acc, c) => acc + (c.codePointAt(0) ?? 0), 0);
+  return TEXTURE_FILES[sum % TEXTURE_FILES.length];
 }
 
 /**
- * Generates an OG image with an arbitrary subject centered over zoomed, transparent texture.
+ * Creates and memoizes a washed-out texture background:
+ * 1. Zooms the source texture by 1.25x and crops it centered to 1200x630.
+ * 2. Blends a solid white overlay with 82% opacity over the cropped texture.
+ *
+ * @param texturePath - Absolute path to the source texture image
+ * @returns Promise resolving to the composited background image buffer
  */
-export async function generateCompositedOg(
-  key: string,
-  subjectPathRel: string,
-  targetHeight: number = 500,
-  textureFile: string = 'feathers.webp'
-): Promise<string> {
-  const outName = `${key}.jpg`;
-  const outPath = join(OG_DIR, outName);
+async function getWashedTextureBackground(texturePath: string): Promise<Buffer> {
+  const cached = textureCache.get(texturePath);
+  if (cached) return cached;
 
-  if (existsSync(outPath)) {
-    return `/og/${outName}`;
-  }
+  const promise = (async () => {
+    const ZOOM = 1.25;
 
-  mkdirSync(OG_DIR, { recursive: true });
+    // Zoom and center-crop the texture to 1200x630
+    const textureCrop = await sharp(texturePath)
+      .resize(Math.round(OG_WIDTH * ZOOM), Math.round(OG_HEIGHT * ZOOM), {
+        fit: 'cover',
+        position: 'center',
+      })
+      .extract({
+        left: Math.round((OG_WIDTH * ZOOM - OG_WIDTH) / 2),
+        top: Math.round((OG_HEIGHT * ZOOM - OG_HEIGHT) / 2),
+        width: OG_WIDTH,
+        height: OG_HEIGHT,
+      })
+      .toBuffer();
 
-  const texturePath = join(TEXTURES_DIR, textureFile);
-  const subjectPath = join(PROJECT_ROOT, subjectPathRel);
-  const bg = await createWashedTextureBackground(texturePath);
+    // Generate an RGBA white overlay with 82% opacity (alpha 0.82)
+    const whiteOverlay = await sharp({
+      create: {
+        width: OG_WIDTH,
+        height: OG_HEIGHT,
+        channels: 4,
+        background: { r: 255, g: 255, b: 255, alpha: 0.82 },
+      },
+    })
+      .png()
+      .toBuffer();
+
+    // Composite overlay on top of the texture
+    return sharp(textureCrop)
+      .composite([{ input: whiteOverlay, blend: 'over' }])
+      .toBuffer();
+  })();
+
+  textureCache.set(texturePath, promise);
+  return promise;
+}
+
+/**
+ * Renders an Open Graph JPEG image buffer (1200x630, quality 85, mozjpeg)
+ * by centering a constrained subject on a washed-out texture background.
+ *
+ * @param key - Unique key for deterministic texture selection if none specified
+ * @param spec - Subject image path, optional target height, and optional texture
+ * @returns Promise resolving to the final JPEG Buffer
+ */
+export async function renderOgImage(key: string, spec: OgSpec): Promise<Buffer> {
+  // Resolve texture path (deterministic fallback if spec.texture is omitted)
+  const textureFile = spec.texture ?? pickTexture(key);
+  const texturePath = textureFile.includes('/')
+    ? join(PROJECT_ROOT, textureFile)
+    : join(PROJECT_ROOT, 'src/assets/textures', textureFile);
+
+  const bg = await getWashedTextureBackground(texturePath);
+
+  // Constrain subject dimensions inside bounds (width: 1100, height: spec.height or 500)
+  const subjectPath = join(PROJECT_ROOT, spec.subject);
+  const targetWidth = OG_WIDTH - 100;
+  const targetHeight = spec.height ?? 500;
 
   const subject = await sharp(subjectPath)
-    .resize({ height: targetHeight, fit: 'inside' })
+    .resize({ width: targetWidth, height: targetHeight, fit: 'inside' })
     .toBuffer();
 
+  // Calculate centered placement coordinates
   const meta = await sharp(subject).metadata();
-  const subW = meta.width ?? targetHeight;
+  const subW = meta.width ?? targetWidth;
   const subH = meta.height ?? targetHeight;
 
   const left = Math.round((OG_WIDTH - subW) / 2);
   const top = Math.round((OG_HEIGHT - subH) / 2);
 
-  const result = await sharp(bg)
+  // Composite subject over the background and encode as optimized JPEG
+  return sharp(bg)
     .composite([{ input: subject, left, top }])
     .jpeg({ quality: 85, mozjpeg: true })
     .toBuffer();
-
-  writeFileSync(outPath, result);
-
-  return `/og/${outName}`;
-}
-
-/**
- * Generates a 1200×630 OG image: cover centered on texture background.
- * Returns `/og/<slug>.webp`. Cached — skips if file already exists.
- *
- * @param slug - release slug (e.g. "8-dos-criaturas")
- * @param coverFilename - filename in src/assets/covers/ (e.g. "criaturas.webp")
- */
-export async function generateReleaseOgImage(
-  slug: string,
-  coverFilename: string,
-): Promise<string> {
-  const textureIdx = slug.split('').reduce((acc, c) => acc + (c.codePointAt(0) ?? 0), 0) % TEXTURE_FILES.length;
-  return generateCompositedOg(slug, `src/assets/covers/${coverFilename}`, COVER_HEIGHT, TEXTURE_FILES[textureIdx]);
-}
-
-/**
- * Extracts the first image URL from a Markdoc/Markdown body string.
- * Returns `undefined` if no image is found.
- */
-export function extractFirstImage(body: string): string | undefined {
-  const mdMatch = /!\[.*?\]\((.+?)\)/.exec(body);
-  if (mdMatch) return mdMatch[1];
-  return undefined;
 }

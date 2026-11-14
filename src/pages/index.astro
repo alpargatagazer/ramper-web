@@ -11,9 +11,9 @@ import hand1 from '../assets/hands/hand-1.webp';
 import hand2 from '../assets/hands/hand-2.webp';
 import hand3 from '../assets/hands/hand-3.webp';
 import hand4 from '../assets/hands/hand-4.webp';
-import { generateCompositedOg } from '@/utils/og-image';
+import { ogPath } from '@/utils/og-config';
 
-const ogImage = await generateCompositedOg('home', 'src/assets/index/cover+vinyl.webp', 460);
+const ogImage = ogPath('home');
 ---
 
 <BaseLayout title="Ramper" description="Dos criaturas — nuevo disco" ogImage={ogImage}>

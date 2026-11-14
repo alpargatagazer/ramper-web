@@ -111,7 +111,7 @@ prod-up: build-prod
 	DOCKER_IMAGE=$(PROJECT_NAME)-prod:local $(COMPOSE_PROD) up -d
 
 prod-latest:
-	$(COMPOSE_PROD) up -d
+	DOCKER_DEFAULT_PLATFORM=linux/amd64 $(COMPOSE_PROD) up -d
 
 prod-down:
 	$(COMPOSE_PROD) down

@@ -5,9 +5,9 @@ import { getCollection } from 'astro:content';
 import NewsletterForm from '@/components/NewsletterForm.astro';
 import ArticleCard from '@/components/ArticleCard.astro';
 import EmptyState from '@/components/EmptyState.astro';
-import { generateCompositedOg } from '@/utils/og-image';
+import { ogPath } from '@/utils/og-config';
 
-const ogImage = await generateCompositedOg('news-index', 'src/assets/textures/animals/catlion.webp', 460);
+const ogImage = ogPath('news-index');
 
 const posts = await getCollection('posts');
 // Newest first
