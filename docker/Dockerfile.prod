@@ -1,5 +1,5 @@
 # Stage 1: Build the static Astro application
-ARG NODE_VERSION=24-alpine
+ARG NODE_VERSION=26-alpine
 ARG CADDY_VERSION=2-alpine
 
 FROM node:${NODE_VERSION} AS builder
